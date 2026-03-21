@@ -2219,7 +2219,7 @@
                 document.getElementById('b2').textContent = '✕ Denied'; document.getElementById('b2').className = 'card-badge b-deny';
                 switchPh('ph-result');
                 document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-                document.getElementById('pr-title').textContent = 'Access Denied'; document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
+                document.getElementById('pr-title').textContent = 'Access Denied'; document.getElementById('pr-sub').innerHTML = 'The operator rejected the verification request. Access denied.';
                 return;
             }
             
@@ -2233,7 +2233,7 @@
                     switchPh('ph-result');
                     document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
                     document.getElementById('pr-title').textContent = 'Authentication successful';
-                    document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
+                    document.getElementById('pr-sub').innerHTML = 'Identity confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">All actions within this session are considered confirmed by you in accordance with the SES Agreement No. ___.</span>';
                     document.getElementById('perm-box').style.display = 'block';
                     startTypewriter();
                     document.getElementById('btn-open').style.display = 'flex';
@@ -2264,7 +2264,7 @@
             document.getElementById('b2').textContent = '✕ Denied'; document.getElementById('b2').className = 'card-badge b-deny';
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-            document.getElementById('pr-title').textContent = 'Denied by operator'; document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
+            document.getElementById('pr-title').textContent = 'Denied by operator'; document.getElementById('pr-sub').innerHTML = 'Identity confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">All actions within this session are considered confirmed by you in accordance with the SES Agreement No. ___.</span>';
         }
 
         function openCard() {
@@ -2395,7 +2395,7 @@
                tb.insertBefore(tr, tb.firstChild);
             }
 
-            document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
+            document.getElementById('pr-sub').innerHTML = 'Identity confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">All actions within this session are considered confirmed by you in accordance with the SES Agreement No. ___.</span>';
             document.getElementById('perm-box').style.display = 'none';
             
             document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
