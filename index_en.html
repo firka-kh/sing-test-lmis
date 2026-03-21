@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Портал верификации личности — МТиЗН РТ</title>
+    <title>Identity Verification Portal - MLME RT</title>
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -1530,8 +1530,7 @@
                     <div class="login-card">
                         <div class="login-logo">
                             <div class="login-emblem">🏛️</div>
-                            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Портал
-                                регистрации безработных</div>
+                            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Unemployment Registration Portal</div>
                             <div class="login-org">Single Sign-On (SSO)<br>Employment Center (Dushanbe)
                             </div>
                         </div>
@@ -1539,9 +1538,8 @@
                                 readonly></div>
                         <div class="fg"><label class="fl">Password</label><input class="fi" type="password"
                                 value="demo1234" readonly></div>
-                        <div style="margin:12px 0;font-size:11px;color:var(--text3);text-align:center">Единый вход для
-                            всех 4 порталов Министерства</div>
-                        <button class="btn btn-primary btn-full btn-login" onclick="loginGo()">Войти в систему
+                        <div style="margin:12px 0;font-size:11px;color:var(--text3);text-align:center">Single login for all 4 Ministry portals</div>
+                        <button class="btn btn-primary btn-full btn-login" onclick="loginGo()">Login
                             →</button>
                     </div>
                 </div>
@@ -1553,8 +1551,8 @@
                     <div class="tnav-user">
                         <div class="tnav-av">АС</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Category I Inspector • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Sanjar Rustamovich Azimov</div>
+                            <div class="tnav-role">Category I Inspector • Dushanbe Employment Center</div>
                         </div>
                     </div>
                     <div class="sso-badge">✓ SSO Active</div>
@@ -1563,13 +1561,12 @@
                     <div class="card-body">
                         <div class="fg"><label class="fl">Search by Name or Passport Number</label>
                             <div class="sbar">
-                                <input class="sinp" value="Рахимов Алишер Бахтиёрович"
+                                <input class="sinp" value="Alisher Bakhtiyorovich Rakhimov"
                                     placeholder="Enter name or passport series/number...">
                                 <button class="btn btn-primary" onclick="goSc('step1')">Search</button>
                             </div>
                         </div>
-                        <div style="font-size:12px;color:var(--text3)">💡 Нажмите «Search» для открытия карточки
-                            посетителя</div>
+                        <div style="font-size:12px;color:var(--text3)">💡 Click «Search» to open the visitor's profile</div>
                     </div>
                 </div>
             </div>
@@ -1580,8 +1577,8 @@
                     <div class="tnav-user">
                         <div class="tnav-av">АС</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Category I Inspector • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Sanjar Rustamovich Azimov</div>
+                            <div class="tnav-role">Category I Inspector • Dushanbe Employment Center</div>
                         </div>
                     </div>
                     <div class="sso-badge">✓ SSO Active</div>
@@ -1602,15 +1599,13 @@
                             <div class="step-node active">1</div>
                             <div style="padding:0 10px">
                                 <strong style="font-size:12px;color:var(--text)">Operator enters INN</strong>
-                                <span style="display:block;font-size:10px;color:var(--text3)">с паспорта
-                                    посетителя</span>
+                                <span style="display:block;font-size:10px;color:var(--text3)">from visitor's passport</span>
                             </div>
                             <div class="step-line" id="sl1"></div>
                             <div class="step-node idle" id="sn2">2</div>
                             <div style="padding:0 10px">
                                 <strong style="font-size:12px;color:var(--text3)">Verification and Confirmation</strong>
-                                <span style="display:block;font-size:10px;color:var(--text3)">после ввода данных
-                                    посетителем</span>
+                                <span style="display:block;font-size:10px;color:var(--text3)">after visitor inputs data</span>
                             </div>
                         </div>
 
@@ -1618,7 +1613,7 @@
                         <div
                             style="background:var(--gray);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px">
                             <div class="fg" style="margin-bottom:6px">
-                                <label class="fl">Шаг 1 — Введите ИНН from visitor's passport</label>
+                                <label class="fl">Step 1 — Enter INN from visitor's passport</label>
                                 <div class="inn-demo">500 123 456 789</div>
                                 <div class="inn-label">← Demo-INN for system test</div>
                                 <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Enter 12-digit INN"
@@ -1651,8 +1646,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-full" id="btn-proceed" onclick="step2()" disabled>Перейти к
-                            подтверждению →</button>
+                        <button class="btn btn-primary btn-full" id="btn-proceed" onclick="step2()" disabled>Proceed to confirmation →</button>
                         <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px" id="phint">
                             Button will activate after all data is entered</div>
 
@@ -1666,8 +1660,8 @@
                     <div class="tnav-user">
                         <div class="tnav-av">АС</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Category I Inspector • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Sanjar Rustamovich Azimov</div>
+                            <div class="tnav-role">Category I Inspector • Dushanbe Employment Center</div>
                         </div>
                     </div>
                     <div class="sso-badge">✓ SSO Active</div>
@@ -1677,7 +1671,7 @@
                         <div class="card-av">🔍</div>
                         <div>
                             <div class="card-name">Verify data with passport</div>
-                            <div class="card-meta">Рахимов Алишер Бахтиёрович</div>
+                            <div class="card-meta">Alisher Bakhtiyorovich Rakhimov</div>
                         </div>
                         <div class="card-badge b-warn" id="b2">⚠ Step 2 of 2</div>
                     </div>
@@ -1689,8 +1683,7 @@
                             </div>
                             <div class="step-line done"></div>
                             <div class="step-node active">2</div>
-                            <div style="padding:0 8px;font-size:12px;color:var(--blue);font-weight:600">Сверьте с
-                                паспортом и подтвердите</div>
+                            <div style="padding:0 8px;font-size:12px;color:var(--blue);font-weight:600">Verify with passport and confirm</div>
                         </div>
 
                         <div class="alert alert-error" id="eblk">
@@ -1705,12 +1698,12 @@
                         <div class="cgrid">
                             <div class="cgi" id="ci-pp">
                                 <div class="cgi-lbl">Passport Number</div>
-                                <div class="cgi-val">А 4521876</div>
+                                <div class="cgi-val">A 4521876</div>
                                 <div class="cgi-st">Matches passport?</div>
                             </div>
                             <div class="cgi" id="ci-nm">
                                 <div class="cgi-lbl">Full Name</div>
-                                <div class="cgi-val norm">Рахимов Алишер Бахтиёрович</div>
+                                <div class="cgi-val norm">Alisher Bakhtiyorovich Rakhimov</div>
                                 <div class="cgi-st">Matches passport?</div>
                             </div>
                             <div class="cgi" id="ci-in">
@@ -1721,7 +1714,7 @@
                             <div class="cgi" id="ci-pi">
                                 <div class="cgi-lbl">PIN code</div>
                                 <div class="cgi-val">● ● ● ● ● ●</div>
-                                <div class="cgi-st" id="ci-pi-s">Введён посетителем</div>
+                                <div class="cgi-st" id="ci-pi-s">Entered by visitor</div>
                             </div>
                             <div class="cgi" id="ci-bd">
                                 <div class="cgi-lbl">Date of birth (visitor input)</div>
@@ -1736,12 +1729,10 @@
                         </div>
 
                         <div style="display:flex;gap:10px">
-                            <button class="btn btn-success btn-full" style="flex:2" onclick="confirm_()">✓ Все данные
-                                совпадают — Подтвердить</button>
+                            <button class="btn btn-success btn-full" style="flex:2" onclick="confirm_()">✓ All data match — Confirm</button>
                             <button class="btn btn-danger" style="flex:1" onclick="reject_()">✕ Does not match</button>
                         </div>
-                        <button class="btn btn-success btn-full" id="btn-open" onclick="openCard()">→ Открыть карточку
-                            посетителя</button>
+                        <button class="btn btn-success btn-full" id="btn-open" onclick="openCard()">→ Open visitor profile</button>
 
                     </div>
                 </div>
@@ -1753,8 +1744,8 @@
                     <div class="card-hdr" style="background:linear-gradient(135deg,var(--green),#0F5C35)">
                         <div class="card-av">👤</div>
                         <div>
-                            <div class="card-name">Рахимов Алишер Бахтиёрович</div>
-                            <div class="card-meta">Паспорт: А 4521876 &nbsp;|&nbsp; ИНН: 500123456789</div>
+                            <div class="card-name">Alisher Bakhtiyorovich Rakhimov</div>
+                            <div class="card-meta">Passport: A 4521876 &nbsp;|&nbsp; ИНН: 500123456789</div>
                         </div>
                         <div class="card-badge b-ok">✓ Verified</div>
                     </div>
@@ -1763,11 +1754,11 @@
                             <div class="ao-icon">✅</div>
                             <div>
                                 <div class="ao-title">Identity confirmed — profile opened</div>
-                                <div class="ao-sub" id="ok-sub">ИНН + PIN code + Date of Birth совпали</div>
+                                <div class="ao-sub" id="ok-sub">INN + PIN code + Date of Birth matched</div>
                             </div>
                         </div>
                         <div class="info-grid">
-                            <div class="ii"><label>Date of Birth</label><span>15.03.1988 (36 лет)</span></div>
+                            <div class="ii"><label>Date of Birth</label><span>15.03.1988 (36 years old)</span></div>
                             <div class="ii"><label>Phone</label><span>+992 93 456 78 78</span></div>
                             <div class="ii"><label>Profession</label><span>Civil Engineer</span></div>
                             <div class="ii"><label>Allowance</label><span class="hl">320 somoni / month</span></div>
@@ -1778,12 +1769,12 @@
                             <div class="audit-title">Verification Log</div>
                             <div class="audit-row">
                                 <div class="adot g"></div>
-                                <div class="atxt" id="al1">Личность подтверждена: ИНН + PIN code + Date of Birth</div>
+                                <div class="atxt" id="al1">Identity confirmed: INN + PIN + DOB</div>
                                 <div class="atm" id="at1"></div>
                             </div>
                             <div class="audit-row">
                                 <div class="adot b"></div>
-                                <div class="atxt">Operator: Азимов Санджар Рустамович • ЦЗН г. Душанбе</div>
+                                <div class="atxt">Operator: Sanjar Rustamovich Azimov • Dushanbe Employment Center</div>
                                 <div class="atm" id="at2"></div>
                             </div>
                             <div class="audit-row">
@@ -1803,7 +1794,7 @@
 
         <!-- ═══ PHONE ═══ -->
         <div class="col-ph">
-            <div class="sec-lbl">Phone посетителя</div>
+            <div class="sec-lbl">Visitor Smartphone</div>
 
             <div class="phone">
                 <div class="pscr">
@@ -1821,8 +1812,8 @@
                     <!-- PIN -->
                     <div class="ps" id="ph-pin">
                         <div class="ph-hdr">
-                            <div class="ph-hdr-t">Введите PIN code</div>
-                            <div class="ph-hdr-s">ЦЗН Душанбе • Step 1 of 2 • Демо: 1 2 3 4 5 6</div>
+                            <div class="ph-hdr-t">Enter PIN code</div>
+                            <div class="ph-hdr-s">Dushanbe EC • Step 1 of 2 • Демо: 1 2 3 4 5 6</div>
                         </div>
                         <div class="ph-body">
                             <div class="pin-area">
@@ -1834,7 +1825,7 @@
                                     <div class="pdot" id="pd5"></div>
                                     <div class="pdot" id="pd6"></div>
                                 </div>
-                                <div class="pin-hint">6-значный PIN code</div>
+                                <div class="pin-hint">6-digit PIN code</div>
                             </div>
                             <div class="numpad">
                                 <button class="nb" onclick="pp('1')">1</button><button class="nb"
@@ -1854,7 +1845,7 @@
                     <div class="ps" id="ph-bd">
                         <div class="ph-hdr">
                             <div class="ph-hdr-t">Date of Birth</div>
-                            <div class="ph-hdr-s">ЦЗН Душанбе • Step 2 of 2 • Any 8 digits</div>
+                            <div class="ph-hdr-s">Dushanbe EC • Step 2 of 2 • Any 8 digits</div>
                         </div>
                         <div class="ph-body">
                             <div class="bd-area">
@@ -1906,7 +1897,7 @@
                 </div>
                 <div class="ist">
                     <div class="inum" id="in4">4</div>
-                    <div class="itxt" id="it4">Посетитель: PIN code + дата рождения</div>
+                    <div class="itxt" id="it4">Visitor: PIN code + Date of birth</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in5">5</div>
@@ -1973,13 +1964,13 @@
             const ph = document.getElementById('phint');
             if (ready) { ph.textContent = 'All data received — click «Proceed to confirmation»'; ph.style.color = 'var(--green)'; }
             else if (!innOk) { ph.textContent = 'Enter a valid INN (12 digits)'; ph.style.color = 'var(--text3)'; }
-            else if (!pinDone_) { ph.textContent = 'Waiting PIN codeа от посетителя...'; ph.style.color = 'var(--blue)'; }
+            else if (!pinDone_) { ph.textContent = 'Waiting for PIN code from visitor...'; ph.style.color = 'var(--blue)'; }
             else { ph.textContent = 'Waiting for DOB from visitor...'; ph.style.color = 'var(--blue)'; }
             const done = [innOk, pinDone_, bdDone_].filter(Boolean).length;
             document.getElementById('pbar').style.width = (done / 3 * 100) + '%';
             document.getElementById('pbar').className = 'prog-bar' + (done === 3 ? ' ok' : '');
             document.getElementById('ppct').textContent = done + ' / 3';
-            document.getElementById('plbl').textContent = done === 3 ? 'Верификация завершена' : 'Verification Progress';
+            document.getElementById('plbl').textContent = done === 3 ? 'Verification Complete' : 'Verification Progress';
         }
 
         // ── VISITOR PIN ──
@@ -2054,7 +2045,7 @@
         // ── CONFIRM ──
         function confirm_() {
             const errors = [];
-            if (!innOk) errors.push('INN not found in system — проверьте правильность ввода');
+            if (!innOk) errors.push('INN not found in system — check input correctness');
             if (errors.length > 0) {
                 playError();
                 const eb = document.getElementById('eblk'); eb.className = 'alert alert-error show';
@@ -2089,7 +2080,7 @@
         function openCard() {
             playSuccess();
             const now = new Date();
-            document.getElementById('ok-sub').textContent = 'Verified ' + fmt(now) + ' • Operator: Азимов Санджар Рустамович';
+            document.getElementById('ok-sub').textContent = 'Verified ' + fmt(now) + ' • Operator: Sanjar Rustamovich Azimov';
             document.getElementById('at1').textContent = fmt(now);
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
