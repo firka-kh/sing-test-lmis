@@ -6,7 +6,7 @@ The system is designed to reliably identify visitors at Employment Centers in or
 **Usage Scenario:**
 1. The inspector logs into the system using the Ministry's Single Sign-On (SSO Keycloak).
 2. A visitor arrives for an appointment. The inspector requests their passport and enters the 12-digit INN into the operator's system.
-3. The system searches for the visitor in the database.
+3. The system searches for the visitor in the database (search is available by Name or a unique System ID issued during the first visit).
 4. An authentication request is pushed to the visitor's personal smartphone (or terminal): they must enter their secret 6-digit PIN and Date of Birth.
 5. The data from the inspector's terminal and the visitor's device are synchronized and verified on the backend server.
 6. If the data matches, the inspector is granted access to the visitor's full Profile Card. The Audit Log records the successful verification.
