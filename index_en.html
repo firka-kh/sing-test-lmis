@@ -1952,7 +1952,7 @@
             const inp = document.getElementById('inn-inp');
             inp.className = 'inn-input' + (innVal.length === 0 ? '' : innOk ? ' ok' : innVal.length > 0 ? ' err' : '');
             const fb = document.getElementById('inn-fb');
-            if (!innVal.length) { fb.textContent = 'Take the visitor's passport and enter their INN'; fb.style.color = 'var(--text3)'; }
+            if (!innVal.length) { fb.textContent = "Take the visitor's passport and enter their INN"; fb.style.color = 'var(--text3)'; }
             else if (innOk) { fb.textContent = '✓ INN found in system — ' + innVal.length + ' of 12 digits'; fb.style.color = 'var(--green)'; }
             else { fb.textContent = (innVal.length < 12 ? 'Entered ' + innVal.length + ' of 12 digits...' : 'INN not found in system'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
             checkProceed();
@@ -2144,7 +2144,7 @@
         function resetAll() {
             innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
-            document.getElementById('inn-fb').textContent = 'Take the visitor's passport and enter their INN'; document.getElementById('inn-fb').style.color = 'var(--text3)';
+            document.getElementById('inn-fb').textContent = "Take the visitor's passport and enter their INN"; document.getElementById('inn-fb').style.color = 'var(--text3)';
             document.getElementById('op-pin').textContent = 'Waiting for input...'; document.getElementById('op-pin').className = 'vp-val';
             document.getElementById('op-bd').textContent = 'Waiting for input...'; document.getElementById('op-bd').className = 'vp-val';
             document.getElementById('btn-proceed').disabled = true;
