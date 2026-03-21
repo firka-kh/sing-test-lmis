@@ -10,6 +10,7 @@ The system is designed to reliably identify visitors at Employment Centers in or
 4. An authentication request is pushed to the visitor's personal smartphone (or terminal): they must enter their secret 6-digit PIN and Date of Birth.
 5. The data from the inspector's terminal and the visitor's device are synchronized and verified on the backend server.
 6. If the data matches, the inspector is granted access to the visitor's full Profile Card. The Audit Log records the successful verification.
+7. **Electronic Signature (New):** When a physical signature is required for a document (e.g., *Job Search Application* or *Allowance Order*), the operator clicks "Request Signature". The visitor's smartphone displays the document name and asks for their PIN code. Upon entering the PIN, the document is marked as legally signed, and the exact timestamp and document name are recorded in the Audit Log.
 
 ## Overview for Developers (Technical Workflow)
 
@@ -20,8 +21,8 @@ The system is designed to reliably identify visitors at Employment Centers in or
 
 ### UI States
 The interface state is managed by toggling CSS classes (`.sc.on` for operator screens and `.ps.on` for phone screens).
-* `sc-login` -> `sc-search` -> `sc-step1` (INN Input) -> `sc-step2` (Data Verification) -> `sc-open` (Card Opened).
-* Phone: `ph-wait` -> `ph-pin` -> `ph-bd` -> `ph-result`.
+* `sc-login` -> `sc-search` -> `sc-step1` (INN Input) -> `sc-step2` (Data Verification) -> `sc-open` (Card Opened, Document Management).
+* Phone: `ph-wait` -> `ph-pin` -> `ph-bd` -> `ph-result` -> `ph-sign` (Signing specific document).
 
 ### API Contracts (Mocks)
 **1. Check INN**
@@ -33,3 +34,8 @@ The interface state is managed by toggling CSS classes (`.sc.on` for operator sc
 * `POST /api/verification/verify-visitor`
 * Payload: `{"inn": "...", "pin": "...", "birthDate": "..."}`
 * Response: `{"verified": true, "fullName": "..."}`
+
+**3. Sign Document (via PIN)**
+* `POST /api/verification/sign-document`
+* Payload: `{"inn": "...", "pin": "...", "documentName": "Job Search Application"}`
+* Response: `{"signed": true, "timestamp": "2026-03-21T14:30:00Z"}`
