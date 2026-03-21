@@ -1774,6 +1774,17 @@
                             <div class="ii"><label>Причина увольнения</label><span>Сокращение штата</span></div>
                             <div class="ii"><label>Следующая явка</label><span>15.04.2025</span></div>
                         </div>
+                        
+                        <div class="docs-section" style="margin-top:20px;margin-bottom:20px;padding:16px;background:var(--gray);border-radius:6px;border:1px solid var(--border);">
+                            <div style="font-weight:600;font-size:14px;margin-bottom:10px;">Электронное подписание документов</div>
+                            <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border:1px solid var(--border);border-radius:4px;">
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Приказ о назначении пособия №44-А</div>
+                                    <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-status">Ожидает отправки на подпись</div>
+                                </div>
+                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign()" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                            </div>
+                        </div>
                         <div class="audit">
                             <div class="audit-title">Журнал верификации</div>
                             <div class="audit-row">
@@ -1875,6 +1886,32 @@
                         </div>
                     </div>
 
+
+                    <!-- SIGN -->
+                    <div class="ps" id="ph-sign">
+                        <div class="ph-hdr">
+                            <div class="ph-hdr-t">Подписание документа</div>
+                            <div class="ph-hdr-s">Приказ о назначении пособия №44-А</div>
+                        </div>
+                        <div class="ph-body">
+                            <div style="font-size:13px;text-align:center;margin-bottom:16px;color:var(--text2);line-height:1.4;">
+                                Для подтверждения подписания<br>введите ваш <b>PIN-код</b>
+                            </div>
+                            <div class="pin-area">
+                                <div class="pdots">
+                                    <div class="pdot" id="spd1"></div><div class="pdot" id="spd2"></div><div class="pdot" id="spd3"></div>
+                                    <div class="pdot" id="spd4"></div><div class="pdot" id="spd5"></div><div class="pdot" id="spd6"></div>
+                                </div>
+                            </div>
+                            <div class="numpad">
+                                <button class="nb" onclick="sp('1')">1</button><button class="nb" onclick="sp('2')">2</button><button class="nb" onclick="sp('3')">3</button>
+                                <button class="nb" onclick="sp('4')">4</button><button class="nb" onclick="sp('5')">5</button><button class="nb" onclick="sp('6')">6</button>
+                                <button class="nb" onclick="sp('7')">7</button><button class="nb" onclick="sp('8')">8</button><button class="nb" onclick="sp('9')">9</button>
+                                <button class="nb del" onclick="sdel()">⌫</button><button class="nb" onclick="sp('0')">0</button>
+                                <button class="nb okb" id="spin-ok" onclick="signDone()" disabled>OK ✓</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- RESULT -->
                     <div class="ps" id="ph-result">
                         <div class="ph-result">
@@ -1918,7 +1955,7 @@
 
     <script>
         // ── DB (Удален хардкод, теперь запросы к API) ──
-        let innVal = '', pinVal = '', bdVal = '';
+        let innVal = '', pinVal = '', bdVal = '', spinVal = '';
         let innOk = false, pinDone_ = false, bdDone_ = false;
 
         // ── CLOCK ──
@@ -2184,6 +2221,56 @@
             setTimeout(step, 400);
         }
 
+
+        // ── SIGNATURE ──
+        function reqSign() {
+            spinVal = '';
+            updSDots();
+            document.getElementById('spin-ok').disabled = true;
+            document.getElementById('doc-status').textContent = 'Ожидание подписи от посетителя...';
+            document.getElementById('doc-status').style.color = 'var(--blue)';
+            document.getElementById('btn-req-sign').style.display = 'none';
+            switchPh('ph-sign');
+        }
+        function sp(d) {
+            if (spinVal.length >= 6) return;
+            spinVal += d; updSDots();
+            if (spinVal.length === 6) document.getElementById('spin-ok').disabled = false;
+            playBeep();
+        }
+        function sdel() {
+            spinVal = spinVal.slice(0, -1);
+            document.getElementById('spin-ok').disabled = true;
+            updSDots();
+        }
+        function updSDots() {
+            for (let i = 1; i <= 6; i++) {
+                const el = document.getElementById('spd' + i);
+                if(el) el.className = 'pdot' + (i <= spinVal.length ? ' f' : '');
+            }
+        }
+        function signDone() {
+            if (spinVal.length < 6) return;
+            playSuccess();
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
+            document.getElementById('pr-title').textContent = 'Документ подписан';
+            document.getElementById('pr-sub').textContent = 'Вы успешно подписали документ';
+            document.getElementById('perm-box').style.display = 'none';
+            
+            document.getElementById('doc-status').textContent = '✓ Подписано электронной подписью (PIN)';
+            document.getElementById('doc-status').style.color = 'var(--green)';
+            
+            const auditDiv = document.querySelector('.audit');
+            const newLog = document.createElement('div');
+            newLog.className = 'audit-row signlog';
+            const now = new Date();
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Документ \"Приказ №44-А\" подписан (PIN-код)</div><div class="atm">' + fmt(now) + '</div>';
+            
+            const title = auditDiv.querySelector('.audit-title');
+            title.insertAdjacentElement('afterend', newLog);
+        }
+
         // ── SOUNDS ──
         let _ac = null;
         function ac() { if (!_ac) try { _ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } if (_ac && _ac.state === 'suspended') _ac.resume(); return _ac; }
@@ -2204,6 +2291,12 @@
             document.getElementById('phint').textContent = 'Кнопка станет активной после ввода всех данных'; document.getElementById('phint').style.color = 'var(--text3)';
             updDots(); document.getElementById('pin-ok').disabled = true;
             bdVal = ''; document.getElementById('bd-ok').disabled = true;
+            spinVal = '';
+            document.getElementById('btn-req-sign').style.display = 'block';
+            document.getElementById('doc-status').textContent = 'Ожидает отправки на подпись';
+            document.getElementById('doc-status').style.color = 'var(--text3)';
+            document.querySelectorAll('.signlog').forEach(e => e.remove());
+
             document.getElementById('perm-box').style.display = 'none';
             const pto = document.getElementById('perm-typeout'); if (pto) pto.innerHTML = '';
             document.getElementById('btn-open').style.display = 'none';
