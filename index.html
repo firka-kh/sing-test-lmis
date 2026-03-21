@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портал верификации личности — МТиЗН РТ</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0B1F3A;
+            --navy2: #102849;
+            --blue: #1A56A0;
+            --blue2: #2368B8;
+            --sky: #3B82C4;
+            --accent: #E8A020;
+            --green: #1A7A4A;
+            --green-l: #EBF7F0;
+            --green-b: #A3D9BC;
+            --red: #B91C1C;
+            --red-l: #FEF2F2;
+            --red-b: #FCA5A5;
+            --amber-l: #FFFBEB;
+            --amber-b: #FCD34D;
+            --amber: #D97706;
+            --gray: #F4F6F9;
+            --gray2: #E8ECF2;
+            --gray3: #CBD5E1;
+            --text: #1E2D40;
+            --text2: #4A607A;
+            --text3: #7A90A8;
+            --border: #D0DAE8;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(11, 31, 58, .08);
+            --shadow2: 0 4px 20px rgba(11, 31, 58, .12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--gray);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .hdr {
+            background: var(--navy);
+            padding: 0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+        }
+
+        .hdr-top {
+            padding: 10px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .hdr-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hdr-emblem {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .hdr-text h1 {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+
+        .hdr-text p {
+            color: rgba(255, 255, 255, .55);
+            font-size: 11px;
+            margin-top: 2px;
+            letter-spacing: .3px;
+        }
+
+        .hdr-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hdr-clock {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .7);
+            letter-spacing: 1px;
+        }
+
+        .demo-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 2px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hdr-nav {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 32px;
+            background: var(--navy2);
+        }
+
+        .nav-item {
+            padding: 10px 18px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, .5);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .2s;
+            letter-spacing: .3px;
+        }
+
+        .nav-item.active {
+            color: #fff;
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-item:hover:not(.active) {
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .nav-sep {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, .1);
+            margin: 0 4px;
+        }
+
+        /* ── LAYOUT ── */
+        .wrap {
+            display: flex;
+            min-height: calc(100vh - 90px);
+        }
+
+        .col-op {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .col-ph {
+            width: 320px;
+            background: var(--white);
+            border-left: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: -4px 0 16px rgba(0, 0, 0, .04);
+        }
+
+        /* ── SECTION LABEL ── */
+        .sec-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sec-lbl::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .card-hdr {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #fff;
+        }
+
+        .card-av {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .15);
+            border: 2px solid rgba(255, 255, 255, .3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .card-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            opacity: .75;
+            margin-top: 2px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .card-badge {
+            margin-left: auto;
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            letter-spacing: .5px;
+        }
+
+        .b-lock {
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .3);
+        }
+
+        .b-ok {
+            background: rgba(26, 122, 74, .2);
+            color: #6EE7B7;
+            border: 1px solid rgba(110, 231, 183, .4);
+        }
+
+        .b-warn {
+            background: rgba(232, 160, 32, .2);
+            color: #FCD34D;
+            border: 1px solid rgba(252, 211, 77, .4);
+        }
+
+        .b-deny {
+            background: rgba(185, 28, 28, .2);
+            color: #FCA5A5;
+            border: 1px solid rgba(252, 165, 165, .4);
+        }
+
+        .card-body {
+            padding: 22px;
+        }
+
+        /* ── NAV BAR ── */
+        .top-nav {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px 18px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tnav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tnav-av {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--navy));
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tnav-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .tnav-role {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 1px;
+        }
+
+        .sso-badge {
+            background: var(--green-l);
+            color: var(--green);
+            border: 1px solid var(--green-b);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ── FORMS ── */
+        .fg {
+            margin-bottom: 14px;
+        }
+
+        .fl {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 5px;
+            display: block;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+        }
+
+        .fi {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            outline: none;
+            transition: all .2s;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        .fi:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(26, 86, 160, .1);
+        }
+
+        .fi[readonly] {
+            background: var(--gray);
+            color: var(--text3);
+        }
+
+        .sbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .sinp {
+            flex: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 4px;
+            padding: 10px 14px;
+            font-size: 13px;
+            outline: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: var(--text);
+        }
+
+        .sinp:focus {
+            border-color: var(--blue);
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            border: none;
+            border-radius: 4px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'IBM Plex Sans', sans-serif;
+            transition: all .2s;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--blue2);
+            box-shadow: 0 2px 8px rgba(26, 86, 160, .3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray3);
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #15693E;
+        }
+
+        .btn-danger {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #9B1818;
+        }
+
+        .btn-ghost {
+            background: var(--gray);
+            color: var(--text2);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--gray2);
+        }
+
+        .btn-full {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ── STEP INDICATOR ── */
+        .steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 20px;
+        }
+
+        .step-node {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all .3s;
+        }
+
+        .step-node.active {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(26, 86, 160, .08);
+        }
+
+        .step-node.done {
+            border-color: var(--green);
+            color: #fff;
+            background: var(--green);
+        }
+
+        .step-node.idle {
+            border-color: var(--border);
+            color: var(--text3);
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            transition: background .3s;
+        }
+
+        .step-line.done {
+            background: var(--green);
+        }
+
+        .step-info {
+            padding: 0 10px;
+        }
+
+        .step-info strong {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .step-info span {
+            font-size: 10px;
+            color: var(--text3);
+        }
+
+        /* ── INN DISPLAY ── */
+        .inn-demo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 4px;
+            color: var(--blue);
+            background: var(--gray);
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .inn-label {
+            font-size: 11px;
+            color: var(--text3);
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .inn-input {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-size: 18px;
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 4px;
+            text-align: center;
+            outline: none;
+            transition: all .2s;
+            color: var(--text);
+        }
+
+        .inn-input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(26, 86, 160, .08);
+        }
+
+        .inn-input.ok {
+            border-color: var(--green);
+            color: var(--green);
+            background: var(--green-l);
+        }
+
+        .inn-input.err {
+            border-color: var(--red);
+            color: var(--red);
+            background: var(--red-l);
+        }
+
+        .inn-input::placeholder {
+            color: var(--text3);
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .inn-fb {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 7px;
+            color: var(--text3);
+            min-height: 18px;
+        }
+
+        /* ── VISITOR PANELS ── */
+        .vpanels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .vpanel {
+            background: var(--gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .vp-icon {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .vp-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text3);
+            margin-bottom: 4px;
+        }
+
+        .vp-val {
+            font-size: 12px;
+            color: var(--text3);
+            font-family: 'IBM Plex Mono', monospace;
+            transition: all .3s;
+        }
+
+        .vp-val.ok {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* ── PROGRESS ── */
+        .prog-wrap {
+            margin: 14px 0;
+        }
+
+        .prog-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .prog-track {
+            height: 6px;
+            background: var(--gray2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .prog-bar {
+            height: 100%;
+            transition: width .4s ease, background .3s;
+            background: var(--blue);
+            border-radius: 3px;
+        }
+
+        .prog-bar.ok {
+            background: var(--green);
+        }
+
+        /* ── CONFIRM GRID ── */
+        .cgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .cgi {
+            background: var(--gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 14px;
+            transition: all .3s;
+        }
+
+        .cgi.ok {
+            background: var(--green-l);
+            border-color: var(--green-b);
+        }
+
+        .cgi.err {
+            background: var(--red-l);
+            border-color: var(--red-b);
+        }
+
+        .cgi-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text3);
+            margin-bottom: 5px;
+        }
+
+        .cgi-val {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .cgi-val.norm {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 12px;
+        }
+
+        .cgi-st {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .cgi.ok .cgi-lbl {
+            color: var(--green);
+        }
+
+        .cgi.ok .cgi-st {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .cgi.err .cgi-lbl {
+            color: var(--red);
+        }
+
+        .cgi.err .cgi-st {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        /* ── ALERT BLOCKS ── */
+        .alert {
+            border-radius: 4px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            display: none;
+            border-left: 4px solid;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn .3s ease;
+        }
+
+        .alert-error {
+            background: var(--red-l);
+            border-left-color: var(--red);
+        }
+
+        .alert-success {
+            background: var(--green-l);
+            border-left-color: var(--green);
+        }
+
+        .alert-warn {
+            background: var(--amber-l);
+            border-left-color: var(--amber);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-6px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        .alert h3 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .alert-error h3 {
+            color: var(--red);
+        }
+
+        .alert-success h3 {
+            color: var(--green);
+        }
+
+        .alert h3 .icon {
+            margin-right: 6px;
+        }
+
+        .alert-item {
+            font-size: 12px;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 4px;
+            color: var(--text2);
+        }
+
+        .alert-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-dot {
+            color: var(--red);
+            margin-top: 1px;
+        }
+
+        /* ── ACCESS GRANTED ── */
+        .access-ok {
+            background: var(--green-l);
+            border: 1px solid var(--green-b);
+            border-radius: 4px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: slideIn .4s ease;
+        }
+
+        .ao-icon {
+            font-size: 28px;
+        }
+
+        .ao-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .ao-sub {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 3px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ── INFO GRID ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: var(--gray);
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        .ii label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text3);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .ii span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .ii span.hl {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        /* ── AUDIT ── */
+        .audit {
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .audit-title {
+            padding: 10px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text3);
+            background: var(--gray);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .audit-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            border-bottom: 1px solid var(--gray2);
+            font-size: 12px;
+        }
+
+        .audit-row:last-child {
+            border-bottom: none;
+        }
+
+        .adot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .adot.g {
+            background: var(--green);
+        }
+
+        .adot.b {
+            background: var(--blue);
+        }
+
+        .atxt {
+            flex: 1;
+            color: var(--text2);
+        }
+
+        .atm {
+            font-size: 10px;
+            color: var(--text3);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ── OPEN BTN ── */
+        #btn-open {
+            display: none;
+            margin-top: 12px;
+            background: var(--green);
+            color: #fff;
+            animation: successPulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes successPulse {
+            from {
+                box-shadow: 0 0 0 rgba(26, 122, 74, 0)
+            }
+
+            to {
+                box-shadow: 0 4px 20px rgba(26, 122, 74, .35)
+            }
+        }
+
+        /* ── LOGIN ── */
+        .login-wrap {
+            max-width: 420px;
+            margin: 40px auto;
+        }
+
+        .login-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: var(--shadow2);
+            padding: 36px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-emblem {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--blue), var(--navy));
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 12px;
+        }
+
+        .login-org {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.4;
+        }
+
+        /* ── PARTIAL INFO ── */
+        .partial {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .blurred {
+            background: var(--gray2);
+            color: var(--gray2);
+            border-radius: 2px;
+            user-select: none;
+        }
+
+        .lock-banner {
+            background: var(--amber-l);
+            border: 1px solid var(--amber-b);
+            border-radius: 4px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--amber);
+            font-weight: 500;
+        }
+
+        /* ── PHONE ── */
+        .phone {
+            width: 252px;
+            background: linear-gradient(180deg, #1A1A2E, #0F0F1A);
+            border-radius: 28px;
+            padding: 10px;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 20px 50px rgba(0, 0, 0, .4);
+            position: relative;
+        }
+
+        .phone::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65px;
+            height: 3px;
+            background: rgba(255, 255, 255, .25);
+            border-radius: 2px;
+            z-index: 20;
+        }
+
+        .pscr {
+            background: #0A0A14;
+            border-radius: 21px;
+            overflow: hidden;
+            min-height: 490px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            position: relative;
+        }
+
+        .pbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 14px 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .ps {
+            display: none;
+        }
+
+        .ps.on {
+            display: block;
+        }
+
+        /* PHONE SCREENS */
+        .ph-hdr {
+            padding: 14px 14px 18px;
+            background: linear-gradient(135deg, var(--navy), #0B1F3A);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .ph-hdr-t {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .3px;
+        }
+
+        .ph-hdr-s {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 3px;
+        }
+
+        .ph-body {
+            padding: 12px;
+        }
+
+        /* WAIT */
+        .ph-wait {
+            padding: 32px 16px;
+            text-align: center;
+        }
+
+        .wait-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            border: 3px solid rgba(26, 86, 160, .2);
+            border-top-color: var(--blue);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .wait-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .wait-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .5);
+            line-height: 1.6;
+        }
+
+        /* PIN */
+        .pin-area {
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .pdots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .pdot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, .25);
+            background: transparent;
+            transition: all .15s;
+        }
+
+        .pdot.f {
+            background: var(--blue);
+            border-color: var(--blue);
+            transform: scale(1.1);
+        }
+
+        .pin-hint {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .4);
+        }
+
+        /* BD CELLS */
+        .bd-area {
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .bd-title {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .4);
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .bd-cells {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .bdc {
+            width: 24px;
+            height: 32px;
+            border: 1px solid rgba(255, 255, 255, .15);
+            background: rgba(255, 255, 255, .04);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, .3);
+            transition: all .15s;
+        }
+
+        .bdc.filled {
+            color: #fff;
+            border-color: rgba(26, 86, 160, .8);
+            background: rgba(26, 86, 160, .2);
+            animation: cellIn .15s ease;
+        }
+
+        @keyframes cellIn {
+            from {
+                transform: scale(1.15)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        .bdc.cur {
+            border-color: var(--blue);
+            animation: blinkBorder .7s ease-in-out infinite alternate;
+        }
+
+        @keyframes blinkBorder {
+            from {
+                border-color: rgba(26, 86, 160, .4)
+            }
+
+            to {
+                border-color: var(--blue);
+                box-shadow: 0 0 8px rgba(26, 86, 160, .4)
+            }
+        }
+
+        .bdsep {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            color: rgba(255, 255, 255, .2);
+            padding: 0 1px;
+        }
+
+        /* NUMPAD */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .nb {
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 12px 0;
+            cursor: pointer;
+            text-align: center;
+            transition: all .1s;
+        }
+
+        .nb:active {
+            background: rgba(26, 86, 160, .4);
+            border-color: var(--blue);
+            transform: scale(.95);
+        }
+
+        .nb:hover:not(:disabled) {
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .nb.del {
+            font-size: 14px;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .nb.okb {
+            background: rgba(26, 122, 74, .2);
+            color: #6EE7B7;
+            border-color: rgba(110, 231, 183, .3);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .nb.okb:disabled {
+            opacity: .25;
+            cursor: not-allowed;
+        }
+
+        .nb.okb:not(:disabled):hover {
+            background: rgba(26, 122, 74, .35);
+        }
+
+        .nb.okb:not(:disabled):active {
+            background: rgba(26, 122, 74, .5);
+        }
+
+        /* PHONE RESULT */
+        .ph-result {
+            padding: 24px 14px;
+            text-align: center;
+        }
+
+        .pr-ring {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid;
+        }
+
+        .pr-ring.ok-r {
+            border-color: #6EE7B7;
+            background: rgba(26, 122, 74, .15);
+            animation: okPop .4s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        .pr-ring.err-r {
+            border-color: var(--red-b);
+            background: rgba(185, 28, 28, .15);
+            animation: okPop .4s cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        .pr-ring.wait-r {
+            border-color: rgba(26, 86, 160, .3);
+            border-top-color: var(--blue);
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes okPop {
+            from {
+                transform: scale(0);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        .pr-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .pr-sub {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .5);
+            line-height: 1.7;
+        }
+
+        /* PERMISSION BOX — typewriter */
+        .perm-box {
+            display: none;
+            margin-top: 14px;
+            background: rgba(26, 122, 74, .1);
+            border: 1px solid rgba(110, 231, 183, .3);
+            border-radius: 4px;
+            padding: 14px;
+            text-align: left;
+        }
+
+        #perm-typeout {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #6EE7B7;
+            line-height: 2;
+            letter-spacing: .3px;
+            min-height: 180px;
+        }
+
+        /* SCREEN TRANSITION */
+        .ps.entering {
+            animation: phIn .3s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        @keyframes phIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* INSTRUCTIONS */
+        .inst {
+            background: var(--gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 14px;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .inst-t {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text3);
+            margin-bottom: 10px;
+        }
+
+        .ist {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+        .inum {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--text3);
+            transition: all .3s;
+        }
+
+        .inum.done {
+            border-color: var(--green);
+            color: #fff;
+            background: var(--green);
+        }
+
+        .inum.cur {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(26, 86, 160, .1);
+        }
+
+        .itxt {
+            font-size: 11px;
+            color: var(--text3);
+            line-height: 1.4;
+            padding-top: 2px;
+            transition: all .3s;
+        }
+
+        .itxt.cur {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .sc {
+            display: none;
+        }
+
+        .sc.on {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="hdr">
+        <div class="hdr-top">
+            <div class="hdr-brand">
+                <div class="hdr-emblem">🏛️</div>
+                <div class="hdr-text">
+                    <h1>Министерство труда и занятости населения Республики Таджикистан</h1>
+                    <p>Автоматизированная система верификации личности посетителей</p>
+                </div>
+            </div>
+            <div class="hdr-right">
+                <div class="hdr-clock" id="clock">—</div>
+                <div class="demo-badge">Демо-режим</div>
+            </div>
+        </div>
+        <div class="hdr-nav">
+            <div class="nav-item active">Верификация личности</div>
+            <div class="nav-sep"></div>
+            <div class="nav-item">Реестр посетителей</div>
+            <div class="nav-sep"></div>
+            <div class="nav-item">Выплаты пособий</div>
+            <div class="nav-sep"></div>
+            <div class="nav-item">Журнал аудита</div>
+        </div>
+    </div>
+
+    <div class="wrap">
+
+        <!-- ═══ OPERATOR ═══ -->
+        <div class="col-op">
+            <div class="sec-lbl">Рабочее место инспектора</div>
+
+            <!-- LOGIN -->
+            <div class="sc on" id="sc-login">
+                <div class="login-wrap">
+                    <div class="login-card">
+                        <div class="login-logo">
+                            <div class="login-emblem">🏛️</div>
+                            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Портал
+                                регистрации безработных</div>
+                            <div class="login-org">Единая система входа (SSO)<br>Центр занятости населения г. Душанбе
+                            </div>
+                        </div>
+                        <div class="fg"><label class="fl">Табельный номер</label><input class="fi" value="OP-2024-0142"
+                                readonly></div>
+                        <div class="fg"><label class="fl">Пароль</label><input class="fi" type="password"
+                                value="demo1234" readonly></div>
+                        <div style="margin:12px 0;font-size:11px;color:var(--text3);text-align:center">Единый вход для
+                            всех 4 порталов Министерства</div>
+                        <button class="btn btn-primary btn-full btn-login" onclick="loginGo()">Войти в систему
+                            →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="sc" id="sc-search">
+                <div class="top-nav">
+                    <div class="tnav-user">
+                        <div class="tnav-av">АС</div>
+                        <div>
+                            <div class="tnav-name">Азимов Санджар Рустамович</div>
+                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                        </div>
+                    </div>
+                    <div class="sso-badge">✓ SSO активен</div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="fg"><label class="fl">Поиск по ФИО или номеру паспорта</label>
+                            <div class="sbar">
+                                <input class="sinp" value="Рахимов Алишер Бахтиёрович"
+                                    placeholder="Введите ФИО или серию/номер паспорта...">
+                                <button class="btn btn-primary" onclick="goSc('step1')">Найти</button>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text3)">💡 Нажмите «Найти» для открытия карточки
+                            посетителя</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 1 -->
+            <div class="sc" id="sc-step1">
+                <div class="top-nav">
+                    <div class="tnav-user">
+                        <div class="tnav-av">АС</div>
+                        <div>
+                            <div class="tnav-name">Азимов Санджар Рустамович</div>
+                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                        </div>
+                    </div>
+                    <div class="sso-badge">✓ SSO активен</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-hdr">
+                        <div class="card-av">👤</div>
+                        <div>
+                            <div class="card-name">Карточка посетителя — Заблокировано</div>
+                            <div class="card-meta">Данные скрыты до завершения верификации</div>
+                        </div>
+                        <div class="card-badge b-lock" id="b1">🔒 Шаг 1 из 2</div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="steps">
+                            <div class="step-node active">1</div>
+                            <div style="padding:0 10px">
+                                <strong style="font-size:12px;color:var(--text)">Ввод ИНН оператором</strong>
+                                <span style="display:block;font-size:10px;color:var(--text3)">с паспорта
+                                    посетителя</span>
+                            </div>
+                            <div class="step-line" id="sl1"></div>
+                            <div class="step-node idle" id="sn2">2</div>
+                            <div style="padding:0 10px">
+                                <strong style="font-size:12px;color:var(--text3)">Сверка и подтверждение</strong>
+                                <span style="display:block;font-size:10px;color:var(--text3)">после ввода данных
+                                    посетителем</span>
+                            </div>
+                        </div>
+
+                        <!-- INN -->
+                        <div
+                            style="background:var(--gray);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px">
+                            <div class="fg" style="margin-bottom:6px">
+                                <label class="fl">Шаг 1 — Введите ИНН с паспорта посетителя</label>
+                                <div class="inn-demo">500 123 456 789</div>
+                                <div class="inn-label">← Демо-ИНН для проверки системы</div>
+                                <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Введите 12 цифр ИНН"
+                                    oninput="onInn(this.value)" autocomplete="off" inputmode="numeric">
+                                <div class="inn-fb" id="inn-fb">Возьмите паспорт у посетителя и введите его ИНН</div>
+                            </div>
+                        </div>
+
+                        <!-- Visitor status -->
+                        <div class="vpanels">
+                            <div class="vpanel">
+                                <div class="vp-icon">🔐</div>
+                                <div class="vp-lbl">PIN-код</div>
+                                <div class="vp-val" id="op-pin">Ожидание ввода...</div>
+                            </div>
+                            <div class="vpanel">
+                                <div class="vp-icon">🎂</div>
+                                <div class="vp-lbl">Дата рождения</div>
+                                <div class="vp-val" id="op-bd">Ожидание ввода...</div>
+                            </div>
+                        </div>
+
+                        <div class="prog-wrap">
+                            <div class="prog-meta">
+                                <span id="plbl">Статус верификации</span>
+                                <span id="ppct">0 / 3</span>
+                            </div>
+                            <div class="prog-track">
+                                <div class="prog-bar" id="pbar"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-full" id="btn-proceed" onclick="step2()" disabled>Перейти к
+                            подтверждению →</button>
+                        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px" id="phint">
+                            Кнопка станет активной после ввода всех данных</div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="sc" id="sc-step2">
+                <div class="top-nav">
+                    <div class="tnav-user">
+                        <div class="tnav-av">АС</div>
+                        <div>
+                            <div class="tnav-name">Азимов Санджар Рустамович</div>
+                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                        </div>
+                    </div>
+                    <div class="sso-badge">✓ SSO активен</div>
+                </div>
+                <div class="card">
+                    <div class="card-hdr">
+                        <div class="card-av">🔍</div>
+                        <div>
+                            <div class="card-name">Сверка данных с паспортом</div>
+                            <div class="card-meta">Рахимов Алишер Бахтиёрович</div>
+                        </div>
+                        <div class="card-badge b-warn" id="b2">⚠ Шаг 2 из 2</div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="steps" style="margin-bottom:18px">
+                            <div class="step-node done">✓</div>
+                            <div style="padding:0 8px;font-size:12px;color:var(--green);font-weight:600">ИНН подтверждён
+                            </div>
+                            <div class="step-line done"></div>
+                            <div class="step-node active">2</div>
+                            <div style="padding:0 8px;font-size:12px;color:var(--blue);font-weight:600">Сверьте с
+                                паспортом и подтвердите</div>
+                        </div>
+
+                        <div class="alert alert-error" id="eblk">
+                            <h3><span class="icon">⛔</span>Верификация не пройдена — доступ запрещён</h3>
+                            <div id="elist"></div>
+                        </div>
+
+                        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">
+                            Проверьте совпадение данных на экране с данными в паспорте посетителя:
+                        </div>
+
+                        <div class="cgrid">
+                            <div class="cgi" id="ci-pp">
+                                <div class="cgi-lbl">Номер паспорта</div>
+                                <div class="cgi-val">А 4521876</div>
+                                <div class="cgi-st">Совпадает с паспортом?</div>
+                            </div>
+                            <div class="cgi" id="ci-nm">
+                                <div class="cgi-lbl">ФИО</div>
+                                <div class="cgi-val norm">Рахимов Алишер Бахтиёрович</div>
+                                <div class="cgi-st">Совпадает с паспортом?</div>
+                            </div>
+                            <div class="cgi" id="ci-in">
+                                <div class="cgi-lbl">ИНН (введён оператором)</div>
+                                <div class="cgi-val" id="ci-in-v">—</div>
+                                <div class="cgi-st" id="ci-in-s">—</div>
+                            </div>
+                            <div class="cgi" id="ci-pi">
+                                <div class="cgi-lbl">PIN-код</div>
+                                <div class="cgi-val">● ● ● ● ● ●</div>
+                                <div class="cgi-st" id="ci-pi-s">Введён посетителем</div>
+                            </div>
+                            <div class="cgi" id="ci-bd">
+                                <div class="cgi-lbl">Дата рождения (ввод посетителя)</div>
+                                <div class="cgi-val" id="ci-bd-v">—</div>
+                                <div class="cgi-st" id="ci-bd-s">—</div>
+                            </div>
+                            <div class="cgi" id="ci-db">
+                                <div class="cgi-lbl">Дата рождения (система)</div>
+                                <div class="cgi-val">15.03.1988</div>
+                                <div class="cgi-st" id="ci-db-s">—</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:10px">
+                            <button class="btn btn-success btn-full" style="flex:2" onclick="confirm_()">✓ Все данные
+                                совпадают — Подтвердить</button>
+                            <button class="btn btn-danger" style="flex:1" onclick="reject_()">✕ Не совпадает</button>
+                        </div>
+                        <button class="btn btn-success btn-full" id="btn-open" onclick="openCard()">→ Открыть карточку
+                            посетителя</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- OPEN CARD -->
+            <div class="sc" id="sc-open">
+                <div class="card">
+                    <div class="card-hdr" style="background:linear-gradient(135deg,var(--green),#0F5C35)">
+                        <div class="card-av">👤</div>
+                        <div>
+                            <div class="card-name">Рахимов Алишер Бахтиёрович</div>
+                            <div class="card-meta">Паспорт: А 4521876 &nbsp;|&nbsp; ИНН: 500123456789</div>
+                        </div>
+                        <div class="card-badge b-ok">✓ Верифицирован</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="access-ok">
+                            <div class="ao-icon">✅</div>
+                            <div>
+                                <div class="ao-title">Личность подтверждена — карточка открыта</div>
+                                <div class="ao-sub" id="ok-sub">ИНН + PIN-код + Дата рождения совпали</div>
+                            </div>
+                        </div>
+                        <div class="info-grid">
+                            <div class="ii"><label>Дата рождения</label><span>15.03.1988 (36 лет)</span></div>
+                            <div class="ii"><label>Телефон</label><span>+992 93 456 78 78</span></div>
+                            <div class="ii"><label>Специальность</label><span>Инженер-строитель</span></div>
+                            <div class="ii"><label>Пособие</label><span class="hl">320 сомони / мес</span></div>
+                            <div class="ii"><label>Причина увольнения</label><span>Сокращение штата</span></div>
+                            <div class="ii"><label>Следующая явка</label><span>15.04.2025</span></div>
+                        </div>
+                        <div class="audit">
+                            <div class="audit-title">Журнал верификации</div>
+                            <div class="audit-row">
+                                <div class="adot g"></div>
+                                <div class="atxt" id="al1">Личность подтверждена: ИНН + PIN-код + Дата рождения</div>
+                                <div class="atm" id="at1"></div>
+                            </div>
+                            <div class="audit-row">
+                                <div class="adot b"></div>
+                                <div class="atxt">Оператор: Азимов Санджар Рустамович • ЦЗН г. Душанбе</div>
+                                <div class="atm" id="at2"></div>
+                            </div>
+                            <div class="audit-row">
+                                <div class="adot g"></div>
+                                <div class="atxt">Карточка открыта • Уровень доступа: полный</div>
+                                <div class="atm" id="at3"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top:14px">
+                            <button class="btn btn-ghost" onclick="resetAll()">← Новый посетитель</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══ PHONE ═══ -->
+        <div class="col-ph">
+            <div class="sec-lbl">Телефон посетителя</div>
+
+            <div class="phone">
+                <div class="pscr">
+                    <div class="pbar"><span>09:41</span><span>▮▮▮▮ 100%</span></div>
+
+                    <!-- WAIT -->
+                    <div class="ps on" id="ph-wait">
+                        <div class="ph-wait">
+                            <div class="wait-spinner"></div>
+                            <div class="wait-title">Ожидание</div>
+                            <div class="wait-sub">Оператор вводит<br>ваш ИНН с паспорта<br><br>Подождите...</div>
+                        </div>
+                    </div>
+
+                    <!-- PIN -->
+                    <div class="ps" id="ph-pin">
+                        <div class="ph-hdr">
+                            <div class="ph-hdr-t">Введите PIN-код</div>
+                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 1 из 2 • Демо: 1 2 3 4 5 6</div>
+                        </div>
+                        <div class="ph-body">
+                            <div class="pin-area">
+                                <div class="pdots">
+                                    <div class="pdot" id="pd1"></div>
+                                    <div class="pdot" id="pd2"></div>
+                                    <div class="pdot" id="pd3"></div>
+                                    <div class="pdot" id="pd4"></div>
+                                    <div class="pdot" id="pd5"></div>
+                                    <div class="pdot" id="pd6"></div>
+                                </div>
+                                <div class="pin-hint">6-значный PIN-код</div>
+                            </div>
+                            <div class="numpad">
+                                <button class="nb" onclick="pp('1')">1</button><button class="nb"
+                                    onclick="pp('2')">2</button><button class="nb" onclick="pp('3')">3</button>
+                                <button class="nb" onclick="pp('4')">4</button><button class="nb"
+                                    onclick="pp('5')">5</button><button class="nb" onclick="pp('6')">6</button>
+                                <button class="nb" onclick="pp('7')">7</button><button class="nb"
+                                    onclick="pp('8')">8</button><button class="nb" onclick="pp('9')">9</button>
+                                <button class="nb del" onclick="pdel()">⌫</button>
+                                <button class="nb" onclick="pp('0')">0</button>
+                                <button class="nb okb" id="pin-ok" onclick="pinDone()" disabled>OK ✓</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BD -->
+                    <div class="ps" id="ph-bd">
+                        <div class="ph-hdr">
+                            <div class="ph-hdr-t">Дата рождения</div>
+                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 2 из 2 • Любые 8 цифр</div>
+                        </div>
+                        <div class="ph-body">
+                            <div class="bd-area">
+                                <div class="bd-title">ДД . ММ . ГГГГ</div>
+                                <div class="bd-cells" id="bd-cells"></div>
+                            </div>
+                            <div class="numpad">
+                                <button class="nb" onclick="bp('1')">1</button><button class="nb"
+                                    onclick="bp('2')">2</button><button class="nb" onclick="bp('3')">3</button>
+                                <button class="nb" onclick="bp('4')">4</button><button class="nb"
+                                    onclick="bp('5')">5</button><button class="nb" onclick="bp('6')">6</button>
+                                <button class="nb" onclick="bp('7')">7</button><button class="nb"
+                                    onclick="bp('8')">8</button><button class="nb" onclick="bp('9')">9</button>
+                                <button class="nb del" onclick="bdel()">⌫</button>
+                                <button class="nb" onclick="bp('0')">0</button>
+                                <button class="nb okb" id="bd-ok" onclick="bdDone()" disabled>OK ✓</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESULT -->
+                    <div class="ps" id="ph-result">
+                        <div class="ph-result">
+                            <div class="pr-ring wait-r" id="pr-ring">⏳</div>
+                            <div class="pr-title" id="pr-title">Обработка...</div>
+                            <div class="pr-sub" id="pr-sub">Ожидайте решения оператора</div>
+                            <div class="perm-box" id="perm-box">
+                                <div id="perm-typeout"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="inst">
+                <div class="inst-t">Сценарий верификации</div>
+                <div class="ist">
+                    <div class="inum done" id="in1">✓</div>
+                    <div class="itxt" id="it1">Вход оператора (SSO)</div>
+                </div>
+                <div class="ist">
+                    <div class="inum" id="in2">2</div>
+                    <div class="itxt" id="it2">Поиск карточки посетителя</div>
+                </div>
+                <div class="ist">
+                    <div class="inum" id="in3">3</div>
+                    <div class="itxt" id="it3">Оператор вводит ИНН с паспорта</div>
+                </div>
+                <div class="ist">
+                    <div class="inum" id="in4">4</div>
+                    <div class="itxt" id="it4">Посетитель: PIN-код + дата рождения</div>
+                </div>
+                <div class="ist">
+                    <div class="inum" id="in5">5</div>
+                    <div class="itxt" id="it5">Сверка данных → карточка открыта</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── DB ──
+        const DB = { inn: '500123456789' };
+        let innVal = '', pinVal = '', bdVal = '';
+        let innOk = false, pinDone_ = false, bdDone_ = false;
+
+        // ── CLOCK ──
+        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }, 1000);
+
+        // ── NAV ──
+        function goSc(id) {
+            document.querySelectorAll('.sc').forEach(e => e.classList.remove('on'));
+            document.getElementById('sc-' + id).classList.add('on');
+            if (id === 'search') setInst(2);
+            if (id === 'step1') { setInst(3); switchPh('ph-wait'); }
+            if (id === 'step2') setInst(4);
+            if (id === 'open') setInst(5);
+        }
+        function switchPh(id) {
+            const cur = document.querySelector('.ps.on');
+            if (cur) cur.classList.remove('on');
+            const next = document.getElementById(id);
+            if (next) { next.classList.add('on', 'entering'); setTimeout(() => next.classList.remove('entering'), 350); }
+        }
+        function setInst(n) {
+            for (let i = 1; i <= 5; i++) {
+                const num = document.getElementById('in' + i), txt = document.getElementById('it' + i);
+                if (i < n) { num.className = 'inum done'; num.textContent = '✓'; if (txt) txt.className = 'itxt'; }
+                else if (i === n) { num.className = 'inum cur'; num.textContent = i; if (txt) txt.className = 'itxt cur'; }
+                else { num.className = 'inum'; num.textContent = i; if (txt) txt.className = 'itxt'; }
+            }
+        }
+        function fmt(d) { return d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+
+        // ── LOGIN ──
+        function loginGo() { goSc('search'); }
+
+        // ── INN ──
+        function onInn(v) {
+            innVal = v.replace(/\D/g, '');
+            document.getElementById('inn-inp').value = innVal;
+            innOk = innVal === DB.inn;
+            const inp = document.getElementById('inn-inp');
+            inp.className = 'inn-input' + (innVal.length === 0 ? '' : innOk ? ' ok' : innVal.length > 0 ? ' err' : '');
+            const fb = document.getElementById('inn-fb');
+            if (!innVal.length) { fb.textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; fb.style.color = 'var(--text3)'; }
+            else if (innOk) { fb.textContent = '✓ ИНН найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
+            else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'ИНН не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            checkProceed();
+            if (innOk && !pinDone_) { switchPh('ph-pin'); setInst(4); }
+        }
+        function checkProceed() {
+            const ready = innOk && pinDone_ && bdDone_;
+            document.getElementById('btn-proceed').disabled = !ready;
+            const ph = document.getElementById('phint');
+            if (ready) { ph.textContent = 'Все данные получены — нажмите «Перейти к подтверждению»'; ph.style.color = 'var(--green)'; }
+            else if (!innOk) { ph.textContent = 'Введите корректный ИНН (12 цифр)'; ph.style.color = 'var(--text3)'; }
+            else if (!pinDone_) { ph.textContent = 'Ожидание PIN-кода от посетителя...'; ph.style.color = 'var(--blue)'; }
+            else { ph.textContent = 'Ожидание даты рождения от посетителя...'; ph.style.color = 'var(--blue)'; }
+            const done = [innOk, pinDone_, bdDone_].filter(Boolean).length;
+            document.getElementById('pbar').style.width = (done / 3 * 100) + '%';
+            document.getElementById('pbar').className = 'prog-bar' + (done === 3 ? ' ok' : '');
+            document.getElementById('ppct').textContent = done + ' / 3';
+            document.getElementById('plbl').textContent = done === 3 ? 'Верификация завершена' : 'Прогресс верификации';
+        }
+
+        // ── VISITOR PIN ──
+        function pp(d) { if (pinVal.length >= 6) return; pinVal += d; updDots(); if (pinVal.length === 6) document.getElementById('pin-ok').disabled = false; playBeep(); }
+        function pdel() { pinVal = pinVal.slice(0, -1); document.getElementById('pin-ok').disabled = true; updDots(); }
+        function updDots() { for (let i = 1; i <= 6; i++) document.getElementById('pd' + i).className = 'pdot' + (i <= pinVal.length ? ' f' : ''); }
+        function pinDone() {
+            if (pinVal.length < 6) return;
+            pinDone_ = true;
+            document.getElementById('op-pin').textContent = '✓ Введён';
+            document.getElementById('op-pin').className = 'vp-val ok';
+            initBdCells(); switchPh('ph-bd'); checkProceed();
+        }
+
+        // ── BD ──
+        function initBdCells() {
+            const c = document.getElementById('bd-cells'); if (!c) return; c.innerHTML = '';
+            [2, 2, 4].forEach((len, pi) => {
+                for (let i = 0; i < len; i++) {
+                    const idx = pi === 0 ? i : pi === 1 ? 2 + i : 4 + i;
+                    const d = document.createElement('div'); d.className = 'bdc'; d.id = 'bdc-' + idx; d.textContent = '_'; c.appendChild(d);
+                }
+                if (pi < 2) { const s = document.createElement('div'); s.className = 'bdsep'; s.textContent = '.'; c.appendChild(s); }
+            });
+            updBdCells();
+        }
+        function updBdCells() {
+            for (let i = 0; i < 8; i++) {
+                const el = document.getElementById('bdc-' + i); if (!el) continue;
+                if (i < bdVal.length) { el.textContent = bdVal[i]; el.className = 'bdc filled'; }
+                else if (i === bdVal.length) { el.textContent = '_'; el.className = 'bdc cur'; }
+                else { el.textContent = '_'; el.className = 'bdc'; }
+            }
+            document.getElementById('bd-ok').disabled = bdVal.length < 8;
+        }
+        function bp(d) { if (bdVal.length >= 8) return; playBeep(); bdVal += d; updBdCells(); }
+        function bdel() { bdVal = bdVal.slice(0, -1); document.getElementById('bd-ok').disabled = true; updBdCells(); }
+        function bdDone() {
+            if (bdVal.length < 8) return;
+            bdDone_ = true;
+            const f = bdVal.slice(0, 2) + '.' + bdVal.slice(2, 4) + '.' + bdVal.slice(4, 8);
+            document.getElementById('op-bd').textContent = '✓ ' + f;
+            document.getElementById('op-bd').className = 'vp-val ok';
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring wait-r';
+            document.getElementById('pr-ring').textContent = '⏳';
+            document.getElementById('pr-title').textContent = 'Данные отправлены';
+            document.getElementById('pr-sub').textContent = 'Ожидайте решения оператора...';
+            checkProceed();
+        }
+
+        // ── STEP 2 ──
+        function step2() {
+            const f = bdVal.slice(0, 2) + '.' + bdVal.slice(2, 4) + '.' + bdVal.slice(4, 8);
+            document.getElementById('ci-in-v').textContent = innVal.replace(/(\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
+            document.getElementById('ci-in-s').textContent = innOk ? '✓ Найден в базе данных' : '✕ Не найден';
+            document.getElementById('ci-in').className = 'cgi ' + (innOk ? 'ok' : 'err');
+            document.getElementById('ci-pi').className = 'cgi ok';
+            document.getElementById('ci-pi-s').textContent = '✓ Введён посетителем';
+            document.getElementById('ci-bd-v').textContent = f;
+            document.getElementById('ci-bd-s').textContent = '✓ Введена посетителем';
+            document.getElementById('ci-bd').className = 'cgi ok';
+            document.getElementById('ci-db-s').textContent = '✓ Совпадает';
+            document.getElementById('ci-db').className = 'cgi ok';
+            document.getElementById('ci-pp').className = 'cgi';
+            document.getElementById('ci-nm').className = 'cgi';
+            document.getElementById('eblk').className = 'alert alert-error';
+            document.getElementById('btn-open').style.display = 'none';
+            goSc('step2');
+        }
+
+        // ── CONFIRM ──
+        function confirm_() {
+            const errors = [];
+            if (!innOk) errors.push('ИНН не найден в системе — проверьте правильность ввода');
+            if (errors.length > 0) {
+                playError();
+                const eb = document.getElementById('eblk'); eb.className = 'alert alert-error show';
+                document.getElementById('elist').innerHTML = errors.map(e => '<div class="alert-item"><span class="alert-dot">•</span>' + e + '</div>').join('');
+                document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
+                switchPh('ph-result');
+                document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').textContent = 'Данные не совпали. Обратитесь к оператору.';
+                return;
+            }
+            playSuccess();
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
+            document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
+            document.getElementById('pr-sub').textContent = 'Вы прошли аутентификацию';
+            document.getElementById('perm-box').style.display = 'block';
+            startTypewriter();
+            document.getElementById('btn-open').style.display = 'flex';
+            document.getElementById('b2').textContent = '✓ Подтверждено'; document.getElementById('b2').className = 'card-badge b-ok';
+        }
+
+        function reject_() {
+            playError();
+            document.getElementById('eblk').className = 'alert alert-error show';
+            document.getElementById('elist').innerHTML = '<div class="alert-item"><span class="alert-dot">•</span>Оператор вручную отклонил запрос — данные в паспорте не совпадают с данными на экране</div>';
+            document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
+            document.getElementById('pr-title').textContent = 'Отказано оператором'; document.getElementById('pr-sub').textContent = 'Обратитесь к оператору за разъяснениями.';
+        }
+
+        function openCard() {
+            playSuccess();
+            const now = new Date();
+            document.getElementById('ok-sub').textContent = 'Верифицировано ' + fmt(now) + ' • Оператор: Азимов Санджар Рустамович';
+            document.getElementById('at1').textContent = fmt(now);
+            document.getElementById('at2').textContent = fmt(new Date(now - 5000));
+            document.getElementById('at3').textContent = fmt(now);
+            setTimeout(() => goSc('open'), 300);
+        }
+
+        // ── TYPEWRITER ──
+        const LINES = [
+            { t: '// РАЗРЕШЕНИЕ ВЫДАНО //', c: 'rgba(110,231,183,.7)' },
+            { t: '', c: '' },
+            { t: '✓ Личность подтверждена', c: '#6EE7B7' },
+            { t: '✓ ИНН верифицирован', c: '#6EE7B7' },
+            { t: '✓ PIN-код принят', c: '#6EE7B7' },
+            { t: '✓ Дата рождения принята', c: '#6EE7B7' },
+            { t: '', c: '' },
+            { t: 'Вы дали оператору', c: 'rgba(255,255,255,.6)' },
+            { t: 'разрешение на обработку', c: 'rgba(255,255,255,.6)' },
+            { t: 'вашей заявки.', c: 'rgba(255,255,255,.6)' }
+        ];
+        function startTypewriter() {
+            const el = document.getElementById('perm-typeout'); if (!el) return;
+            el.innerHTML = ''; let li = 0, ci = 0, rendered = [];
+            function render() {
+                let out = '';
+                rendered.forEach((line, i) => {
+                    if (line === null) { out += '<br>'; return; }
+                    out += '<div style="color:' + LINES[i].c + ';min-height:1.6em">' + line + '</div>';
+                });
+                el.innerHTML = out + '<span style="color:rgba(110,231,183,.7)">▌</span>';
+            }
+            function step() {
+                if (li >= LINES.length) { el.innerHTML = el.innerHTML.replace('<span style="color:rgba(110,231,183,.7)">▌</span>', ''); return; }
+                const ld = LINES[li];
+                if (ld.t === '') { rendered.push(null); li++; ci = 0; render(); setTimeout(step, 60); return; }
+                if (ci === 0) rendered.push('');
+                // Flicker
+                if (Math.random() > .8) {
+                    const fk = '0123456789ABCDEF@#$'[Math.floor(Math.random() * 19)];
+                    rendered[rendered.length - 1] = ld.t.slice(0, ci) + fk; render();
+                    setTimeout(() => {
+                        rendered[rendered.length - 1] = ld.t.slice(0, ci + 1); ci++;
+                        if (ci >= ld.t.length) { li++; ci = 0; playBeep(); render(); setTimeout(step, 120); }
+                        else { render(); setTimeout(step, 32); }
+                    }, 45); return;
+                }
+                rendered[rendered.length - 1] = ld.t.slice(0, ci + 1); ci++; render();
+                if (ci >= ld.t.length) { li++; ci = 0; playBeep(); setTimeout(step, 120); }
+                else setTimeout(step, 32);
+            }
+            setTimeout(step, 400);
+        }
+
+        // ── SOUNDS ──
+        let _ac = null;
+        function ac() { if (!_ac) try { _ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } if (_ac && _ac.state === 'suspended') _ac.resume(); return _ac; }
+        function playBeep() { const c = ac(); if (!c) return; const o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.type = 'sine'; o.frequency.value = 880; g.gain.setValueAtTime(0.12, c.currentTime); g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + .08); o.start(c.currentTime); o.stop(c.currentTime + .09); }
+        function playSuccess() { const c = ac(); if (!c) return;[523, 659, 880].forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.type = 'sine'; o.frequency.value = f; const t = c.currentTime + i * .13; g.gain.setValueAtTime(.001, t); g.gain.linearRampToValueAtTime(.2, t + .03); g.gain.exponentialRampToValueAtTime(.001, t + .22); o.start(t); o.stop(t + .25); }); }
+        function playError() { const c = ac(); if (!c) return;[280, 160].forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.type = 'sawtooth'; o.frequency.value = f; const t = c.currentTime + i * .2; g.gain.setValueAtTime(.001, t); g.gain.linearRampToValueAtTime(.18, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + .28); o.start(t); o.stop(t + .32); }); }
+
+        // ── RESET ──
+        function resetAll() {
+            innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
+            document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
+            document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; document.getElementById('inn-fb').style.color = 'var(--text3)';
+            document.getElementById('op-pin').textContent = 'Ожидание ввода...'; document.getElementById('op-pin').className = 'vp-val';
+            document.getElementById('op-bd').textContent = 'Ожидание ввода...'; document.getElementById('op-bd').className = 'vp-val';
+            document.getElementById('btn-proceed').disabled = true;
+            document.getElementById('pbar').style.width = '0%'; document.getElementById('pbar').className = 'prog-bar';
+            document.getElementById('ppct').textContent = '0 / 3'; document.getElementById('plbl').textContent = 'Статус верификации';
+            document.getElementById('phint').textContent = 'Кнопка станет активной после ввода всех данных'; document.getElementById('phint').style.color = 'var(--text3)';
+            updDots(); document.getElementById('pin-ok').disabled = true;
+            bdVal = ''; document.getElementById('bd-ok').disabled = true;
+            document.getElementById('perm-box').style.display = 'none';
+            const pto = document.getElementById('perm-typeout'); if (pto) pto.innerHTML = '';
+            document.getElementById('btn-open').style.display = 'none';
+            goSc('search'); switchPh('ph-wait');
+        }
+
+        // ── INIT ──
+        document.querySelectorAll('.sc').forEach(e => e.classList.remove('on'));
+        document.getElementById('sc-login').classList.add('on');
+        document.querySelectorAll('.ps').forEach(e => e.classList.remove('on'));
+        document.getElementById('ph-wait').classList.add('on');
+        setInst(1);
+    </script>
+</body>
+
+</html>
