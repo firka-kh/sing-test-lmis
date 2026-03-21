@@ -1510,11 +1510,7 @@
                 <div class="hdr-nav">
             <div class="nav-item active" id="nav-verification" onclick="switchTab('verification')" style="cursor:pointer;">Верификация личности</div>
             <div class="nav-sep"></div>
-            <div class="nav-item" id="nav-registry" onclick="switchTab('registry')" style="cursor:pointer;">Реестр посетителей</div>
-            <div class="nav-sep"></div>
-            <div class="nav-item" style="cursor:pointer; opacity:0.5;" title="В разработке">Выплаты пособий</div>
-            <div class="nav-sep"></div>
-            <div class="nav-item" style="cursor:pointer; opacity:0.5;" title="В разработке">Журнал аудита</div>
+            <div class="nav-item disabled" id="nav-audit" onclick="if(!this.classList.contains('disabled')) switchTab('audit')" style="cursor:not-allowed; opacity:0.4;" title="Откроется после верификации заявтеля">Журнал посещений</div>
         </div>
     </div>
 
@@ -1971,82 +1967,70 @@
     </div>
     </div>
 
-    <!-- TAB: REGISTRY -->
-    <div id="tab-registry" class="tab-view" style="display:none; padding:32px 24px; max-width:1200px; margin:0 auto; animation: phIn .3s cubic-bezier(.16, 1, .3, 1);">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px;">
-            <div>
-                <h2 style="margin:0 0 8px 0; font-size:24px; color:var(--text);">Реестр посетителей</h2>
-                <div style="color:var(--text3); font-size:14px;">Статистика верификаций и журнал посещений за сегодня</div>
+    
+    <!-- TAB: AUDIT -->
+    <div id="tab-audit" class="tab-view" style="display:none; padding:32px 24px; max-width:1000px; margin:0 auto; animation: phIn .3s cubic-bezier(.16, 1, .3, 1);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="font-size:32px;">👤</div>
+                <div>
+                    <h2 style="margin:0 0 4px 0; font-size:20px; color:var(--text);">Рахимов Алишер Бахтиёрович</h2>
+                    <div style="color:var(--text3); font-size:13px; font-family:monospace;">Системный ID: 500123456789 • Статус: Возврат к поиску работы</div>
+                </div>
             </div>
-            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Экспорт в Excel</button>
+            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Скачать выписку (PDF)</button>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; margin-bottom:32px;">
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--text); line-height:1;">142</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Всего посетителей</div>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:24px;">
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--text); line-height:1;">14</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Всего обращений в ЦЗН</div>
             </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--green); line-height:1;">128</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Успешно верифицировано</div>
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--green); line-height:1;">6</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Подписано документов</div>
             </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--blue); line-height:1;">14</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Ожидают подписи / ПИН</div>
-            </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--red); line-height:1;">0</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Отклонено / Ошибки</div>
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--blue); line-height:1;">15.04.2025</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Следующая плановая явка</div>
             </div>
         </div>
 
         <div class="card">
-            <div style="padding:18px 24px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Журнал верификаций (Последние 5)</div>
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">История событий заявителя</div>
             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
                 <thead>
                     <tr style="background:var(--gray); color:var(--text3); text-transform:uppercase; font-size:11px; letter-spacing:.5px;">
-                        <th style="padding:14px 24px; font-weight:600;">Время</th>
-                        <th style="padding:14px 24px; font-weight:600;">Посетитель</th>
-                        <th style="padding:14px 24px; font-weight:600;">Системный ID</th>
-                        <th style="padding:14px 24px; font-weight:600;">Инспектор</th>
-                        <th style="padding:14px 24px; font-weight:600;">Статус</th>
+                        <th style="padding:12px 20px; font-weight:600;">Дата и Время</th>
+                        <th style="padding:12px 20px; font-weight:600;">Действие / Документ</th>
+                        <th style="padding:12px 20px; font-weight:600;">Метод авторизации</th>
+                        <th style="padding:12px 20px; font-weight:600;">Ответственный инспектор</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:42:15</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Рахимов Алишер Бахтиёрович</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">500123456789</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Азимов С.Р.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Верифицирован</span></td>
+                <tbody id="audit-table-body">
+                    <tr style="border-bottom:1px solid var(--border); background:rgba(110, 231, 183, 0.05);">
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">22.03.2026 10:48</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Верификация личности пройдена</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">ПИН + Дата рождения</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:38:05</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Саидов Рустам Каримович</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">400987654321</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Азимов С.Р.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Верифицирован</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:20</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Подписан: Приказ о назначении пособия</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">Квалифицированная ЭП</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Каримова М.А.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:15:22</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Одинаев Фарход Муродович</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">300112233445</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Каримова М.А.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge" style="font-size:11px; background:rgba(26,86,160,0.1); color:var(--blue); padding:4px 8px;">⏳ Ожидает подписи</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:15</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Верификация личности пройдена</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">Смс-код авторизации</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Каримова М.А.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">09:55:10</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Назарова Мадина Пулодовна</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">200556677889</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Азимов С.Р.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Верифицирован</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">09:30:00</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Исмоилов Далер Зафарович</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">100998877665</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Каримова М.А.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Верифицирован</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">12.01.2025 09:30</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Регистрация статуса безработного</td>
+                        <td style="padding:14px 20px;"><span class="card-badge" style="font-size:11px; background:var(--gray); color:var(--text3);">Физическая подпись (бумага)</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>
                     </tr>
                 </tbody>
             </table>
@@ -2240,6 +2224,10 @@
         }
 
         function openCard() {
+            document.getElementById('nav-audit').classList.remove('disabled');
+            document.getElementById('nav-audit').style.cursor = 'pointer';
+            document.getElementById('nav-audit').style.opacity = '1';
+            document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
             document.getElementById('ok-sub').textContent = 'Верифицировано ' + fmt(now) + ' • Оператор: Азимов Санджар Рустамович';
@@ -2336,12 +2324,32 @@
                 if(el) el.className = 'pdot' + (i <= spinVal.length ? ' f' : '');
             }
         }
+        
         function signDone() {
             if (spinVal.length < 6) return;
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-            document.getElementById('pr-title').textContent = 'Документ подписан';
+            document.getElementById('pr-title').textContent = window.location.pathname.includes('_en') ? 'Document Signed' : 'Документ подписан';
+            
+            // Append to audit table dynamically
+            const tb = document.getElementById('audit-table-body');
+            if (tb) {
+               const tr = document.createElement('tr');
+               tr.style.borderBottom = '1px solid var(--border)';
+               tr.style.background = 'rgba(26, 86, 160, 0.1)';
+               tr.style.animation = 'phIn .5s ease';
+               const timeStr = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+               const doc = window.location.pathname.includes('_en') ? 'Signed: ' + currentSignDocName : 'Подписан: ' + currentSignDocName;
+               const pin = window.location.pathname.includes('_en') ? 'PIN-code' : 'ПИН-код';
+               
+               tr.innerHTML = `<td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
+                               <td style="padding:14px 20px; font-weight:600; color:var(--text);">${doc}</td>
+                               <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">✓ ${pin}</span></td>
+                               <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>`;
+               tb.insertBefore(tr, tb.firstChild);
+            }
+
             document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
             document.getElementById('perm-box').style.display = 'none';
             
@@ -2367,6 +2375,11 @@
 
         // ── RESET ──
         function resetAll() {
+            switchTab('verification');
+            document.getElementById('nav-audit').classList.add('disabled');
+            document.getElementById('nav-audit').style.cursor = 'not-allowed';
+            document.getElementById('nav-audit').style.opacity = '0.4';
+            document.getElementById('nav-audit').title = 'Успешно верифицируйте посетителя';
             innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; document.getElementById('inn-fb').style.color = 'var(--text3)';

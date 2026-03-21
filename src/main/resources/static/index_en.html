@@ -1510,11 +1510,7 @@
                 <div class="hdr-nav">
             <div class="nav-item active" id="nav-verification" onclick="switchTab('verification')" style="cursor:pointer;">Identity Verification</div>
             <div class="nav-sep"></div>
-            <div class="nav-item" id="nav-registry" onclick="switchTab('registry')" style="cursor:pointer;">Visitor Registry</div>
-            <div class="nav-sep"></div>
-            <div class="nav-item" style="cursor:pointer; opacity:0.5;" title="Coming soon">Benefit Payments</div>
-            <div class="nav-sep"></div>
-            <div class="nav-item" style="cursor:pointer; opacity:0.5;" title="Coming soon">Audit Log</div>
+            <div class="nav-item disabled" id="nav-audit" onclick="if(!this.classList.contains('disabled')) switchTab('audit')" style="cursor:not-allowed; opacity:0.4;" title="Available after visitor verification">Visitor's Log</div>
         </div>
     </div>
 
@@ -1962,82 +1958,70 @@
     </div>
     </div>
 
-    <!-- TAB: REGISTRY -->
-    <div id="tab-registry" class="tab-view" style="display:none; padding:32px 24px; max-width:1200px; margin:0 auto; animation: phIn .3s cubic-bezier(.16, 1, .3, 1);">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px;">
-            <div>
-                <h2 style="margin:0 0 8px 0; font-size:24px; color:var(--text);">Visitor Registry</h2>
-                <div style="color:var(--text3); font-size:14px;">Verification statistics and visit logs for today</div>
+    
+    <!-- TAB: AUDIT -->
+    <div id="tab-audit" class="tab-view" style="display:none; padding:32px 24px; max-width:1000px; margin:0 auto; animation: phIn .3s cubic-bezier(.16, 1, .3, 1);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="font-size:32px;">👤</div>
+                <div>
+                    <h2 style="margin:0 0 4px 0; font-size:20px; color:var(--text);">Rakhimov Alisher Bakhtiyorovich</h2>
+                    <div style="color:var(--text3); font-size:13px; font-family:monospace;">System ID: 500123456789 • Status: Unemployed (Seeking)</div>
+                </div>
             </div>
-            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Export to Excel</button>
+            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Download Transcript (PDF)</button>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; margin-bottom:32px;">
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--text); line-height:1;">142</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Total Visitors</div>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:24px;">
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--text); line-height:1;">14</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Total AEC Visits</div>
             </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--green); line-height:1;">128</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Verified Successfully</div>
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--green); line-height:1;">6</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Signed Documents</div>
             </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--blue); line-height:1;">14</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Pending Signature / PIN</div>
-            </div>
-            <div class="card" style="padding:24px;">
-                <div style="font-size:36px; font-weight:700; color:var(--red); line-height:1;">0</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:12px; letter-spacing:.5px;">Rejected / Errors</div>
+            <div class="card" style="padding:20px;">
+                <div style="font-size:28px; font-weight:700; color:var(--blue); line-height:1;">15.04.2025</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Next Scheduled Visit</div>
             </div>
         </div>
 
         <div class="card">
-            <div style="padding:18px 24px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Verification Log (Last 5)</div>
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Detailed Applicant History log</div>
             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
                 <thead>
                     <tr style="background:var(--gray); color:var(--text3); text-transform:uppercase; font-size:11px; letter-spacing:.5px;">
-                        <th style="padding:14px 24px; font-weight:600;">Time</th>
-                        <th style="padding:14px 24px; font-weight:600;">Visitor Name</th>
-                        <th style="padding:14px 24px; font-weight:600;">System ID</th>
-                        <th style="padding:14px 24px; font-weight:600;">Inspector</th>
-                        <th style="padding:14px 24px; font-weight:600;">Status</th>
+                        <th style="padding:12px 20px; font-weight:600;">Date & Time</th>
+                        <th style="padding:12px 20px; font-weight:600;">Action / Document</th>
+                        <th style="padding:12px 20px; font-weight:600;">Auth Method</th>
+                        <th style="padding:12px 20px; font-weight:600;">Responsible Inspector</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:42:15</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Rakhimov Alisher Bakhtiyorovich</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">500123456789</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Azimov S.R.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Verified</span></td>
+                <tbody id="audit-table-body">
+                    <tr style="border-bottom:1px solid var(--border); background:rgba(110, 231, 183, 0.05);">
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">22.03.2026 10:48</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification Passed</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">PIN + Birthdate</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Azimov S.R.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:38:05</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Saidov Rustam Karimovich</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">400987654321</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Azimov S.R.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Verified</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:20</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Signed: Benefit Allocation Order</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">Digital Signature (QES)</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Karimova M.A.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">10:15:22</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Odinaev Farkhod Murodovich</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">300112233445</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Karimova M.A.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge" style="font-size:11px; background:rgba(26,86,160,0.1); color:var(--blue); padding:4px 8px;">⏳ Pending Signature</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:15</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification Passed</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">SMS Code</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Karimova M.A.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">09:55:10</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Nazarova Madina Pulodovna</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">200556677889</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Azimov S.R.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Verified</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding:16px 24px; color:var(--text2); font-variant-numeric: tabular-nums;">09:30:00</td>
-                        <td style="padding:16px 24px; font-weight:500; color:var(--text);">Ismoilov Daler Zafarovich</td>
-                        <td style="padding:16px 24px; font-family:monospace; color:var(--text2);">100998877665</td>
-                        <td style="padding:16px 24px; color:var(--text2);">Karimova M.A.</td>
-                        <td style="padding:16px 24px;"><span class="card-badge b-ok" style="font-size:11px; padding:4px 8px;">✓ Verified</span></td>
+                        <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">12.01.2025 09:30</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Registered Unemployed Status</td>
+                        <td style="padding:14px 20px;"><span class="card-badge" style="font-size:11px; background:var(--gray); color:var(--text3);">Physical Signature (Paper)</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Azimov S.R.</td>
                     </tr>
                 </tbody>
             </table>
@@ -2273,6 +2257,10 @@
         }
 
         function openCard() {
+            document.getElementById('nav-audit').classList.remove('disabled');
+            document.getElementById('nav-audit').style.cursor = 'pointer';
+            document.getElementById('nav-audit').style.opacity = '1';
+            document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
             document.getElementById('ok-sub').textContent = 'Verified ' + fmt(now) + ' • Operator: Sanjar Rustamovich Azimov';
@@ -2369,12 +2357,32 @@
                 if(el) el.className = 'pdot' + (i <= spinVal.length ? ' f' : '');
             }
         }
+        
         function signDone() {
             if (spinVal.length < 6) return;
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-            document.getElementById('pr-title').textContent = 'Document Signed';
+            document.getElementById('pr-title').textContent = window.location.pathname.includes('_en') ? 'Document Signed' : 'Документ подписан';
+            
+            // Append to audit table dynamically
+            const tb = document.getElementById('audit-table-body');
+            if (tb) {
+               const tr = document.createElement('tr');
+               tr.style.borderBottom = '1px solid var(--border)';
+               tr.style.background = 'rgba(26, 86, 160, 0.1)';
+               tr.style.animation = 'phIn .5s ease';
+               const timeStr = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+               const doc = window.location.pathname.includes('_en') ? 'Signed: ' + currentSignDocName : 'Подписан: ' + currentSignDocName;
+               const pin = window.location.pathname.includes('_en') ? 'PIN-code' : 'ПИН-код';
+               
+               tr.innerHTML = `<td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
+                               <td style="padding:14px 20px; font-weight:600; color:var(--text);">${doc}</td>
+                               <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">✓ ${pin}</span></td>
+                               <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>`;
+               tb.insertBefore(tr, tb.firstChild);
+            }
+
             document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
             document.getElementById('perm-box').style.display = 'none';
             
@@ -2400,6 +2408,11 @@
 
         // ── RESET ──
         function resetAll() {
+            switchTab('verification');
+            document.getElementById('nav-audit').classList.add('disabled');
+            document.getElementById('nav-audit').style.cursor = 'not-allowed';
+            document.getElementById('nav-audit').style.opacity = '0.4';
+            document.getElementById('nav-audit').title = 'Успешно верифицируйте посетителя';
             innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = "Take the visitor's passport and enter their INN"; document.getElementById('inn-fb').style.color = 'var(--text3)';
