@@ -2171,8 +2171,8 @@
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring wait-r';
             document.getElementById('pr-ring').textContent = '⏳';
-            document.getElementById('pr-title').textContent = 'Данные отправлены';
-            document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
+            document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
+            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">В рамках текущей сессии все действия считаются авторизованными вами.</span>';
             checkProceed();
         }
 
@@ -2338,7 +2338,8 @@
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-            document.getElementById('pr-title').textContent = window.location.pathname.includes('_en') ? 'Document Signed' : 'Документ подписан';
+            document.getElementById('pr-title').textContent = 'Документ подписан';
+            document.getElementById('pr-sub').innerHTML = 'Вы подписали:<br><br><span style="color:#fff; font-size:16px; font-weight:600; display:block; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; line-height:1.3;">' + currentSignDocName + '</span>';
             
             // Append to audit table dynamically
             const tb = document.getElementById('audit-table-body');
