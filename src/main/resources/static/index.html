@@ -1775,6 +1775,20 @@
                             <div class="ii"><label>Следующая явка</label><span>15.04.2025</span></div>
                         </div>
                         
+                        
+                        <div class="docs-section" style="margin-top:0px;margin-bottom:16px;padding:16px;background:rgba(26, 86, 160, .05);border-radius:6px;border:1px solid #93C5FD;">
+                            <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--blue);">📄 Заявление: Поиск подходящей работы</div>
+                            <div style="background:#fff;border:1px solid var(--border);border-radius:4px;padding:12px;margin-bottom:12px;font-size:12px;">
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Желаемая должность:</div><div style="font-weight:600;">Инженер-строитель, Архитектор</div></div>
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Минимальная зарплата:</div><div style="font-weight:600;">от 3 500 сомони</div></div>
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Согласие на переобучение:</div><div style="font-weight:600;">Да</div></div>
+                                <div style="display:flex;"><div style="width:160px;color:var(--text3);">Локация работы:</div><div style="font-weight:600;">г. Душанбе, р-н Рудаки</div></div>
+                            </div>
+                            <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;">
+                                <div style="font-size:11px;color:var(--text3);" id="doc-status-2">Ожидает отправки на подпись</div>
+                                <button class="btn btn-primary" id="btn-req-sign-2" onclick="reqSign('Заявление: Поиск подходящей работы', 'btn-req-sign-2', 'doc-status-2')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                            </div>
+                        </div>
                         <div class="docs-section" style="margin-top:20px;margin-bottom:20px;padding:16px;background:var(--gray);border-radius:6px;border:1px solid var(--border);">
                             <div style="font-weight:600;font-size:14px;margin-bottom:10px;">Электронное подписание документов</div>
                             <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border:1px solid var(--border);border-radius:4px;">
@@ -1782,7 +1796,7 @@
                                     <div style="font-weight:600;font-size:13px;">Приказ о назначении пособия №44-А</div>
                                     <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-status">Ожидает отправки на подпись</div>
                                 </div>
-                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign()" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign('Приказ о назначении пособия №44-А', 'btn-req-sign', 'doc-status')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
                             </div>
                         </div>
                         <div class="audit">
@@ -2082,7 +2096,7 @@
             document.getElementById('pr-ring').className = 'pr-ring wait-r';
             document.getElementById('pr-ring').textContent = '⏳';
             document.getElementById('pr-title').textContent = 'Данные отправлены';
-            document.getElementById('pr-sub').textContent = 'Ожидайте решения оператора...';
+            document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
             checkProceed();
         }
 
@@ -2117,7 +2131,7 @@
                 document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
                 switchPh('ph-result');
                 document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-                document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').textContent = 'Данные не совпали. Обратитесь к оператору.';
+                document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
                 return;
             }
             
@@ -2131,7 +2145,7 @@
                     switchPh('ph-result');
                     document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
                     document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-                    document.getElementById('pr-sub').textContent = 'Вы прошли аутентификацию';
+                    document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
                     document.getElementById('perm-box').style.display = 'block';
                     startTypewriter();
                     document.getElementById('btn-open').style.display = 'flex';
@@ -2162,7 +2176,7 @@
             document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-            document.getElementById('pr-title').textContent = 'Отказано оператором'; document.getElementById('pr-sub').textContent = 'Обратитесь к оператору за разъяснениями.';
+            document.getElementById('pr-title').textContent = 'Отказано оператором'; document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
         }
 
         function openCard() {
@@ -2223,13 +2237,26 @@
 
 
         // ── SIGNATURE ──
-        function reqSign() {
+        
+        let currentSignDocName = '';
+        let currentSignBtn = '';
+        let currentSignStatus = '';
+        function reqSign(docName, btnId, statusId) {
+            currentSignDocName = docName;
+            currentSignBtn = btnId;
+            currentSignStatus = statusId;
+            
+            const phHdrS = document.querySelector('#ph-sign .ph-hdr-s');
+            if (phHdrS) phHdrS.textContent = docName;
+            
             spinVal = '';
             updSDots();
             document.getElementById('spin-ok').disabled = true;
-            document.getElementById('doc-status').textContent = 'Ожидание подписи от посетителя...';
-            document.getElementById('doc-status').style.color = 'var(--blue)';
-            document.getElementById('btn-req-sign').style.display = 'none';
+            
+            const isEn = document.querySelector('.ph-hdr-t') && document.querySelector('.ph-hdr-t').textContent.includes('Sign');
+            document.getElementById(statusId).textContent = isEn ? 'Awaiting signature from visitor...' : 'Ожидание подписи от посетителя...';
+            document.getElementById(statusId).style.color = 'var(--blue)';
+            document.getElementById(btnId).style.display = 'none';
             switchPh('ph-sign');
         }
         function sp(d) {
@@ -2255,17 +2282,17 @@
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
             document.getElementById('pr-title').textContent = 'Документ подписан';
-            document.getElementById('pr-sub').textContent = 'Вы успешно подписали документ';
+            document.getElementById('pr-sub').innerHTML = (document.querySelector('.ph-result').textContent.includes('Document Signed') ? 'You signed document:<br><br><b>' : 'Вы подписали документ:<br><br><b>') + currentSignDocName + '</b>';
             document.getElementById('perm-box').style.display = 'none';
             
-            document.getElementById('doc-status').textContent = '✓ Подписано электронной подписью (PIN)';
-            document.getElementById('doc-status').style.color = 'var(--green)';
+            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
+            document.getElementById(currentSignStatus).style.color = 'var(--green)';
             
             const auditDiv = document.querySelector('.audit');
             const newLog = document.createElement('div');
             newLog.className = 'audit-row signlog';
             const now = new Date();
-            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Документ \"Приказ №44-А\" подписан (PIN-код)</div><div class="atm">' + fmt(now) + '</div>';
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + (document.querySelector('.pr-title').textContent.includes('Document Signed') ? 'Document signed: ' : 'Документ подписан: ') + currentSignDocName + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
@@ -2293,7 +2320,7 @@
             bdVal = ''; document.getElementById('bd-ok').disabled = true;
             spinVal = '';
             document.getElementById('btn-req-sign').style.display = 'block';
-            document.getElementById('doc-status').textContent = 'Ожидает отправки на подпись';
+            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
             document.getElementById('doc-status').style.color = 'var(--text3)';
             document.querySelectorAll('.signlog').forEach(e => e.remove());
 
