@@ -2339,18 +2339,31 @@
                tr.style.borderBottom = '1px solid var(--border)';
                tr.style.background = 'rgba(26, 86, 160, 0.1)';
                tr.style.animation = 'phIn .5s ease';
-               const timeStr = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
-               const doc = window.location.pathname.includes('_en') ? 'Signed: ' + currentSignDocName : 'Подписан: ' + currentSignDocName;
-               const pin = window.location.pathname.includes('_en') ? 'PIN-code' : 'ПИН-код';
+               const now = new Date();
+               const today_str = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+               const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+               const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
+               const dlText = window.location.pathname.includes('_en') ? '📥 Download PDF original' : '📥 Скачать PDF-оригинал';
                
-               tr.innerHTML = `<td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
-                               <td style="padding:14px 20px; font-weight:600; color:var(--text);">${doc}</td>
-                               <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">✓ ${pin}</span></td>
-                               <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>`;
+               // Generate a fake hash for demo
+               const fakeHash = '0x' + Math.random().toString(16).substr(2, 4) + '...' + Math.random().toString(16).substr(2, 3);
+               const fullHash = fakeHash.replace('...', 'a1b2c');
+               
+               tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
+                               <td style="padding:16px 20px; font-weight:500; color:var(--text);">
+                                  <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
+                                  <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="alert('Downloading file...')" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
+                               </td>
+                               <td style="padding:16px 20px;">
+                                  <div style="display:flex; align-items:center; gap:10px;">
+                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=https://mtizn.tj/registry/doc/${fullHash}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
+                                     <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Hash:<br>${fakeHash}</div>
+                                  </div>
+                               </td>
+                               <td style="padding:16px 20px; color:var(--text2);">Azimov S.R.</td>`;
                tb.insertBefore(tr, tb.firstChild);
             }
 
-            document.getElementById('pr-sub').innerHTML = 'Identity confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">All actions within this session are considered confirmed by you in accordance with the SES Agreement No. ___.</span>';
             document.getElementById('perm-box').style.display = 'none';
             
             document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
