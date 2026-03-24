@@ -1486,25 +1486,6 @@
         .sc.on {
             display: block;
         }
-        .ph-history-modal {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: #fff; z-index: 100; display: none; flex-direction: column;
-            animation: phIn .3s;
-        }
-        .ph-history-modal.on { display: flex; }
-        .phh-hdr { padding:16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; }
-        .phh-title { font-weight:600; font-size:16px; color:var(--text); }
-        .phh-close { font-size:20px; cursor:pointer; color:var(--blue); }
-        .phh-body { padding:16px; overflow-y:auto; flex:1; background:#f0f2f5; }
-        .phh-item { background:#fff; border-radius:8px; padding:12px; margin-bottom:10px; box-shadow:0 1px 2px rgba(0,0,0,.05); border:1px solid var(--border); }
-        .phh-date { font-size:11px; color:var(--text3); margin-bottom:4px; font-variant-numeric: tabular-nums; }
-        .phh-action { font-size:13px; font-weight:600; color:var(--text); line-height:1.3; }
-        .ph-fab {
-            position:absolute; bottom:20px; right:20px; background:var(--blue); color:#fff;
-            border:none; border-radius:24px; padding:10px 16px; font-size:13px; font-weight:600;
-            box-shadow:0 4px 10px rgba(0,0,0,.2); cursor:pointer; z-index:90; transition:all .2s; outline:none; display:flex; gap:6px; align-items:center;
-        }
-        .ph-fab:active { transform:scale(.95); }
     </style>
 </head>
 
@@ -1953,23 +1934,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- HISTORY MODAL -->
-                    <div class="ph-history-modal" id="ph-history">
-                        <div class="phh-hdr">
-                            <div class="phh-title">История верификации</div>
-                            <div class="phh-close" onclick="togglePhHistory()">✕</div>
-                        </div>
-                        <div class="phh-body" id="phh-list">
-                            <div class="phh-item"><div class="phh-date">15.02.2025 11:20</div><div class="phh-action">Подписан: Приказ о назначении пособия</div></div>
-                            <div class="phh-item"><div class="phh-date">15.02.2025 11:15</div><div class="phh-action">Верификация личности пройдена (PIN)</div></div>
-                            <div class="phh-item"><div class="phh-date">12.01.2025 09:30</div><div class="phh-action">Регистрация статуса безработного</div></div>
-                        </div>
-                    </div>
-                    <button class="ph-fab" onclick="togglePhHistory()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        Журнал
-                    </button>
 
                 </div>
             </div>
@@ -2422,23 +2386,6 @@
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
-            
-            addPhHistoryItem('Подписан: ' + currentSignDocName, today_str + ' ' + timeStr);
-        }
-
-        // ── PHONE HISTORY ──
-        function togglePhHistory() {
-            const m = document.getElementById('ph-history');
-            m.classList.toggle('on');
-        }
-        function addPhHistoryItem(action, dateStr) {
-            const lst = document.getElementById('phh-list');
-            if (!lst) return;
-            const item = document.createElement('div');
-            item.className = 'phh-item';
-            item.style.animation = 'phIn .3s ease';
-            item.innerHTML = '<div class="phh-date">' + dateStr + '</div><div class="phh-action">' + action + '</div>';
-            lst.insertBefore(item, lst.firstChild);
         }
 
         // ── SOUNDS ──
