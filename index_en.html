@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Identity Verification Portal - MLME RT</title>
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
@@ -2009,7 +2012,7 @@
                         <td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:20</td>
                         <td style="padding:16px 20px; font-weight:500; color:var(--text);">
                            <div style="font-weight:600;">Signed: Benefit Allocation Order</div>
-                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="alert('Downloading file...')" style="color:var(--blue); text-decoration:none;">📥 Download PDF original</a></div>
+                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="event.preventDefault(); alert('Downloading file...')" style="color:var(--blue); text-decoration:none;">📥 Download PDF original</a></div>
                         </td>
                         <td style="padding:16px 20px;">
                            <div style="display:flex; align-items:center; gap:10px;">
