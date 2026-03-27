@@ -1513,7 +1513,7 @@
                 <div class="hdr-nav">
             <div class="nav-item active" id="nav-verification" onclick="switchTab('verification')" style="cursor:pointer;">Identity Verification</div>
             <div class="nav-sep"></div>
-            <div class="nav-item disabled" id="nav-audit" onclick="if(!this.classList.contains('disabled')) switchTab('audit')" style="cursor:not-allowed; opacity:0.4;" title="Откроется после верификации заявтеля">Visitor Log</div>
+            <div class="nav-item disabled" id="nav-audit" onclick="if(!this.classList.contains('disabled')) switchTab('audit')" style="cursor:not-allowed; opacity:0.4;" title="Active after applicant verification">Visitor Log</div>
         </div>
     </div>
 
@@ -1522,7 +1522,7 @@
 
         <!-- ═══ OPERATOR ═══ -->
         <div class="col-op">
-            <div class="sec-lbl">Рабочее место инспектора</div>
+            <div class="sec-lbl">Inspector Workspace</div>
 
             <!-- LOGIN -->
             <div class="sc on" id="sc-login">
@@ -1530,19 +1530,13 @@
                     <div class="login-card">
                         <div class="login-logo">
                             <div class="login-emblem">🏛️</div>
-                            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Портал
-                                регистрации безработных</div>
-                            <div class="login-org">Единая система входа (SSO)<br>Центр занятости населения г. Душанбе
-                            </div>
+                            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Unemployed Registration Portal</div>
+                            <div class="login-org">Single Sign-On System (SSO)<br>Dushanbe Employment Center</div>
                         </div>
-                        <div class="fg"><label class="fl">Табельный номер</label><input class="fi" value="OP-2024-0142"
-                                readonly></div>
-                        <div class="fg"><label class="fl">Пароль</label><input class="fi" type="password"
-                                value="demo1234" readonly></div>
-                        <div style="margin:12px 0;font-size:11px;color:var(--text3);text-align:center">Единый вход для
-                            всех 4 порталов Министерства</div>
-                        <button class="btn btn-primary btn-full btn-login" onclick="loginGo()">Войти в систему
-                            →</button>
+                        <div class="fg"><label class="fl">Employee ID</label><input class="fi" value="OP-2024-0142" readonly></div>
+                        <div class="fg"><label class="fl">Password</label><input class="fi" type="password" value="demo1234" readonly></div>
+                        <div style="margin:12px 0;font-size:11px;color:var(--text3);text-align:center">Single Sign-On for all 4 Ministry portals</div>
+                        <button class="btn btn-primary btn-full btn-login" onclick="loginGo()">Sign In →</button>
                     </div>
                 </div>
             </div>
@@ -1551,25 +1545,23 @@
             <div class="sc" id="sc-search">
                 <div class="top-nav">
                     <div class="tnav-user">
-                        <div class="tnav-av">АС</div>
+                        <div class="tnav-av">AS</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Azimov Sandjar Rustamovich</div>
+                            <div class="tnav-role">1st Category Inspector • Dushanbe EC</div>
                         </div>
                     </div>
-                    <div class="sso-badge">✓ SSO активен</div>
+                    <div class="sso-badge">✓ SSO Active</div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <div class="fg"><label class="fl">Поиск по ФИО или системному ID</label>
+                        <div class="fg"><label class="fl">Search by Full Name or System ID</label>
                             <div class="sbar">
-                                <input class="sinp" value="Рахимов Алишер Бахтиёрович"
-                                    placeholder="Введите ФИО или выданный системный ID...">
-                                <button class="btn btn-primary" onclick="goSc('step1')">Найти</button>
+                                <input class="sinp" value="Rakhimov Alisher Bakhtiyorovich" placeholder="Enter Full Name or system ID...">
+                                <button class="btn btn-primary" onclick="goSc('step1')">Search</button>
                             </div>
                         </div>
-                        <div style="font-size:12px;color:var(--text3)">💡 Нажмите «Найти» для открытия карточки
-                            посетителя</div>
+                        <div style="font-size:12px;color:var(--text3)">💡 Click "Search" to open the visitor's card</div>
                     </div>
                 </div>
             </div>
@@ -1578,10 +1570,10 @@
             <div class="sc" id="sc-step1">
                 <div class="top-nav">
                     <div class="tnav-user">
-                        <div class="tnav-av">АС</div>
+                        <div class="tnav-av">AS</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Azimov Sandjar Rustamovich</div>
+                            <div class="tnav-role">1st Category Inspector • Dushanbe EC</div>
                         </div>
                     </div>
                     <div class="sso-badge">✓ SSO активен</div>
@@ -1591,39 +1583,35 @@
                     <div class="card-hdr">
                         <div class="card-av">👤</div>
                         <div>
-                            <div class="card-name">Карточка посетителя — Заблокировано</div>
-                            <div class="card-meta">Данные скрыты до завершения верификации</div>
+                            <div class="card-name">Visitor Card — Locked</div>
+                            <div class="card-meta">Data hidden until verification is complete</div>
                         </div>
-                        <div class="card-badge b-lock" id="b1">🔒 Шаг 1 из 2</div>
+                        <div class="card-badge b-lock" id="b1">🔒 Step 1 of 2</div>
                     </div>
                     <div class="card-body">
 
                         <div class="steps">
                             <div class="step-node active">1</div>
                             <div style="padding:0 10px">
-                                <strong style="font-size:12px;color:var(--text)">Ввод TIN оператором</strong>
-                                <span style="display:block;font-size:10px;color:var(--text3)">с паспорта
-                                    посетителя</span>
+                                <strong style="font-size:12px;color:var(--text)">Operator TIN Entry</strong>
+                                <span style="display:block;font-size:10px;color:var(--text3)">from visitor's passport</span>
                             </div>
                             <div class="step-line" id="sl1"></div>
                             <div class="step-node idle" id="sn2">2</div>
                             <div style="padding:0 10px">
-                                <strong style="font-size:12px;color:var(--text3)">Сверка и подтверждение</strong>
-                                <span style="display:block;font-size:10px;color:var(--text3)">после ввода данных
-                                    посетителем</span>
+                                <strong style="font-size:12px;color:var(--text3)">Confirmation</strong>
+                                <span style="display:block;font-size:10px;color:var(--text3)">after visitor enters data</span>
                             </div>
                         </div>
 
-                        <!-- INN -->
-                        <div
-                            style="background:var(--gray);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px">
+                        <!-- TIN -->
+                        <div style="background:var(--gray);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px">
                             <div class="fg" style="margin-bottom:6px">
-                                <label class="fl">Шаг 1 — Введите TIN с паспорта посетителя</label>
+                                <label class="fl">Step 1 — Enter TIN from visitor's passport</label>
                                 <div class="inn-demo">500 123 456 789</div>
-                                <div class="inn-label">← Демо-TIN для проверки системы</div>
-                                <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Введите 12 цифр TIN"
-                                    oninput="onInn(this.value)" autocomplete="off" inputmode="numeric">
-                                <div class="inn-fb" id="inn-fb">Возьмите паспорт у посетителя и введите его TIN</div>
+                                <div class="inn-label">← Demo TIN for system check</div>
+                                <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Enter 12 digits TIN" oninput="onInn(this.value)" autocomplete="off" inputmode="numeric">
+                                <div class="inn-fb" id="inn-fb">Take the visitor's passport and enter their TIN</div>
                             </div>
                         </div>
 
@@ -1631,19 +1619,19 @@
                         <div class="vpanels">
                             <div class="vpanel">
                                 <div class="vp-icon">🔐</div>
-                                <div class="vp-lbl">PIN-код</div>
-                                <div class="vp-val" id="op-pin">Ожидание ввода...</div>
+                                <div class="vp-lbl">PIN Code</div>
+                                <div class="vp-val" id="op-pin">Waiting for input...</div>
                             </div>
                             <div class="vpanel">
                                 <div class="vp-icon">🎂</div>
-                                <div class="vp-lbl">Дата рождения</div>
-                                <div class="vp-val" id="op-bd">Ожидание ввода...</div>
+                                <div class="vp-lbl">Birth Date</div>
+                                <div class="vp-val" id="op-bd">Waiting for input...</div>
                             </div>
                         </div>
 
                         <div class="prog-wrap">
                             <div class="prog-meta">
-                                <span id="plbl">Статус верификации</span>
+                                <span id="plbl">Verification Status</span>
                                 <span id="ppct">0 / 3</span>
                             </div>
                             <div class="prog-track">
@@ -1664,84 +1652,81 @@
             <div class="sc" id="sc-step2">
                 <div class="top-nav">
                     <div class="tnav-user">
-                        <div class="tnav-av">АС</div>
+                        <div class="tnav-av">AZ</div>
                         <div>
-                            <div class="tnav-name">Азимов Санджар Рустамович</div>
-                            <div class="tnav-role">Инспектор I категории • ЦЗН г. Душанбе</div>
+                            <div class="tnav-name">Azimov Sandjar Rustamovich</div>
+                            <div class="tnav-role">Inspector I Category • Dushanbe EC</div>
                         </div>
                     </div>
-                    <div class="sso-badge">✓ SSO активен</div>
+                    <div class="sso-badge">✓ SSO Active</div>
                 </div>
                 <div class="card">
                     <div class="card-hdr">
                         <div class="card-av">🔍</div>
                         <div>
-                            <div class="card-name">Сверка данных с паспортом</div>
-                            <div class="card-meta">Рахимов Алишер Бахтиёрович</div>
+                            <div class="card-name">Data Verification with Passport</div>
+                            <div class="card-meta">Rakhimov Alisher Bakhtiyorovich</div>
                         </div>
-                        <div class="card-badge b-warn" id="b2">⚠ Шаг 2 из 2</div>
+                        <div class="card-badge b-warn" id="b2">⚠ Step 2 of 2</div>
                     </div>
                     <div class="card-body">
 
                         <div class="steps" style="margin-bottom:18px">
                             <div class="step-node done">✓</div>
-                            <div style="padding:0 8px;font-size:12px;color:var(--green);font-weight:600">TIN подтверждён
+                            <div style="padding:0 8px;font-size:12px;color:var(--green);font-weight:600">TIN Confirmed
                             </div>
                             <div class="step-line done"></div>
                             <div class="step-node active">2</div>
-                            <div style="padding:0 8px;font-size:12px;color:var(--blue);font-weight:600">Сверьте с
-                                паспортом и подтвердите</div>
+                            <div style="padding:0 8px;font-size:12px;color:var(--blue);font-weight:600">Cross-check and Confirm</div>
                         </div>
 
                         <div class="alert alert-error" id="eblk">
-                            <h3><span class="icon">⛔</span>Верификация не пройдена — доступ запрещён</h3>
+                            <h3><span class="icon">⛔</span>Verification Failed — Access Denied</h3>
                             <div id="elist"></div>
                         </div>
 
                         <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">
-                            Проверьте совпадение данных на экране с данными в паспорте посетителя:
+                            Check if the data on the screen matches the visitor's passport:
                         </div>
 
                         <div class="cgrid">
                             <div class="cgi" id="ci-pp">
-                                <div class="cgi-lbl">Номер паспорта</div>
-                                <div class="cgi-val">А 4521876</div>
-                                <div class="cgi-st">Совпадает с паспортом?</div>
+                                <div class="cgi-lbl">Passport Number</div>
+                                <div class="cgi-val">A 4521876</div>
+                                <div class="cgi-st">Matches passport?</div>
                             </div>
                             <div class="cgi" id="ci-nm">
-                                <div class="cgi-lbl">ФИО</div>
-                                <div class="cgi-val norm">Рахимов Алишер Бахтиёрович</div>
-                                <div class="cgi-st">Совпадает с паспортом?</div>
+                                <div class="cgi-lbl">Full Name</div>
+                                <div class="cgi-val norm">Rakhimov Alisher Bakhtiyorovich</div>
+                                <div class="cgi-st">Matches passport?</div>
                             </div>
                             <div class="cgi" id="ci-in">
-                                <div class="cgi-lbl">TIN (введён оператором)</div>
+                                <div class="cgi-lbl">TIN (entered by operator)</div>
                                 <div class="cgi-val" id="ci-in-v">—</div>
                                 <div class="cgi-st" id="ci-in-s">—</div>
                             </div>
                             <div class="cgi" id="ci-pi">
-                                <div class="cgi-lbl">PIN-код</div>
+                                <div class="cgi-lbl">PIN Code</div>
                                 <div class="cgi-val">● ● ● ● ● ●</div>
-                                <div class="cgi-st" id="ci-pi-s">Введён посетителем</div>
+                                <div class="cgi-st" id="ci-pi-s">Entered by visitor</div>
                             </div>
                             <div class="cgi" id="ci-bd">
-                                <div class="cgi-lbl">Дата рождения (ввод посетителя)</div>
+                                <div class="cgi-lbl">Birth Date (entered by visitor)</div>
                                 <div class="cgi-val" id="ci-bd-v">—</div>
                                 <div class="cgi-st" id="ci-bd-s">—</div>
                             </div>
                             <div class="cgi" id="ci-db">
-                                <div class="cgi-lbl">Дата рождения (система)</div>
+                                <div class="cgi-lbl">Birth Date (system record)</div>
                                 <div class="cgi-val">15.03.1988</div>
                                 <div class="cgi-st" id="ci-db-s">—</div>
                             </div>
                         </div>
 
                         <div style="display:flex;gap:10px">
-                            <button class="btn btn-success btn-full" style="flex:2" onclick="confirm_()">✓ Все данные
-                                совпадают — Подтвердить</button>
-                            <button class="btn btn-danger" style="flex:1" onclick="reject_()">✕ Не совпадает</button>
+                            <button class="btn btn-success btn-full" style="flex:2" onclick="confirm_()">✓ All data matches — Confirm</button>
+                            <button class="btn btn-danger" style="flex:1" onclick="reject_()">✕ Does not match</button>
                         </div>
-                        <button class="btn btn-success btn-full" id="btn-open" onclick="openCard()">→ Открыть карточку
-                            посетителя</button>
+                        <button class="btn btn-success btn-full" id="btn-open" onclick="openCard()">→ Open Visitor Card</button>
 
                     </div>
                 </div>
@@ -1753,72 +1738,72 @@
                     <div class="card-hdr" style="background:linear-gradient(135deg,var(--green),#0F5C35)">
                         <div class="card-av">👤</div>
                         <div>
-                            <div class="card-name">Рахимов Алишер Бахтиёрович</div>
-                            <div class="card-meta">Паспорт: А 4521876 &nbsp;|&nbsp; TIN: 500123456789</div>
+                            <div class="card-name">Rakhimov Alisher Bakhtiyorovich</div>
+                            <div class="card-meta">Passport: A 4521876 &nbsp;|&nbsp; TIN: 500123456789</div>
                         </div>
-                        <div class="card-badge b-ok">✓ Верифицирован</div>
+                        <div class="card-badge b-ok">✓ Verified</div>
                     </div>
                     <div class="card-body">
                         <div class="access-ok">
                             <div class="ao-icon">✅</div>
                             <div>
-                                <div class="ao-title">Личность подтверждена — карточка открыта</div>
-                                <div class="ao-sub" id="ok-sub">TIN + PIN-код + Дата рождения совпали</div>
+                                <div class="ao-title">Identity Confirmed — Card Opened</div>
+                                <div class="ao-sub" id="ok-sub">TIN + PIN code + Birth Date matched</div>
                             </div>
                         </div>
                         <div class="info-grid">
-                            <div class="ii"><label>Дата рождения</label><span>15.03.1988 (36 лет)</span></div>
-                            <div class="ii"><label>Телефон</label><span>+992 93 456 78 78</span></div>
-                            <div class="ii"><label>Специальность</label><span>Инженер-строитель</span></div>
-                            <div class="ii"><label>Пособие</label><span class="hl">320 сомони / мес</span></div>
-                            <div class="ii"><label>Причина увольнения</label><span>Сокращение штата</span></div>
-                            <div class="ii"><label>Следующая явка</label><span>15.04.2025</span></div>
+                            <div class="ii"><label>Birth Date</label><span>15.03.1988 (36 years)</span></div>
+                            <div class="ii"><label>Phone</label><span>+992 93 456 78 78</span></div>
+                            <div class="ii"><label>Specialization</label><span>Civil Engineer</span></div>
+                            <div class="ii"><label>Allowance</label><span class="hl">320 somoni / month</span></div>
+                            <div class="ii"><label>Reason for Dismissal</label><span>Staff reduction</span></div>
+                            <div class="ii"><label>Next Visit</label><span>15.04.2025</span></div>
                         </div>
                         
                         
                         <div class="docs-section" style="margin-top:0px;margin-bottom:16px;padding:16px;background:rgba(26, 86, 160, .05);border-radius:6px;border:1px solid #93C5FD;">
-                            <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--blue);">📄 Заявление: Поиск подходящей работы</div>
+                            <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--blue);">📄 Application: Search for Suitable Job</div>
                             <div style="background:#fff;border:1px solid var(--border);border-radius:4px;padding:12px;margin-bottom:12px;font-size:12px;">
-                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Желаемая должность:</div><div style="font-weight:600;">Инженер-строитель, Архитектор</div></div>
-                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Минимальная зарплата:</div><div style="font-weight:600;">от 3 500 сомони</div></div>
-                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Согласие на переобучение:</div><div style="font-weight:600;">Да</div></div>
-                                <div style="display:flex;"><div style="width:160px;color:var(--text3);">Локация работы:</div><div style="font-weight:600;">г. Душанбе, р-н Рудаки</div></div>
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Desired position:</div><div style="font-weight:600;">Civil Engineer, Architect</div></div>
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Minimum salary:</div><div style="font-weight:600;">from 3,500 somoni</div></div>
+                                <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Retraining agreement:</div><div style="font-weight:600;">Yes</div></div>
+                                <div style="display:flex;"><div style="width:160px;color:var(--text3);">Location:</div><div style="font-weight:600;">Dushanbe, Rudaki district</div></div>
                             </div>
                             <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;">
-                                <div style="font-size:11px;color:var(--text3);" id="doc-status-2">Ожидает отправки на подпись</div>
-                                <button class="btn btn-primary" id="btn-req-sign-2" onclick="reqSign('Заявление: Поиск подходящей работы', 'btn-req-sign-2', 'doc-status-2')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                                <div style="font-size:11px;color:var(--text3);" id="doc-status-2">Pending signature request</div>
+                                <button class="btn btn-primary" id="btn-req-sign-2" onclick="reqSign('Application: Search for suitable job', 'btn-req-sign-2', 'doc-status-2')" style="padding:6px 12px;font-size:12px;">Request Signature →</button>
                             </div>
                         </div>
                         <div class="docs-section" style="margin-top:20px;margin-bottom:20px;padding:16px;background:var(--gray);border-radius:6px;border:1px solid var(--border);">
-                            <div style="font-weight:600;font-size:14px;margin-bottom:10px;">Электронное подписание документов</div>
+                            <div style="font-weight:600;font-size:14px;margin-bottom:10px;">Electronic Document Signing</div>
                             <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border:1px solid var(--border);border-radius:4px;">
                                 <div>
-                                    <div style="font-weight:600;font-size:13px;">Приказ о назначении пособия №44-А</div>
-                                    <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-status">Ожидает отправки на подпись</div>
+                                    <div style="font-weight:600;font-size:13px;">Allowance Appointment Order No. 44-A</div>
+                                    <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-status">Pending signature request</div>
                                 </div>
-                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign('Приказ о назначении пособия №44-А', 'btn-req-sign', 'doc-status')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign('Allowance Appointment Order No. 44-A', 'btn-req-sign', 'doc-status')" style="padding:6px 12px;font-size:12px;">Request Signature →</button>
                             </div>
                         </div>
                         <div class="audit">
-                            <div class="audit-title">Журнал верификации</div>
+                            <div class="audit-title">Verification Log</div>
                             <div class="audit-row">
                                 <div class="adot g"></div>
-                                <div class="atxt" id="al1">Личность подтверждена: TIN + PIN-код + Дата рождения</div>
+                                <div class="atxt" id="al1">Identity confirmed: TIN + PIN code + Birth Date</div>
                                 <div class="atm" id="at1"></div>
                             </div>
                             <div class="audit-row">
                                 <div class="adot b"></div>
-                                <div class="atxt">Оператор: Азимов Санджар Рустамович • ЦЗН г. Душанбе</div>
+                                <div class="atxt">Operator: Azimov Sandjar Rustamovich • Dushanbe EC</div>
                                 <div class="atm" id="at2"></div>
                             </div>
                             <div class="audit-row">
                                 <div class="adot g"></div>
-                                <div class="atxt">Карточка открыта • Уровень доступа: полный</div>
+                                <div class="atxt">Card opened • Access level: Full</div>
                                 <div class="atm" id="at3"></div>
                             </div>
                         </div>
                         <div style="margin-top:14px">
-                            <button class="btn btn-ghost" onclick="resetAll()">← Новый посетитель</button>
+                            <button class="btn btn-ghost" onclick="resetAll()">← New Visitor</button>
                         </div>
                     </div>
                 </div>
@@ -1828,7 +1813,7 @@
 
         <!-- ═══ PHONE ═══ -->
         <div class="col-ph">
-            <div class="sec-lbl">Телефон посетителя</div>
+            <div class="sec-lbl">Visitor's Phone</div>
 
             <div class="phone">
                 <div class="pscr">
@@ -1838,16 +1823,16 @@
                     <div class="ps on" id="ph-wait">
                         <div class="ph-wait">
                             <div class="wait-spinner"></div>
-                            <div class="wait-title">Ожидание</div>
-                            <div class="wait-sub">Оператор вводит<br>ваш TIN с паспорта<br><br>Подождите...</div>
+                            <div class="wait-title">Waiting</div>
+                            <div class="wait-sub">Operator is entering<br>your TIN from passport<br><br>Please wait...</div>
                         </div>
                     </div>
 
                     <!-- PIN -->
                     <div class="ps" id="ph-pin">
                         <div class="ph-hdr">
-                            <div class="ph-hdr-t">Введите PIN-код</div>
-                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 1 из 2 • Демо: 1 2 3 4 5 6</div>
+                            <div class="ph-hdr-t">Enter PIN Code</div>
+                            <div class="ph-hdr-s">Dushanbe EC • Step 1 of 2 • Demo: 1 2 3 4 5 6</div>
                         </div>
                         <div class="ph-body">
                             <div class="pin-area">
@@ -1859,7 +1844,7 @@
                                     <div class="pdot" id="pd5"></div>
                                     <div class="pdot" id="pd6"></div>
                                 </div>
-                                <div class="pin-hint">6-значный PIN-код</div>
+                                <div class="pin-hint">6-digit PIN Code</div>
                             </div>
                             <div class="numpad">
                                 <button class="nb" onclick="pp('1')">1</button><button class="nb"
@@ -1878,12 +1863,12 @@
                     <!-- BD -->
                     <div class="ps" id="ph-bd">
                         <div class="ph-hdr">
-                            <div class="ph-hdr-t">Дата рождения</div>
-                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 2 из 2 • Любые 8 цифр</div>
+                            <div class="ph-hdr-t">Birth Date</div>
+                            <div class="ph-hdr-s">Dushanbe EC • Step 2 of 2 • Any 8 digits</div>
                         </div>
                         <div class="ph-body">
                             <div class="bd-area">
-                                <div class="bd-title">ДД . ММ . ГГГГ</div>
+                                <div class="bd-title">DD . MM . YYYY</div>
                                 <div class="bd-cells" id="bd-cells"></div>
                             </div>
                             <div class="numpad">
@@ -1904,12 +1889,12 @@
                     <!-- SIGN -->
                     <div class="ps" id="ph-sign">
                         <div class="ph-hdr">
-                            <div class="ph-hdr-t">Подписание документа</div>
-                            <div class="ph-hdr-s">Приказ о назначении пособия №44-А</div>
+                            <div class="ph-hdr-t">Document Signing</div>
+                            <div class="ph-hdr-s">Allowance Appointment Order No. 44-A</div>
                         </div>
                         <div class="ph-body">
                             <div style="font-size:13px;text-align:center;margin-bottom:16px;color:var(--text2);line-height:1.4;">
-                                Для подтверждения подписания<br>введите ваш <b>PIN-код</b>
+                                To confirm signing,<br>please enter your <b>PIN Code</b>
                             </div>
                             <div class="pin-area">
                                 <div class="pdots">
@@ -1930,8 +1915,8 @@
                     <div class="ps" id="ph-result">
                         <div class="ph-result">
                             <div class="pr-ring wait-r" id="pr-ring">⏳</div>
-                            <div class="pr-title" id="pr-title">Обработка...</div>
-                            <div class="pr-sub" id="pr-sub">Ожидайте решения оператора</div>
+                            <div class="pr-title" id="pr-title">Processing...</div>
+                            <div class="pr-sub" id="pr-sub">Waiting for operator's decision</div>
                             <div class="perm-box" id="perm-box">
                                 <div id="perm-typeout"></div>
                             </div>
@@ -1942,26 +1927,26 @@
             </div>
 
             <div class="inst">
-                <div class="inst-t">Сценарий верификации</div>
+                <div class="inst-t">Verification Scenario</div>
                 <div class="ist">
                     <div class="inum done" id="in1">✓</div>
-                    <div class="itxt" id="it1">Вход оператора (SSO)</div>
+                    <div class="itxt" id="it1">Operator Login (SSO)</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in2">2</div>
-                    <div class="itxt" id="it2">Поиск карточки посетителя</div>
+                    <div class="itxt" id="it2">Visitor Card Search</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in3">3</div>
-                    <div class="itxt" id="it3">Оператор вводит TIN с паспорта</div>
+                    <div class="itxt" id="it3">Operator enters TIN from passport</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in4">4</div>
-                    <div class="itxt" id="it4">Посетитель: PIN-код + дата рождения</div>
+                    <div class="itxt" id="it4">Visitor: PIN + Birth Date</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in5">5</div>
-                    <div class="itxt" id="it5">Сверка данных → карточка открыта</div>
+                    <div class="itxt" id="it5">Data cross-check → Card Unlocked</div>
                 </div>
             </div>
         </div>
@@ -1977,51 +1962,51 @@
             <div style="display:flex; align-items:center; gap:16px;">
                 <div style="font-size:32px;">👤</div>
                 <div>
-                    <h2 style="margin:0 0 4px 0; font-size:20px; color:var(--text);">Рахимов Алишер Бахтиёрович</h2>
-                    <div style="color:var(--text3); font-size:13px; font-family:monospace;">Системный ID: 500123456789 • Статус: Возврат к поиску работы</div>
+                    <h2 style="margin:0 0 4px 0; font-size:20px; color:var(--text);">Rakhimov Alisher Bakhtiyorovich</h2>
+                    <div style="color:var(--text3); font-size:13px; font-family:monospace;">System ID: 500123456789 • Status: Return to job search</div>
                 </div>
             </div>
-            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Скачать выписку (PDF)</button>
+            <button class="btn btn-primary" style="background:#fff; color:var(--blue); border:1px solid #D1D5DB; box-shadow:0 1px 2px rgba(0,0,0,.05);">📄 Download Statement (PDF)</button>
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:24px;">
             <div class="card" style="padding:20px;">
                 <div style="font-size:28px; font-weight:700; color:var(--text); line-height:1;">14</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Всего обращений в ЦЗН</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Total Entity Visits</div>
             </div>
             <div class="card" style="padding:20px;">
                 <div style="font-size:28px; font-weight:700; color:var(--green); line-height:1;">6</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Подписано документов</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Documents Signed</div>
             </div>
             <div class="card" style="padding:20px;">
                 <div style="font-size:28px; font-weight:700; color:var(--blue); line-height:1;">15.04.2025</div>
-                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Следующая плановая явка</div>
+                <div style="font-size:12px; color:var(--text3); text-transform:uppercase; font-weight:600; margin-top:8px; letter-spacing:.5px;">Next Scheduled Visit</div>
             </div>
         </div>
 
         <div class="card">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">История событий заявителя</div>
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Applicant Event History</div>
             <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
                 <thead>
                     <tr style="background:var(--gray); color:var(--text3); text-transform:uppercase; font-size:11px; letter-spacing:.5px;">
-                        <th style="padding:12px 20px; font-weight:600;">Дата и Время</th>
-                        <th style="padding:12px 20px; font-weight:600;">Действие / Документ</th>
-                        <th style="padding:12px 20px; font-weight:600;">Метод авторизации</th>
-                        <th style="padding:12px 20px; font-weight:600;">Ответственный инспектор</th>
+                        <th style="padding:12px 20px; font-weight:600;">Date and Time</th>
+                        <th style="padding:12px 20px; font-weight:600;">Action / Document</th>
+                        <th style="padding:12px 20px; font-weight:600;">Auth Method</th>
+                        <th style="padding:12px 20px; font-weight:600;">Responsible Inspector</th>
                     </tr>
                 </thead>
                 <tbody id="audit-table-body">
                     <tr style="border-bottom:1px solid var(--border); background:rgba(110, 231, 183, 0.05);">
                         <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">22.03.2026 10:48</td>
-                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification пройдена</td>
-                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">ПИН + Дата рождения</span></td>
-                        <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification Passed</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">PIN + Birth Date</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Azimov S.R.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
                         <td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:20</td>
                         <td style="padding:16px 20px; font-weight:500; color:var(--text);">
-                           <div style="font-weight:600;">Подписан: Приказ о назначении пособия</div>
-                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="event.preventDefault(); alert('Скачивание файла...')" style="color:var(--blue); text-decoration:none;">📥 Скачать PDF-оригинал</a></div>
+                           <div style="font-weight:600;">Signed: Allowance Appointment Order</div>
+                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="event.preventDefault(); alert('Downloading file...')" style="color:var(--blue); text-decoration:none;">📥 Download PDF Original</a></div>
                         </td>
                         <td style="padding:16px 20px;">
                            <div style="display:flex; align-items:center; gap:10px;">
@@ -2033,15 +2018,15 @@
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
                         <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:15</td>
-                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification пройдена</td>
-                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">Смс-код авторизации</span></td>
-                        <td style="padding:14px 20px; color:var(--text2);">Каримова М.А.</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Identity Verification Passed</td>
+                        <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">SMS Authorization Code</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Karimova M.A.</td>
                     </tr>
                     <tr style="border-bottom:1px solid var(--border);">
                         <td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">12.01.2025 09:30</td>
-                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Регистрация статуса безработного</td>
-                        <td style="padding:14px 20px;"><span class="card-badge" style="font-size:11px; background:var(--gray); color:var(--text3);">Физическая подпись (бумага)</span></td>
-                        <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>
+                        <td style="padding:14px 20px; font-weight:500; color:var(--text);">Unemployed Status Registration</td>
+                        <td style="padding:14px 20px;"><span class="card-badge" style="font-size:11px; background:var(--gray); color:var(--text3);">Physical Signature (Paper)</span></td>
+                        <td style="padding:14px 20px; color:var(--text2);">Azimov S.R.</td>
                     </tr>
                 </tbody>
             </table>
@@ -2071,7 +2056,7 @@
         }
 
         // ── CLOCK ──
-        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }, 1000);
+        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }, 1000);
 
         // ── NAV ──
         function goSc(id) {
@@ -2096,7 +2081,7 @@
                 else { num.className = 'inum'; num.textContent = i; if (txt) txt.className = 'itxt'; }
             }
         }
-        function fmt(d) { return d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+        function fmt(d) { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
 
         // ── LOGIN ──
         function loginGo() { goSc('search'); }
@@ -2109,9 +2094,9 @@
             const inp = document.getElementById('inn-inp');
             inp.className = 'inn-input' + (innVal.length === 0 ? '' : innOk ? ' ok' : innVal.length > 0 ? ' err' : '');
             const fb = document.getElementById('inn-fb');
-            if (!innVal.length) { fb.textContent = 'Возьмите паспорт у посетителя и введите его TIN'; fb.style.color = 'var(--text3)'; }
-            else if (innOk) { fb.textContent = '✓ TIN найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
-            else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'TIN не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            if (!innVal.length) { fb.textContent = 'Take the visitor\'s passport and enter their TIN'; fb.style.color = 'var(--text3)'; }
+            else if (innOk) { fb.textContent = '✓ TIN found in system — ' + innVal.length + ' of 12 digits'; fb.style.color = 'var(--green)'; }
+            else { fb.textContent = (innVal.length < 12 ? 'Entered ' + innVal.length + ' of 12 digits...' : 'TIN not found in system'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
             checkProceed();
             if (innOk && !pinDone_) { switchPh('ph-pin'); setInst(4); }
         }
@@ -2119,15 +2104,15 @@
             const ready = innOk && pinDone_ && bdDone_;
             document.getElementById('btn-proceed').disabled = !ready;
             const ph = document.getElementById('phint');
-            if (ready) { ph.textContent = 'Все данные получены — нажмите «Перейти к подтверждению»'; ph.style.color = 'var(--green)'; }
-            else if (!innOk) { ph.textContent = 'Введите корректный TIN (12 цифр)'; ph.style.color = 'var(--text3)'; }
-            else if (!pinDone_) { ph.textContent = 'Ожидание PIN-кода от посетителя...'; ph.style.color = 'var(--blue)'; }
-            else { ph.textContent = 'Ожидание даты рождения от посетителя...'; ph.style.color = 'var(--blue)'; }
+            if (ready) { ph.textContent = 'All data received — click "Proceed to Confirmation"'; ph.style.color = 'var(--green)'; }
+            else if (!innOk) { ph.textContent = 'Enter correct TIN (12 digits)'; ph.style.color = 'var(--text3)'; }
+            else if (!pinDone_) { ph.textContent = 'Waiting for PIN code from visitor...'; ph.style.color = 'var(--blue)'; }
+            else { ph.textContent = 'Waiting for birth date from visitor...'; ph.style.color = 'var(--blue)'; }
             const done = [innOk, pinDone_, bdDone_].filter(Boolean).length;
             document.getElementById('pbar').style.width = (done / 3 * 100) + '%';
             document.getElementById('pbar').className = 'prog-bar' + (done === 3 ? ' ok' : '');
             document.getElementById('ppct').textContent = done + ' / 3';
-            document.getElementById('plbl').textContent = done === 3 ? 'Верификация завершена' : 'Прогресс верификации';
+            document.getElementById('plbl').textContent = done === 3 ? 'Verification Completed' : 'Verification Progress';
         }
 
         // ── VISITOR PIN ──
@@ -2137,7 +2122,7 @@
         function pinDone() {
             if (pinVal.length < 6) return;
             pinDone_ = true;
-            document.getElementById('op-pin').textContent = '✓ Введён';
+            document.getElementById('op-pin').textContent = '✓ Entered';
             document.getElementById('op-pin').className = 'vp-val ok';
             initBdCells(); switchPh('ph-bd'); checkProceed();
         }
@@ -2174,8 +2159,8 @@
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring wait-r';
             document.getElementById('pr-ring').textContent = '⏳';
-            document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">В рамках текущей сессии все действия считаются авторизованными вами.</span>';
+            document.getElementById('pr-title').textContent = 'Authentication Passed';
+            document.getElementById('pr-sub').innerHTML = 'Your identity has been confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Within the current session, all actions are considered authorized by you.</span>';
             checkProceed();
         }
 
@@ -2183,14 +2168,14 @@
         function step2() {
             const f = bdVal.slice(0, 2) + '.' + bdVal.slice(2, 4) + '.' + bdVal.slice(4, 8);
             document.getElementById('ci-in-v').textContent = innVal.replace(/(\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
-            document.getElementById('ci-in-s').textContent = innOk ? '✓ Найден в базе данных' : '✕ Не найден';
+            document.getElementById('ci-in-s').textContent = innOk ? '✓ Found in Database' : '✕ Not Found';
             document.getElementById('ci-in').className = 'cgi ' + (innOk ? 'ok' : 'err');
             document.getElementById('ci-pi').className = 'cgi ok';
-            document.getElementById('ci-pi-s').textContent = '✓ Введён посетителем';
+            document.getElementById('ci-pi-s').textContent = '✓ Entered by Visitor';
             document.getElementById('ci-bd-v').textContent = f;
-            document.getElementById('ci-bd-s').textContent = '✓ Введена посетителем';
+            document.getElementById('ci-bd-s').textContent = '✓ Entered by Visitor';
             document.getElementById('ci-bd').className = 'cgi ok';
-            document.getElementById('ci-db-s').textContent = '✓ Совпадает';
+            document.getElementById('ci-db-s').textContent = '✓ Matches record';
             document.getElementById('ci-db').className = 'cgi ok';
             document.getElementById('ci-pp').className = 'cgi';
             document.getElementById('ci-nm').className = 'cgi';
@@ -2202,7 +2187,7 @@
         // ── CONFIRM ──
         function confirm_() {
             const errors = [];
-            if (!innOk) errors.push('TIN не найден в системе — проверьте правильность ввода');
+            if (!innOk) errors.push('TIN not found in the system — check for correctness');
             if (errors.length > 0) {
                 playError();
                 const eb = document.getElementById('eblk'); eb.className = 'alert alert-error show';
@@ -2210,28 +2195,28 @@
                 document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
                 switchPh('ph-result');
                 document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-                document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').innerHTML = 'Оператор отклонил запрос на верификацию. Доступ в систему запрещен.';
+                document.getElementById('pr-title').textContent = 'Access Denied'; document.getElementById('pr-sub').innerHTML = 'The operator rejected the verification request. System access is denied.';
                 return;
             }
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-            document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
+            document.getElementById('pr-title').textContent = 'Authentication Passed';
+            document.getElementById('pr-sub').innerHTML = 'Your identity has been confirmed.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">All actions in this session are considered confirmed by you according to the PEP Agreement No. ___.</span>';
             document.getElementById('perm-box').style.display = 'block';
             startTypewriter();
             document.getElementById('btn-open').style.display = 'flex';
-            document.getElementById('b2').textContent = '✓ Подтверждено'; document.getElementById('b2').className = 'card-badge b-ok';
+            document.getElementById('b2').textContent = '✓ Confirmed'; document.getElementById('b2').className = 'card-badge b-ok';
         }
 
         function reject_() {
             playError();
             document.getElementById('eblk').className = 'alert alert-error show';
-            document.getElementById('elist').innerHTML = '<div class="alert-item"><span class="alert-dot">•</span>Оператор вручную отклонил запрос — данные в паспорте не совпадают с данными на экране</div>';
-            document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
+            document.getElementById('elist').innerHTML = '<div class="alert-item"><span class="alert-dot">•</span>The operator manually rejected the request — passport data does not match the screen data</div>';
+            document.getElementById('b2').textContent = '✕ Denied'; document.getElementById('b2').className = 'card-badge b-deny';
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-            document.getElementById('pr-title').textContent = 'Отказано оператором'; document.getElementById('pr-sub').innerHTML = 'Оператор отклонил запрос на верификацию. Доступ в систему запрещен.';
+            document.getElementById('pr-title').textContent = 'Rejected by Operator'; document.getElementById('pr-sub').innerHTML = 'The operator rejected the verification request. System access is denied.';
         }
 
         function openCard() {
@@ -2241,7 +2226,7 @@
             document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
-            document.getElementById('ok-sub').textContent = 'Верифицировано ' + fmt(now) + ' • Оператор: Азимов Санджар Рустамович';
+            document.getElementById('ok-sub').textContent = 'Verified at ' + fmt(now) + ' • Operator: Azimov Sandjar Rustamovich';
             document.getElementById('at1').textContent = fmt(now);
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
@@ -2250,16 +2235,16 @@
 
         // ── TYPEWRITER ──
         const LINES = [
-            { t: '// РАЗРЕШЕНИЕ ВЫДАНО //', c: 'rgba(110,231,183,.7)' },
+            { t: '// PERMISSION GRANTED //', c: 'rgba(110,231,183,.7)' },
             { t: '', c: '' },
-            { t: '✓ Личность подтверждена', c: '#6EE7B7' },
-            { t: '✓ TIN верифицирован', c: '#6EE7B7' },
-            { t: '✓ PIN-код принят', c: '#6EE7B7' },
-            { t: '✓ Дата рождения принята', c: '#6EE7B7' },
+            { t: '✓ Identity confirmed', c: '#6EE7B7' },
+            { t: '✓ TIN verified', c: '#6EE7B7' },
+            { t: '✓ PIN code accepted', c: '#6EE7B7' },
+            { t: '✓ Birth Date accepted', c: '#6EE7B7' },
             { t: '', c: '' },
-            { t: 'Вы дали оператору', c: 'rgba(255,255,255,.6)' },
-            { t: 'разрешение на обработку', c: 'rgba(255,255,255,.6)' },
-            { t: 'вашей заявки.', c: 'rgba(255,255,255,.6)' }
+            { t: 'You have given', c: 'rgba(255,255,255,.6)' },
+            { t: 'the operator permission', c: 'rgba(255,255,255,.6)' },
+            { t: 'to process your request.', c: 'rgba(255,255,255,.6)' }
         ];
         function startTypewriter() {
             const el = document.getElementById('perm-typeout'); if (!el) return;
@@ -2312,8 +2297,8 @@
             updSDots();
             document.getElementById('spin-ok').disabled = true;
             
-            const isEn = document.querySelector('.ph-hdr-t') && document.querySelector('.ph-hdr-t').textContent.includes('Sign');
-            document.getElementById(statusId).textContent = isEn ? 'Awaiting signature from visitor...' : 'Ожидание подписи от посетителя...';
+            const isEn = true;
+            document.getElementById(statusId).textContent = 'Awaiting signature from visitor...';
             document.getElementById(statusId).style.color = 'var(--blue)';
             document.getElementById(btnId).style.display = 'none';
             switchPh('ph-sign');
@@ -2341,8 +2326,8 @@
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-            document.getElementById('pr-title').textContent = 'Документ подписан';
-            document.getElementById('pr-sub').innerHTML = 'Вы подписали:<br><br><span style="color:#fff; font-size:16px; font-weight:600; display:block; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; line-height:1.3;">' + currentSignDocName + '</span>';
+            document.getElementById('pr-title').textContent = 'Document Signed';
+            document.getElementById('pr-sub').innerHTML = 'You have signed:<br><br><span style="color:#fff; font-size:16px; font-weight:600; display:block; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; line-height:1.3;">' + currentSignDocName + '</span>';
             
             // Append to audit table dynamically
             const tb = document.getElementById('audit-table-body');
@@ -2378,14 +2363,14 @@
 
             document.getElementById('perm-box').style.display = 'none';
             
-            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
+            document.getElementById(currentSignStatus).textContent = '✓ Signed electronically (PIN)';
             document.getElementById(currentSignStatus).style.color = 'var(--green)';
             
             const auditDiv = document.querySelector('.audit');
             const newLog = document.createElement('div');
             newLog.className = 'audit-row signlog';
             const now = new Date();
-            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + (document.querySelector('.pr-title').textContent.includes('Document Signed') ? 'Document signed: ' : 'Документ подписан: ') + currentSignDocName + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Document signed: ' + currentSignDocName + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
@@ -2404,21 +2389,21 @@
             document.getElementById('nav-audit').classList.add('disabled');
             document.getElementById('nav-audit').style.cursor = 'not-allowed';
             document.getElementById('nav-audit').style.opacity = '0.4';
-            document.getElementById('nav-audit').title = 'Успешно верифицируйте посетителя';
+            document.getElementById('nav-audit').title = 'Successfully verify the visitor';
             innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
-            document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его TIN'; document.getElementById('inn-fb').style.color = 'var(--text3)';
-            document.getElementById('op-pin').textContent = 'Ожидание ввода...'; document.getElementById('op-pin').className = 'vp-val';
-            document.getElementById('op-bd').textContent = 'Ожидание ввода...'; document.getElementById('op-bd').className = 'vp-val';
+            document.getElementById('inn-fb').textContent = 'Take the visitor\'s passport and enter their TIN'; document.getElementById('inn-fb').style.color = 'var(--text3)';
+            document.getElementById('op-pin').textContent = 'Waiting for input...'; document.getElementById('op-pin').className = 'vp-val';
+            document.getElementById('op-bd').textContent = 'Waiting for input...'; document.getElementById('op-bd').className = 'vp-val';
             document.getElementById('btn-proceed').disabled = true;
             document.getElementById('pbar').style.width = '0%'; document.getElementById('pbar').className = 'prog-bar';
-            document.getElementById('ppct').textContent = '0 / 3'; document.getElementById('plbl').textContent = 'Статус верификации';
-            document.getElementById('phint').textContent = 'Кнопка станет активной после ввода всех данных'; document.getElementById('phint').style.color = 'var(--text3)';
+            document.getElementById('ppct').textContent = '0 / 3'; document.getElementById('plbl').textContent = 'Verification Status';
+            document.getElementById('phint').textContent = 'The button will be active after all data is entered'; document.getElementById('phint').style.color = 'var(--text3)';
             updDots(); document.getElementById('pin-ok').disabled = true;
             bdVal = ''; document.getElementById('bd-ok').disabled = true;
             spinVal = '';
             document.getElementById('btn-req-sign').style.display = 'block';
-            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
+            document.getElementById('doc-status').textContent = 'Pending signature request';
             document.getElementById('doc-status').style.color = 'var(--text3)';
             document.querySelectorAll('.signlog').forEach(e => e.remove());
 
