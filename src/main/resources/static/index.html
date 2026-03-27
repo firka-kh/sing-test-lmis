@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Портал верификации личности — МТиЗН РТ</title>
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
@@ -1335,14 +1338,12 @@
 
         .pr-ring.ok-r {
             border-color: #6EE7B7;
-            color: #6EE7B7;
             background: rgba(26, 122, 74, .15);
             animation: okPop .4s cubic-bezier(.34, 1.56, .64, 1);
         }
 
         .pr-ring.err-r {
             border-color: var(--red-b);
-            color: var(--red-b);
             background: rgba(185, 28, 28, .15);
             animation: okPop .4s cubic-bezier(.34, 1.56, .64, 1);
         }
@@ -1350,7 +1351,6 @@
         .pr-ring.wait-r {
             border-color: rgba(26, 86, 160, .3);
             border-top-color: var(--blue);
-            color: var(--blue);
             animation: spin 1.2s linear infinite;
         }
 
@@ -2021,7 +2021,7 @@
                         <td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">15.02.2025 11:20</td>
                         <td style="padding:16px 20px; font-weight:500; color:var(--text);">
                            <div style="font-weight:600;">Подписан: Приказ о назначении пособия</div>
-                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="alert('Скачивание файла...')" style="color:var(--blue); text-decoration:none;">📥 Скачать PDF-оригинал</a></div>
+                           <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="event.preventDefault(); alert('Скачивание файла...')" style="color:var(--blue); text-decoration:none;">📥 Скачать PDF-оригинал</a></div>
                         </td>
                         <td style="padding:16px 20px;">
                            <div style="display:flex; align-items:center; gap:10px;">
@@ -2049,7 +2049,8 @@
     </div>
 
     <script>
-        // ── DB (Удален хардкод, теперь запросы к API) ──
+        // ── DB ──
+        const DB = { inn: '500123456789' };
         let innVal = '', pinVal = '', bdVal = '', spinVal = '';
         let innOk = false, pinDone_ = false, bdDone_ = false;
 
@@ -2104,32 +2105,13 @@
         function onInn(v) {
             innVal = v.replace(/\D/g, '');
             document.getElementById('inn-inp').value = innVal;
-            
-            if (innVal.length === 12) {
-                // API Call
-                fetch('/api/verification/check-inn', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ inn: innVal })
-                }).then(res => res.json()).then(data => {
-                    innOk = data.found;
-                    updateInnUI(data.message);
-                }).catch(e => {
-                    innOk = false; updateInnUI('Ошибка сети');
-                });
-            } else {
-                innOk = false;
-                updateInnUI(null);
-            }
-        }
-        
-        function updateInnUI(apiMsg) {
+            innOk = innVal === DB.inn;
             const inp = document.getElementById('inn-inp');
             inp.className = 'inn-input' + (innVal.length === 0 ? '' : innOk ? ' ok' : innVal.length > 0 ? ' err' : '');
             const fb = document.getElementById('inn-fb');
             if (!innVal.length) { fb.textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; fb.style.color = 'var(--text3)'; }
-            else if (innOk) { fb.textContent = '✓ ' + (apiMsg || 'ИНН найден в системе'); fb.style.color = 'var(--green)'; }
-            else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : (apiMsg || 'ИНН не найден в системе')); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            else if (innOk) { fb.textContent = '✓ ИНН найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
+            else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'ИНН не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
             checkProceed();
             if (innOk && !pinDone_) { switchPh('ph-pin'); setInst(4); }
         }
@@ -2193,7 +2175,7 @@
             document.getElementById('pr-ring').className = 'pr-ring wait-r';
             document.getElementById('pr-ring').textContent = '⏳';
             document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
+            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">В рамках текущей сессии все действия считаются авторизованными вами.</span>';
             checkProceed();
         }
 
@@ -2231,39 +2213,15 @@
                 document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').innerHTML = 'Оператор отклонил запрос на верификацию. Доступ в систему запрещен.';
                 return;
             }
-            
-            fetch('/api/verification/verify-visitor', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ inn: innVal, pin: pinVal, birthDate: bdVal })
-            }).then(r => r.json()).then(data => {
-                if(data.verified) {
-                    playSuccess();
-                    switchPh('ph-result');
-                    document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
-                    document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-                    document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
-                    document.getElementById('perm-box').style.display = 'block';
-                    startTypewriter();
-                    document.getElementById('btn-open').style.display = 'flex';
-                    document.getElementById('b2').textContent = '✓ Подтверждено'; document.getElementById('b2').className = 'card-badge b-ok';
-                    // Update user name in card header dynamically based on backend
-                    const cardElems = document.querySelectorAll('.card-meta');
-                    if(cardElems.length > 1) {
-                        cardElems[1].textContent = data.fullName; // Step 2 screen name
-                    }
-                } else {
-                    playError();
-                    const eb = document.getElementById('eblk'); eb.className = 'alert alert-error show';
-                    document.getElementById('elist').innerHTML = '<div class="alert-item"><span class="alert-dot">•</span>Ошибка от сервера: ' + (data.error || 'Доступ запрещен') + '</div>';
-                    document.getElementById('b2').textContent = '✕ Отказано'; document.getElementById('b2').className = 'card-badge b-deny';
-                    switchPh('ph-result');
-                    document.getElementById('pr-ring').className = 'pr-ring err-r'; document.getElementById('pr-ring').textContent = '✕';
-                    document.getElementById('pr-title').textContent = 'Доступ запрещён'; document.getElementById('pr-sub').textContent = data.error || 'Данные не совпали';
-                }
-            }).catch(e => {
-                alert('Ошибка связи с сервером');
-            });
+            playSuccess();
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
+            document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
+            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
+            document.getElementById('perm-box').style.display = 'block';
+            startTypewriter();
+            document.getElementById('btn-open').style.display = 'flex';
+            document.getElementById('b2').textContent = '✓ Подтверждено'; document.getElementById('b2').className = 'card-badge b-ok';
         }
 
         function reject_() {
@@ -2393,18 +2351,31 @@
                tr.style.borderBottom = '1px solid var(--border)';
                tr.style.background = 'rgba(26, 86, 160, 0.1)';
                tr.style.animation = 'phIn .5s ease';
-               const timeStr = new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
-               const doc = window.location.pathname.includes('_en') ? 'Signed: ' + currentSignDocName : 'Подписан: ' + currentSignDocName;
-               const pin = window.location.pathname.includes('_en') ? 'PIN-code' : 'ПИН-код';
+               const now = new Date();
+               const today_str = now.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
+               const timeStr = now.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+               const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
+               const dlText = window.location.pathname.includes('_en') ? '📥 Download PDF original' : '📥 Скачать PDF-оригинал';
                
-               tr.innerHTML = `<td style="padding:14px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
-                               <td style="padding:14px 20px; font-weight:600; color:var(--text);">${doc}</td>
-                               <td style="padding:14px 20px;"><span class="card-badge b-ok" style="font-size:11px;">✓ ${pin}</span></td>
-                               <td style="padding:14px 20px; color:var(--text2);">Азимов С.Р.</td>`;
+               // Generate a fake hash for demo
+               const fakeHash = '0x' + Math.random().toString(16).substr(2, 4) + '...' + Math.random().toString(16).substr(2, 3);
+               const fullHash = fakeHash.replace('...', 'a1b2c');
+               
+               tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
+                               <td style="padding:16px 20px; font-weight:500; color:var(--text);">
+                                  <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
+                                  <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="alert('Скачивание файла...')" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
+                               </td>
+                               <td style="padding:16px 20px;">
+                                  <div style="display:flex; align-items:center; gap:10px;">
+                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=https://mtizn.tj/registry/doc/${fullHash}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
+                                     <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Хэш:<br>${fakeHash}</div>
+                                  </div>
+                               </td>
+                               <td style="padding:16px 20px; color:var(--text2);">Азимов С.Р.</td>`;
                tb.insertBefore(tr, tb.firstChild);
             }
 
-            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
             document.getElementById('perm-box').style.display = 'none';
             
             document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
