@@ -2353,15 +2353,38 @@
             document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
-            document.getElementById('ok-sub').textContent = 'Session ' + (currentSessionId || SESSION_ID) + ' confirmed via SMS at ' + fmt(now) + ' • Operator: ' + OPERATOR_NAME;
+            const sessionId = currentSessionId || SESSION_ID;
+            const sessionDate = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const sessionTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const sessionRef = 'Session #' + sessionId + ' on ' + sessionDate + ' ' + sessionTime;
+            document.getElementById('ok-sub').textContent = sessionRef + ' confirmed via SMS • Operator: ' + OPERATOR_NAME;
             document.getElementById('at1').textContent = fmt(now);
             setSessionIndicator('');
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
+
+            const tb = document.getElementById('audit-table-body');
+            if (tb) {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border)';
+                tr.style.background = 'rgba(26, 122, 74, 0.10)';
+                tr.style.animation = 'phIn .5s ease';
+                tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${sessionDate} ${sessionTime}</td>
+                                <td style="padding:16px 20px; font-weight:500; color:var(--text);">
+                                   <div style="font-weight:700;">Opened ${sessionRef}</div>
+                                   <div style="font-size:11px; color:var(--text3); margin-top:4px;">Visitor: ${VISITOR_NAME}</div>
+                                   <div style="font-size:11px; color:var(--text3); margin-top:2px;">TIN: ${innVal}</div>
+                                   <div style="font-size:11px; color:var(--text3); margin-top:2px;">Channel: one-time SMS code</div>
+                                </td>
+                                <td style="padding:16px 20px;"><span style="display:inline-block;padding:5px 10px;border-radius:4px;background:rgba(26,122,74,.15);border:1px solid rgba(26,122,74,.35);color:#0f766e;font-size:11px;font-weight:700;">TIN + SMS</span></td>
+                                <td style="padding:16px 20px; color:var(--text2);">${OPERATOR_NAME}</td>`;
+                tb.insertBefore(tr, tb.firstChild);
+            }
+
             const auditDiv = document.querySelector('.audit');
             const sessionLog = document.createElement('div');
             sessionLog.className = 'audit-row signlog';
-            sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">Session ' + (currentSessionId || SESSION_ID) + ' opened: operator ' + OPERATOR_NAME + ', visitor confirmation by ' + VISITOR_NAME + ' via SMS</div><div class="atm">' + fmt(now) + '</div>';
+            sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + sessionRef + ' opened • operator ' + OPERATOR_NAME + ' • visitor ' + VISITOR_NAME + ' confirmed by SMS • TIN ' + innVal + '</div><div class="atm">' + fmt(now) + '</div>';
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', sessionLog);
             setTimeout(() => goSc('open'), 300);
@@ -2519,6 +2542,7 @@
                const now = new Date();
                const today_str = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
                const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+               const sessionRef = 'Session #' + (currentSessionId || SESSION_ID) + ' on ' + today_str + ' ' + timeStr;
                const docPref = 'Signed: ';
                const dlText = '🔎 Check status / authenticity';
                const docToken = signResp.token;
@@ -2529,12 +2553,13 @@
                                <td style="padding:16px 20px; font-weight:500; color:var(--text);">
                                   <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
                                              <div style="font-size:11px; color:var(--text3); margin-top:2px;">Version: ${currentSignDocVersion}</div>
+                                                            <div style="font-size:11px; color:var(--text3); margin-top:2px;">${sessionRef}</div>
                                              <div style="margin-top:6px; font-size:11px;"><a href="${checkUrl.toString()}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
                                </td>
                                <td style="padding:16px 20px;">
                                   <div style="display:flex; align-items:center; gap:10px;">
                                                  <img src="${qrSrc}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
-                                                 <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Token:<br>${docToken}</div>
+                                                                 <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Token:<br>${docToken}<br>Session:<br>${currentSessionId || SESSION_ID}</div>
                                   </div>
                                </td>
                                          <td style="padding:16px 20px; color:var(--text2);">${OPERATOR_NAME}</td>`;
@@ -2556,7 +2581,9 @@
             const newLog = document.createElement('div');
             newLog.className = 'audit-row signlog';
             const now = new Date();
-            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Document signed: ' + currentSignDocName + ' • Version ' + currentSignDocVersion + ' • Confirmed by ' + VISITOR_NAME + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
+            const sessionDate = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const sessionTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Document signed: ' + currentSignDocName + ' • Version ' + currentSignDocVersion + ' • Session #' + (currentSessionId || SESSION_ID) + ' on ' + sessionDate + ' ' + sessionTime + ' • Confirmed by ' + VISITOR_NAME + ' (PIN) • Token ' + signResp.token + '</div><div class="atm">' + fmt(now) + '</div>';
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
