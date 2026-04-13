@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status and Authenticity Check</title>
+  <style>
+    :root { --bg:#f4f6f9; --card:#fff; --text:#1e2d40; --muted:#60758f; --line:#d0dae8; --green:#1a7a4a; --green-bg:#ebf7f0; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"IBM Plex Sans","Segoe UI",sans-serif; background:linear-gradient(135deg,#eef3fa 0%,var(--bg) 45%,#eaf6ef 100%); color:var(--text); }
+    .wrap { max-width:920px; margin:0 auto; padding:28px 16px 40px; }
+    .head { background:#0b1f3a; color:#fff; border-radius:10px; padding:18px 20px; margin-bottom:16px; }
+    .head h1 { margin:0 0 6px; font-size:22px; }
+    .head p { margin:0; font-size:13px; opacity:.85; }
+    .grid { display:grid; grid-template-columns:1.2fr .8fr; gap:14px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+    .label { font-size:11px; text-transform:uppercase; color:var(--muted); letter-spacing:.5px; margin-bottom:4px; font-weight:700; }
+    .value { font-size:15px; font-weight:600; margin-bottom:12px; line-height:1.35; }
+    .ok { background:var(--green-bg); color:var(--green); border:1px solid #a3d9bc; border-radius:6px; padding:10px 12px; font-size:13px; font-weight:600; margin-bottom:12px; }
+    .timeline { margin-top:8px; border-top:1px solid var(--line); padding-top:10px; }
+    .event { display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted); padding:6px 0; border-bottom:1px dashed #e5ebf5; }
+    .event strong { color:var(--text); }
+    @media (max-width:820px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>Online Public Service Status Check</h1>
+      <p>Check page via QR token: request stage, document readiness, and authenticity validation.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="ok" id="statusBox">Status: signed and accepted for processing.</div>
+        <div class="label">Document</div><div class="value" id="docName">—</div>
+        <div class="label">Version</div><div class="value" id="docVersion">—</div>
+        <div class="label">Session ID</div><div class="value" id="sessionId">—</div>
+        <div class="label">Verification Token</div><div class="value" id="token">—</div>
+        <div class="timeline" id="timeline"><div class="event"><strong>Loading session events...</strong><span>...</span></div></div>
+      </div>
+      <div class="card">
+        <div class="label">This page allows you to</div>
+        <div class="value" style="font-size:13px; font-weight:500; color:var(--muted); line-height:1.45;">
+          1) Check status of submitted request.<br>
+          2) Track document readiness (passport, certificate, permit).<br>
+          3) Verify authenticity of issued documents and payments.
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token') || 'No token';
+    const fallback = {
+      documentName: params.get('doc') || 'Not specified',
+      documentVersion: params.get('ver') || 'Not specified',
+      sessionId: params.get('sid') || 'Not specified',
+      token,
+      status: params.get('status') || 'Signed and registered'
+    };
+    function fillView(data) {
+      document.getElementById('docName').textContent = data.documentName || fallback.documentName;
+      document.getElementById('docVersion').textContent = data.documentVersion || fallback.documentVersion;
+      document.getElementById('sessionId').textContent = data.sessionId || fallback.sessionId;
+      document.getElementById('token').textContent = data.token || fallback.token;
+      document.getElementById('statusBox').textContent = 'Status: ' + (data.status || fallback.status);
+    }
+    function renderTimeline(events) {
+      const timeline = document.getElementById('timeline');
+      if (!events || !events.length) {
+        timeline.innerHTML = '<div class="event"><strong>No session events found</strong><span>-</span></div>';
+        return;
+      }
+      timeline.innerHTML = events.map((e) => {
+        const ts = (e.timestamp || '').replace('T',' ').slice(0,19) || '-';
+        return '<div class="event"><strong>' + (e.description || e.type || 'Event') + '</strong><span>' + ts + '</span></div>';
+      }).join('');
+    }
+    async function load() {
+      if (!token || token === 'No token') { fillView({}); renderTimeline([]); return; }
+      try {
+        const resp = await fetch('/api/verification/check?token=' + encodeURIComponent(token));
+        const data = await resp.json();
+        if (!data.found) { fillView({}); renderTimeline([]); return; }
+        fillView(data);
+        const sResp = await fetch('/api/verification/session/' + encodeURIComponent(data.sessionId));
+        const sData = await sResp.json();
+        renderTimeline(sData.found ? sData.events : []);
+      } catch (e) {
+        fillView({});
+        renderTimeline([]);
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

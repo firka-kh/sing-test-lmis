@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Signed Document</title>
+  <style>
+    body { margin:0; font-family:"IBM Plex Sans","Segoe UI",sans-serif; background:#f4f6f9; color:#1e2d40; }
+    .page { max-width:860px; margin:24px auto; background:#fff; border:1px solid #d0dae8; border-radius:10px; padding:22px; }
+    h1 { margin:0 0 12px; font-size:22px; }
+    .meta { font-size:13px; color:#60758f; margin-bottom:16px; }
+    .block { background:#f8fbff; border:1px solid #d0dae8; border-radius:8px; padding:14px; margin-bottom:14px; }
+    .row { display:flex; justify-content:space-between; gap:12px; margin-bottom:8px; font-size:14px; }
+    .row:last-child { margin-bottom:0; }
+    .sig { display:flex; align-items:center; gap:14px; background:#ebf7f0; border:1px solid #a3d9bc; border-radius:8px; padding:12px; }
+    .sig small { color:#4a607a; display:block; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Sample Public Service Document</h1>
+    <div class="meta">Document: Allowance Appointment Order No. 44-A • Version: v2.1</div>
+
+    <div class="block">
+      <div class="row"><span>Applicant:</span><strong>Rakhimov Alisher Bakhtiyorovich</strong></div>
+      <div class="row"><span>TIN:</span><strong>500123456789</strong></div>
+      <div class="row"><span>Service:</span><strong>Unemployment allowance assignment</strong></div>
+      <div class="row"><span>Status:</span><strong>Approved</strong></div>
+    </div>
+
+    <div class="sig">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fexample.org%2Fcheck_en.html%3Ftoken%3DDEMO-EXAMPLE-001%26doc%3DAllowance%2520Appointment%2520Order%2520No.%252044-A%26ver%3Dv2.1%26sid%3DSES-DEMO01%26status%3DSigned%2520and%2520accepted" width="96" height="96" alt="QR check">
+      <div>
+        <strong>Signed (PEP PIN)</strong>
+        <small>Operator: Azimov Sandjar Rustamovich</small>
+        <small>Visitor confirmation: Rakhimov Alisher Bakhtiyorovich</small>
+        <small>Session ID: SES-DEMO01</small>
+        <small>Verification token: DEMO-EXAMPLE-001</small>
+        <small><a href="check_en.html?token=DEMO-EXAMPLE-001&doc=Allowance%20Appointment%20Order%20No.%2044-A&ver=v2.1&sid=SES-DEMO01&status=Signed%20and%20accepted" target="_blank" rel="noopener">Open online check page</a></small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
