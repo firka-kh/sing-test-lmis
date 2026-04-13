@@ -122,10 +122,8 @@
         <div class="label">Токен проверки</div>
         <div class="value" id="token">—</div>
 
-        <div class="timeline">
-          <div class="event"><strong>Заявление подано</strong><span id="t1">Сегодня</span></div>
-          <div class="event"><strong>Подтверждено посетителем (PIN)</strong><span id="t2">Сегодня</span></div>
-          <div class="event"><strong>Принято оператором в обработку</strong><span id="t3">Сегодня</span></div>
+        <div class="timeline" id="timeline">
+          <div class="event"><strong>События сессии загружаются...</strong><span>...</span></div>
         </div>
       </div>
 
@@ -159,6 +157,19 @@
       document.getElementById('statusBox').textContent = 'Статус: ' + (data.status || status);
     }
 
+    function renderTimeline(events) {
+      const timeline = document.getElementById('timeline');
+      if (!timeline) return;
+      if (!events || !events.length) {
+        timeline.innerHTML = '<div class="event"><strong>Нет данных по событиям</strong><span>-</span></div>';
+        return;
+      }
+      timeline.innerHTML = events.map((e) => {
+        const ts = (e.timestamp || '').replace('T', ' ').slice(0, 19) || '-';
+        return '<div class="event"><strong>' + (e.description || e.type || 'Событие') + '</strong><span>' + ts + '</span></div>';
+      }).join('');
+    }
+
     async function loadFromApiIfPossible() {
       if (!token || token === 'Нет токена') {
         fillView({});
@@ -169,12 +180,22 @@
         const data = await resp.json();
         if (data.found) {
           fillView(data);
+          try {
+            const sessionResp = await fetch('/api/verification/session/' + encodeURIComponent(data.sessionId));
+            const sessionData = await sessionResp.json();
+            if (sessionData.found) {
+              renderTimeline(sessionData.events);
+            }
+          } catch (e) {
+            renderTimeline([]);
+          }
           return;
         }
       } catch (e) {
         // Keep fallback values from query string.
       }
       fillView({});
+      renderTimeline([]);
     }
 
     loadFromApiIfPossible();
