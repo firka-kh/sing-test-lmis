@@ -2066,6 +2066,8 @@
         const SESSION_ID = 'SES-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         let innVal = '', pinVal = '', bdVal = '', spinVal = '';
         let innOk = false, smsDone_ = false;
+        let currentSessionId = '';
+        let sessionCreateInProgress = false;
 
         
         // ── NAVIGATION TABS ──
@@ -2114,8 +2116,49 @@
         // ── LOGIN ──
         function loginGo() { goSc('search'); }
 
+        // ── API ──
+        async function apiPost(endpoint, payload) {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            return response.json();
+        }
+
+        function setSessionIndicator(text, color) {
+            const el = document.getElementById('session-indicator');
+            if (!el) return;
+            el.textContent = text || '';
+            el.style.color = color || 'var(--text3)';
+        }
+
+        function escHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function fmtSessionTsRu(ts) {
+            if (!ts) return '—';
+            const d = new Date(ts);
+            if (Number.isNaN(d.getTime())) return ts;
+            return d.toLocaleString('ru', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function fmtDurationRu(totalSeconds) {
+            const sec = Math.max(0, Number(totalSeconds) || 0);
+            const h = Math.floor(sec / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = sec % 60;
+            return (h > 0 ? (h + ' ч ') : '') + String(m).padStart(2, '0') + ' мин ' + String(s).padStart(2, '0') + ' сек';
+        }
+
         // ── INN ──
-        function onInn(v) {
+        async function onInn(v) {
             innVal = v.replace(/\D/g, '');
             document.getElementById('inn-inp').value = innVal;
             innOk = innVal === DB.inn;
@@ -2125,6 +2168,42 @@
             if (!innVal.length) { fb.textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; fb.style.color = 'var(--text3)'; }
             else if (innOk) { fb.textContent = '✓ ИНН найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
             else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'ИНН не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            if (!innVal.length) {
+                setSessionIndicator('');
+            }
+
+            if (!innOk) {
+                currentSessionId = '';
+                smsDone_ = false;
+                document.getElementById('op-bd').textContent = 'Ожидание SMS-подтверждения...';
+                document.getElementById('op-bd').className = 'vp-val';
+                setSessionIndicator('');
+            }
+
+            if (innOk && !currentSessionId && !sessionCreateInProgress) {
+                setSessionIndicator('Создание сессии...', 'var(--blue)');
+                sessionCreateInProgress = true;
+                try {
+                    const sessionResp = await apiPost('/create-session', {
+                        inn: innVal,
+                        operatorName: OPERATOR_NAME,
+                        visitorName: VISITOR_NAME
+                    });
+                    if (sessionResp.created) {
+                        currentSessionId = sessionResp.sessionId;
+                        document.getElementById('op-bd').textContent = 'SMS отправлен • ' + currentSessionId;
+                        document.getElementById('op-bd').className = 'vp-val';
+                        setSessionIndicator('Сессия создана, SMS отправлен', 'var(--green)');
+                    }
+                } catch (e) {
+                    document.getElementById('op-bd').textContent = 'Ошибка отправки SMS';
+                    document.getElementById('op-bd').className = 'vp-val';
+                    setSessionIndicator('Не удалось создать сессию', 'var(--red)');
+                } finally {
+                    sessionCreateInProgress = false;
+                }
+            }
+
             checkProceed();
             if (innOk && !smsDone_) { switchPh('ph-pin'); setInst(4); }
         }
@@ -2146,12 +2225,46 @@
         function pp(d) { if (pinVal.length >= 6) return; pinVal += d; updDots(); if (pinVal.length === 6) document.getElementById('pin-ok').disabled = false; playBeep(); }
         function pdel() { pinVal = pinVal.slice(0, -1); document.getElementById('pin-ok').disabled = true; updDots(); }
         function updDots() { for (let i = 1; i <= 6; i++) document.getElementById('pd' + i).className = 'pdot' + (i <= pinVal.length ? ' f' : ''); }
-        function pinDone() {
+        async function pinDone() {
             if (pinVal.length < 6) return;
+
+            if (!currentSessionId) {
+                document.getElementById('pr-ring').className = 'pr-ring err-r';
+                document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'Ошибка сессии';
+                document.getElementById('pr-sub').textContent = 'Создайте сессию введя корректный ИНН.';
+                switchPh('ph-result');
+                return;
+            }
+
+            let confirmResp;
+            try {
+                confirmResp = await apiPost('/confirm-session', {
+                    sessionId: currentSessionId,
+                    smsCode: pinVal
+                });
+            } catch (e) {
+                document.getElementById('pr-ring').className = 'pr-ring err-r';
+                document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'Ошибка соединения';
+                document.getElementById('pr-sub').textContent = 'Не удалось подтвердить SMS-код.';
+                switchPh('ph-result');
+                return;
+            }
+
+            if (!confirmResp.confirmed) {
+                document.getElementById('pr-ring').className = 'pr-ring err-r';
+                document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'SMS не подтвержден';
+                document.getElementById('pr-sub').textContent = 'Введённый код неверен или истёк.';
+                switchPh('ph-result');
+                return;
+            }
+
             smsDone_ = true;
             document.getElementById('op-pin').textContent = '✓ SMS-код подтвержден';
             document.getElementById('op-pin').className = 'vp-val ok';
-            document.getElementById('op-bd').textContent = '✓ ' + SESSION_ID;
+            document.getElementById('op-bd').textContent = '✓ ' + currentSessionId;
             document.getElementById('op-bd').className = 'vp-val ok';
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r';
@@ -2159,6 +2272,68 @@
             document.getElementById('pr-title').textContent = 'Сессия подтверждена';
             document.getElementById('pr-sub').innerHTML = 'SMS-код принят.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Оператор может перейти к подтверждению и открыть карточку.</span>';
             checkProceed();
+        }
+
+        async function waitForSessionCreation(maxWaitMs = 3000) {
+            const started = Date.now();
+            while (sessionCreateInProgress && (Date.now() - started) < maxWaitMs) {
+                await new Promise(resolve => setTimeout(resolve, 60));
+            }
+            return !!currentSessionId;
+        }
+
+        async function renderSessionDetails() {
+            const refEl = document.getElementById('session-detail-ref');
+            const durEl = document.getElementById('session-detail-duration');
+            const ipEl = document.getElementById('session-detail-ip');
+            const uaEl = document.getElementById('session-detail-ua');
+            const eventsEl = document.getElementById('session-detail-events');
+            if (!refEl || !durEl || !ipEl || !uaEl || !eventsEl) return;
+
+            if (!currentSessionId) {
+                refEl.textContent = 'Нет активной сессии';
+                durEl.textContent = '—';
+                ipEl.textContent = '—';
+                uaEl.textContent = '—';
+                eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">После подтверждения появится подробный журнал шагов сессии.</div>';
+                return;
+            }
+
+            eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">Загрузка истории сессии...</div>';
+            try {
+                const resp = await fetch('/api/verification/session/' + encodeURIComponent(currentSessionId));
+                const data = await resp.json();
+                if (!data.found) {
+                    eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">История сессии недоступна</div>';
+                    return;
+                }
+
+                const startedAt = fmtSessionTsRu(data.createdAt);
+                refEl.textContent = 'Сессия №' + data.sessionId + ' от ' + startedAt;
+                durEl.textContent = fmtDurationRu(data.durationSeconds);
+                ipEl.textContent = data.createdIp || 'unknown';
+                uaEl.textContent = data.createdUserAgent || 'unknown';
+
+                const events = Array.isArray(data.events) ? data.events : [];
+                if (!events.length) {
+                    eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">Событий пока нет</div>';
+                    return;
+                }
+
+                eventsEl.innerHTML = events.map((evt, idx) => {
+                    const markerColor = evt.type === 'DOCUMENT_SIGNED' ? 'var(--green)' : evt.type === 'SMS_CONFIRMED' ? 'var(--blue)' : 'var(--text3)';
+                    return `<div style="display:grid; grid-template-columns:10px 1fr; gap:10px; padding:10px 0; border-bottom:${idx === events.length - 1 ? 'none' : '1px solid var(--border)'};">
+                                <div style="width:10px; height:10px; border-radius:50%; margin-top:4px; background:${markerColor};"></div>
+                                <div>
+                                    <div style="font-size:13px; color:var(--text); font-weight:600;">${escHtml(evt.description)}</div>
+                                    <div style="margin-top:4px; font-size:11px; color:var(--text3);">${escHtml(evt.type || 'EVENT')} • ${escHtml(fmtSessionTsRu(evt.timestamp))}</div>
+                                    <div style="margin-top:2px; font-size:11px; color:var(--text3);">IP: ${escHtml(evt.ip || 'unknown')} • UA: ${escHtml((evt.userAgent || 'unknown').slice(0, 120))}</div>
+                                </div>
+                            </div>`;
+                }).join('');
+            } catch (e) {
+                eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">Ошибка загрузки истории сессии</div>';
+            }
         }
 
         // ── BD ──
@@ -2252,23 +2427,24 @@
             document.getElementById('pr-title').textContent = 'Отказано оператором'; document.getElementById('pr-sub').innerHTML = 'Оператор отклонил запрос на верификацию. Доступ в систему запрещен.';
         }
 
-        function openCard() {
+        async function openCard() {
             document.getElementById('nav-audit').classList.remove('disabled');
             document.getElementById('nav-audit').style.cursor = 'pointer';
             document.getElementById('nav-audit').style.opacity = '1';
             document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
-            document.getElementById('ok-sub').textContent = 'Сессия ' + SESSION_ID + ' подтверждена по SMS в ' + fmt(now) + ' • Оператор: ' + OPERATOR_NAME;
+            document.getElementById('ok-sub').textContent = 'Сессия ' + currentSessionId + ' подтверждена по SMS в ' + fmt(now) + ' • Оператор: ' + OPERATOR_NAME;
             document.getElementById('at1').textContent = fmt(now);
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
             const auditDiv = document.querySelector('.audit');
             const sessionLog = document.createElement('div');
             sessionLog.className = 'audit-row signlog';
-            sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">Сессия ' + SESSION_ID + ' открыта: оператор ' + OPERATOR_NAME + ', подтверждение посетителя ' + VISITOR_NAME + ' по SMS</div><div class="atm">' + fmt(now) + '</div>';
+            sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">Сессия ' + currentSessionId + ' открыта: оператор ' + OPERATOR_NAME + ', подтверждение посетителя ' + VISITOR_NAME + ' по SMS</div><div class="atm">' + fmt(now) + '</div>';
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', sessionLog);
+            await renderSessionDetails();
             setTimeout(() => goSc('open'), 300);
         }
 
@@ -2368,7 +2544,7 @@
             }
         }
         
-        function signDone() {
+        async function signDone() {
             if (spinVal.length < 6) return;
             playSuccess();
             switchPh('ph-result');
@@ -2392,7 +2568,7 @@
                const checkUrl = new URL('check.html', window.location.href);
                checkUrl.searchParams.set('doc', currentSignDocName);
                checkUrl.searchParams.set('ver', currentSignDocVersion);
-               checkUrl.searchParams.set('sid', SESSION_ID);
+               checkUrl.searchParams.set('sid', currentSessionId);
                checkUrl.searchParams.set('token', docToken);
                checkUrl.searchParams.set('status', 'Подписано и принято в обработку');
                const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(checkUrl.toString());
@@ -2432,6 +2608,7 @@
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
+            await renderSessionDetails();
         }
 
         // ── SOUNDS ──
@@ -2442,13 +2619,15 @@
         function playError() { const c = ac(); if (!c) return;[280, 160].forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.type = 'sawtooth'; o.frequency.value = f; const t = c.currentTime + i * .2; g.gain.setValueAtTime(.001, t); g.gain.linearRampToValueAtTime(.18, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + .28); o.start(t); o.stop(t + .32); }); }
 
         // ── RESET ──
-        function resetAll() {
+        async function resetAll() {
             switchTab('verification');
             document.getElementById('nav-audit').classList.add('disabled');
             document.getElementById('nav-audit').style.cursor = 'not-allowed';
             document.getElementById('nav-audit').style.opacity = '0.4';
             document.getElementById('nav-audit').title = 'Успешно верифицируйте посетителя';
             innVal = ''; pinVal = ''; bdVal = ''; innOk = false; smsDone_ = false;
+            currentSessionId = '';
+            sessionCreateInProgress = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; document.getElementById('inn-fb').style.color = 'var(--text3)';
             document.getElementById('op-pin').textContent = 'Ожидание ввода...'; document.getElementById('op-pin').className = 'vp-val';
@@ -2473,6 +2652,8 @@
             document.getElementById('doc-signature').style.color = 'var(--text3)';
             document.getElementById('doc-signature-2').textContent = 'Подпись: не подписано';
             document.getElementById('doc-signature-2').style.color = 'var(--text3)';
+            await renderSessionDetails();
+        }
             document.querySelectorAll('.signlog').forEach(e => e.remove());
 
             document.getElementById('perm-box').style.display = 'none';
