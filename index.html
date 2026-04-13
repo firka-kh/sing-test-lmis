@@ -1630,21 +1630,21 @@
                         <!-- Visitor status -->
                         <div class="vpanels">
                             <div class="vpanel">
-                                <div class="vp-icon">🔐</div>
-                                <div class="vp-lbl">PIN-код</div>
+                                <div class="vp-icon">📲</div>
+                                <div class="vp-lbl">SMS-код</div>
                                 <div class="vp-val" id="op-pin">Ожидание ввода...</div>
                             </div>
                             <div class="vpanel">
-                                <div class="vp-icon">🎂</div>
-                                <div class="vp-lbl">Дата рождения</div>
-                                <div class="vp-val" id="op-bd">Ожидание ввода...</div>
+                                <div class="vp-icon">🧾</div>
+                                <div class="vp-lbl">Сессия</div>
+                                <div class="vp-val" id="op-bd">Ожидание SMS-подтверждения...</div>
                             </div>
                         </div>
 
                         <div class="prog-wrap">
                             <div class="prog-meta">
                                 <span id="plbl">Статус верификации</span>
-                                <span id="ppct">0 / 3</span>
+                                <span id="ppct">0 / 2</span>
                             </div>
                             <div class="prog-track">
                                 <div class="prog-bar" id="pbar"></div>
@@ -1654,7 +1654,7 @@
                         <button class="btn btn-primary btn-full" id="btn-proceed" onclick="step2()" disabled>Перейти к
                             подтверждению →</button>
                         <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px" id="phint">
-                            Кнопка станет активной после ввода всех данных</div>
+                            Кнопка станет активной после ввода ИНН и подтверждения по SMS</div>
 
                     </div>
                 </div>
@@ -1719,18 +1719,18 @@
                                 <div class="cgi-st" id="ci-in-s">—</div>
                             </div>
                             <div class="cgi" id="ci-pi">
-                                <div class="cgi-lbl">PIN-код</div>
+                                <div class="cgi-lbl">SMS-код</div>
                                 <div class="cgi-val">● ● ● ● ● ●</div>
-                                <div class="cgi-st" id="ci-pi-s">Введён посетителем</div>
+                                <div class="cgi-st" id="ci-pi-s">Ожидает подтверждения посетителя</div>
                             </div>
                             <div class="cgi" id="ci-bd">
-                                <div class="cgi-lbl">Дата рождения (ввод посетителя)</div>
+                                <div class="cgi-lbl">ID сессии</div>
                                 <div class="cgi-val" id="ci-bd-v">—</div>
                                 <div class="cgi-st" id="ci-bd-s">—</div>
                             </div>
                             <div class="cgi" id="ci-db">
-                                <div class="cgi-lbl">Дата рождения (система)</div>
-                                <div class="cgi-val">15.03.1988</div>
+                                <div class="cgi-lbl">Подтверждение посетителя</div>
+                                <div class="cgi-val">Рахимов Алишер Бахтиёрович</div>
                                 <div class="cgi-st" id="ci-db-s">—</div>
                             </div>
                         </div>
@@ -1763,7 +1763,7 @@
                             <div class="ao-icon">✅</div>
                             <div>
                                 <div class="ao-title">Личность подтверждена — карточка открыта</div>
-                                <div class="ao-sub" id="ok-sub">ИНН + PIN-код + Дата рождения совпали</div>
+                                <div class="ao-sub" id="ok-sub">ИНН + SMS-код подтверждены</div>
                             </div>
                         </div>
                         <div class="info-grid">
@@ -1778,15 +1778,17 @@
                         
                         <div class="docs-section" style="margin-top:0px;margin-bottom:16px;padding:16px;background:rgba(26, 86, 160, .05);border-radius:6px;border:1px solid #93C5FD;">
                             <div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--blue);">📄 Заявление: Поиск подходящей работы</div>
+                            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Версия документа: v1.3</div>
                             <div style="background:#fff;border:1px solid var(--border);border-radius:4px;padding:12px;margin-bottom:12px;font-size:12px;">
                                 <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Желаемая должность:</div><div style="font-weight:600;">Инженер-строитель, Архитектор</div></div>
                                 <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Минимальная зарплата:</div><div style="font-weight:600;">от 3 500 сомони</div></div>
                                 <div style="display:flex;margin-bottom:8px;"><div style="width:160px;color:var(--text3);">Согласие на переобучение:</div><div style="font-weight:600;">Да</div></div>
                                 <div style="display:flex;"><div style="width:160px;color:var(--text3);">Локация работы:</div><div style="font-weight:600;">г. Душанбе, р-н Рудаки</div></div>
                             </div>
+                            <div id="doc-signature-2" style="font-size:11px;color:var(--text3);margin-bottom:10px;">Подпись: не подписано</div>
                             <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;">
                                 <div style="font-size:11px;color:var(--text3);" id="doc-status-2">Ожидает отправки на подпись</div>
-                                <button class="btn btn-primary" id="btn-req-sign-2" onclick="reqSign('Заявление: Поиск подходящей работы', 'btn-req-sign-2', 'doc-status-2')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                                <button class="btn btn-primary" id="btn-req-sign-2" onclick="reqSign('Заявление: Поиск подходящей работы', 'v1.3', 'btn-req-sign-2', 'doc-status-2', 'doc-signature-2')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
                             </div>
                         </div>
                         <div class="docs-section" style="margin-top:20px;margin-bottom:20px;padding:16px;background:var(--gray);border-radius:6px;border:1px solid var(--border);">
@@ -1794,16 +1796,18 @@
                             <div class="doc-item" style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border:1px solid var(--border);border-radius:4px;">
                                 <div>
                                     <div style="font-weight:600;font-size:13px;">Приказ о назначении пособия №44-А</div>
+                                    <div style="font-size:11px;color:var(--text3);margin-top:2px;">Версия: v2.1</div>
                                     <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-status">Ожидает отправки на подпись</div>
+                                    <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="doc-signature">Подпись: не подписано</div>
                                 </div>
-                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign('Приказ о назначении пособия №44-А', 'btn-req-sign', 'doc-status')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
+                                <button class="btn btn-primary" id="btn-req-sign" onclick="reqSign('Приказ о назначении пособия №44-А', 'v2.1', 'btn-req-sign', 'doc-status', 'doc-signature')" style="padding:6px 12px;font-size:12px;">Запросить подпись →</button>
                             </div>
                         </div>
                         <div class="audit">
-                            <div class="audit-title">Журнал верификации</div>
+                            <div class="audit-title">Журнал сессии</div>
                             <div class="audit-row">
                                 <div class="adot g"></div>
-                                <div class="atxt" id="al1">Личность подтверждена: ИНН + PIN-код + Дата рождения</div>
+                                <div class="atxt" id="al1">Сессия ожидает SMS-подтверждения посетителя</div>
                                 <div class="atm" id="at1"></div>
                             </div>
                             <div class="audit-row">
@@ -1846,8 +1850,8 @@
                     <!-- PIN -->
                     <div class="ps" id="ph-pin">
                         <div class="ph-hdr">
-                            <div class="ph-hdr-t">Введите PIN-код</div>
-                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 1 из 2 • Демо: 1 2 3 4 5 6</div>
+                            <div class="ph-hdr-t">Подтвердите сессию по SMS</div>
+                            <div class="ph-hdr-s">ЦЗН Душанбе • Шаг 1 из 1 • Демо-код: 1 2 3 4 5 6</div>
                         </div>
                         <div class="ph-body">
                             <div class="pin-area">
@@ -1859,7 +1863,7 @@
                                     <div class="pdot" id="pd5"></div>
                                     <div class="pdot" id="pd6"></div>
                                 </div>
-                                <div class="pin-hint">6-значный PIN-код</div>
+                                <div class="pin-hint">6-значный код из SMS</div>
                             </div>
                             <div class="numpad">
                                 <button class="nb" onclick="pp('1')">1</button><button class="nb"
@@ -1905,11 +1909,16 @@
                     <div class="ps" id="ph-sign">
                         <div class="ph-hdr">
                             <div class="ph-hdr-t">Подписание документа</div>
-                            <div class="ph-hdr-s">Приказ о назначении пособия №44-А</div>
+                            <div class="ph-hdr-s" id="sign-doc-sub">Проверьте реквизиты перед вводом PIN</div>
                         </div>
                         <div class="ph-body">
+                            <div style="border:1px solid var(--border);border-radius:8px;background:#fff;padding:10px;margin-bottom:12px;">
+                                <div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">Вы подписываете</div>
+                                <div id="sign-doc-title" style="font-size:13px;font-weight:700;color:var(--text);line-height:1.35;">—</div>
+                                <div id="sign-doc-version" style="font-size:11px;color:var(--text2);margin-top:2px;">Версия: —</div>
+                            </div>
                             <div style="font-size:13px;text-align:center;margin-bottom:16px;color:var(--text2);line-height:1.4;">
-                                Для подтверждения подписания<br>введите ваш <b>PIN-код</b>
+                                Для подтверждения подписи введите ваш <b>PIN-код</b>.<br>Проверьте название и версию документа выше.
                             </div>
                             <div class="pin-area">
                                 <div class="pdots">
@@ -1957,7 +1966,7 @@
                 </div>
                 <div class="ist">
                     <div class="inum" id="in4">4</div>
-                    <div class="itxt" id="it4">Посетитель: PIN-код + дата рождения</div>
+                    <div class="itxt" id="it4">Посетитель: подтверждение SMS-сессии</div>
                 </div>
                 <div class="ist">
                     <div class="inum" id="in5">5</div>
@@ -2051,8 +2060,11 @@
     <script>
         // ── DB ──
         const DB = { inn: '500123456789' };
+        const OPERATOR_NAME = 'Азимов Санджар Рустамович';
+        const VISITOR_NAME = 'Рахимов Алишер Бахтиёрович';
+        const SESSION_ID = 'SES-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         let innVal = '', pinVal = '', bdVal = '', spinVal = '';
-        let innOk = false, pinDone_ = false, bdDone_ = false;
+        let innOk = false, smsDone_ = false;
 
         
         // ── NAVIGATION TABS ──
@@ -2113,21 +2125,20 @@
             else if (innOk) { fb.textContent = '✓ ИНН найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
             else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'ИНН не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
             checkProceed();
-            if (innOk && !pinDone_) { switchPh('ph-pin'); setInst(4); }
+            if (innOk && !smsDone_) { switchPh('ph-pin'); setInst(4); }
         }
         function checkProceed() {
-            const ready = innOk && pinDone_ && bdDone_;
+            const ready = innOk && smsDone_;
             document.getElementById('btn-proceed').disabled = !ready;
             const ph = document.getElementById('phint');
-            if (ready) { ph.textContent = 'Все данные получены — нажмите «Перейти к подтверждению»'; ph.style.color = 'var(--green)'; }
+            if (ready) { ph.textContent = 'ИНН и SMS подтверждены — нажмите «Перейти к подтверждению»'; ph.style.color = 'var(--green)'; }
             else if (!innOk) { ph.textContent = 'Введите корректный ИНН (12 цифр)'; ph.style.color = 'var(--text3)'; }
-            else if (!pinDone_) { ph.textContent = 'Ожидание PIN-кода от посетителя...'; ph.style.color = 'var(--blue)'; }
-            else { ph.textContent = 'Ожидание даты рождения от посетителя...'; ph.style.color = 'var(--blue)'; }
-            const done = [innOk, pinDone_, bdDone_].filter(Boolean).length;
-            document.getElementById('pbar').style.width = (done / 3 * 100) + '%';
-            document.getElementById('pbar').className = 'prog-bar' + (done === 3 ? ' ok' : '');
-            document.getElementById('ppct').textContent = done + ' / 3';
-            document.getElementById('plbl').textContent = done === 3 ? 'Верификация завершена' : 'Прогресс верификации';
+            else { ph.textContent = 'Ожидание SMS-кода от посетителя...'; ph.style.color = 'var(--blue)'; }
+            const done = [innOk, smsDone_].filter(Boolean).length;
+            document.getElementById('pbar').style.width = (done / 2 * 100) + '%';
+            document.getElementById('pbar').className = 'prog-bar' + (done === 2 ? ' ok' : '');
+            document.getElementById('ppct').textContent = done + ' / 2';
+            document.getElementById('plbl').textContent = done === 2 ? 'Верификация завершена' : 'Прогресс верификации';
         }
 
         // ── VISITOR PIN ──
@@ -2136,10 +2147,17 @@
         function updDots() { for (let i = 1; i <= 6; i++) document.getElementById('pd' + i).className = 'pdot' + (i <= pinVal.length ? ' f' : ''); }
         function pinDone() {
             if (pinVal.length < 6) return;
-            pinDone_ = true;
-            document.getElementById('op-pin').textContent = '✓ Введён';
+            smsDone_ = true;
+            document.getElementById('op-pin').textContent = '✓ SMS-код подтвержден';
             document.getElementById('op-pin').className = 'vp-val ok';
-            initBdCells(); switchPh('ph-bd'); checkProceed();
+            document.getElementById('op-bd').textContent = '✓ ' + SESSION_ID;
+            document.getElementById('op-bd').className = 'vp-val ok';
+            switchPh('ph-result');
+            document.getElementById('pr-ring').className = 'pr-ring ok-r';
+            document.getElementById('pr-ring').textContent = '✓';
+            document.getElementById('pr-title').textContent = 'Сессия подтверждена';
+            document.getElementById('pr-sub').innerHTML = 'SMS-код принят.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Оператор может перейти к подтверждению и открыть карточку.</span>';
+            checkProceed();
         }
 
         // ── BD ──
@@ -2167,7 +2185,6 @@
         function bdel() { bdVal = bdVal.slice(0, -1); document.getElementById('bd-ok').disabled = true; updBdCells(); }
         function bdDone() {
             if (bdVal.length < 8) return;
-            bdDone_ = true;
             const f = bdVal.slice(0, 2) + '.' + bdVal.slice(2, 4) + '.' + bdVal.slice(4, 8);
             document.getElementById('op-bd').textContent = '✓ ' + f;
             document.getElementById('op-bd').className = 'vp-val ok';
@@ -2181,16 +2198,15 @@
 
         // ── STEP 2 ──
         function step2() {
-            const f = bdVal.slice(0, 2) + '.' + bdVal.slice(2, 4) + '.' + bdVal.slice(4, 8);
             document.getElementById('ci-in-v').textContent = innVal.replace(/(\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4');
             document.getElementById('ci-in-s').textContent = innOk ? '✓ Найден в базе данных' : '✕ Не найден';
             document.getElementById('ci-in').className = 'cgi ' + (innOk ? 'ok' : 'err');
             document.getElementById('ci-pi').className = 'cgi ok';
-            document.getElementById('ci-pi-s').textContent = '✓ Введён посетителем';
-            document.getElementById('ci-bd-v').textContent = f;
-            document.getElementById('ci-bd-s').textContent = '✓ Введена посетителем';
+            document.getElementById('ci-pi-s').textContent = '✓ Подтвержден посетителем';
+            document.getElementById('ci-bd-v').textContent = SESSION_ID;
+            document.getElementById('ci-bd-s').textContent = '✓ Сессия создана';
             document.getElementById('ci-bd').className = 'cgi ok';
-            document.getElementById('ci-db-s').textContent = '✓ Совпадает';
+            document.getElementById('ci-db-s').textContent = '✓ SMS-подтверждение получено';
             document.getElementById('ci-db').className = 'cgi ok';
             document.getElementById('ci-pp').className = 'cgi';
             document.getElementById('ci-nm').className = 'cgi';
@@ -2203,6 +2219,7 @@
         function confirm_() {
             const errors = [];
             if (!innOk) errors.push('ИНН не найден в системе — проверьте правильность ввода');
+            if (!smsDone_) errors.push('Посетитель не подтвердил SMS-код');
             if (errors.length > 0) {
                 playError();
                 const eb = document.getElementById('eblk'); eb.className = 'alert alert-error show';
@@ -2217,7 +2234,7 @@
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
             document.getElementById('pr-title').textContent = 'Аутентификация пройдена';
-            document.getElementById('pr-sub').innerHTML = 'Ваша личность подтверждена.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Все действия в рамках данной сессии считаются подтверждёнными вами согласно Соглашению о ПЭП № ___.</span>';
+            document.getElementById('pr-sub').innerHTML = 'Сессия подтверждена по SMS.<br><br><span style="color:#fff; opacity:0.9; font-size:13px; line-height:1.4; display:block;">Дальнейшие документы подписываются PIN-кодом посетителя с показом названия и версии.</span>';
             document.getElementById('perm-box').style.display = 'block';
             startTypewriter();
             document.getElementById('btn-open').style.display = 'flex';
@@ -2241,10 +2258,16 @@
             document.getElementById('nav-audit').title = '';
             playSuccess();
             const now = new Date();
-            document.getElementById('ok-sub').textContent = 'Верифицировано ' + fmt(now) + ' • Оператор: Азимов Санджар Рустамович';
+            document.getElementById('ok-sub').textContent = 'Сессия ' + SESSION_ID + ' подтверждена по SMS в ' + fmt(now) + ' • Оператор: ' + OPERATOR_NAME;
             document.getElementById('at1').textContent = fmt(now);
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
+            const auditDiv = document.querySelector('.audit');
+            const sessionLog = document.createElement('div');
+            sessionLog.className = 'audit-row signlog';
+            sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">Сессия ' + SESSION_ID + ' открыта: оператор ' + OPERATOR_NAME + ', подтверждение посетителя ' + VISITOR_NAME + ' по SMS</div><div class="atm">' + fmt(now) + '</div>';
+            const title = auditDiv.querySelector('.audit-title');
+            title.insertAdjacentElement('afterend', sessionLog);
             setTimeout(() => goSc('open'), 300);
         }
 
@@ -2298,15 +2321,23 @@
         // ── SIGNATURE ──
         
         let currentSignDocName = '';
+        let currentSignDocVersion = '';
         let currentSignBtn = '';
         let currentSignStatus = '';
-        function reqSign(docName, btnId, statusId) {
+        let currentSignLabel = '';
+        function reqSign(docName, docVersion, btnId, statusId, labelId) {
             currentSignDocName = docName;
+            currentSignDocVersion = docVersion;
             currentSignBtn = btnId;
             currentSignStatus = statusId;
+            currentSignLabel = labelId;
             
-            const phHdrS = document.querySelector('#ph-sign .ph-hdr-s');
-            if (phHdrS) phHdrS.textContent = docName;
+            const signDocTitle = document.getElementById('sign-doc-title');
+            const signDocVersion = document.getElementById('sign-doc-version');
+            const signDocSub = document.getElementById('sign-doc-sub');
+            if (signDocTitle) signDocTitle.textContent = docName;
+            if (signDocVersion) signDocVersion.textContent = 'Версия: ' + docVersion;
+            if (signDocSub) signDocSub.textContent = 'Сессия ' + SESSION_ID + ' • Подписание ПЭП (PIN)';
             
             spinVal = '';
             updSDots();
@@ -2342,7 +2373,7 @@
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
             document.getElementById('pr-title').textContent = 'Документ подписан';
-            document.getElementById('pr-sub').innerHTML = 'Вы подписали:<br><br><span style="color:#fff; font-size:16px; font-weight:600; display:block; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; line-height:1.3;">' + currentSignDocName + '</span>';
+            document.getElementById('pr-sub').innerHTML = 'Вы подписали:<br><br><span style="color:#fff; font-size:16px; font-weight:600; display:block; padding:12px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:8px; line-height:1.3;">' + currentSignDocName + '<br><span style="font-size:13px;font-weight:500;opacity:.9">Версия: ' + currentSignDocVersion + '</span></span>';
             
             // Append to audit table dynamically
             const tb = document.getElementById('audit-table-body');
@@ -2355,37 +2386,48 @@
                const today_str = now.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
                const timeStr = now.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
                const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
-               const dlText = window.location.pathname.includes('_en') ? '📥 Download PDF original' : '📥 Скачать PDF-оригинал';
-               
-               // Generate a fake hash for demo
-               const fakeHash = '0x' + Math.random().toString(16).substr(2, 4) + '...' + Math.random().toString(16).substr(2, 3);
-               const fullHash = fakeHash.replace('...', 'a1b2c');
+               const dlText = window.location.pathname.includes('_en') ? '🔎 Check status / authenticity' : '🔎 Проверить статус и подлинность';
+               const docToken = 'DOC-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+               const checkUrl = new URL('check.html', window.location.href);
+               checkUrl.searchParams.set('doc', currentSignDocName);
+               checkUrl.searchParams.set('ver', currentSignDocVersion);
+               checkUrl.searchParams.set('sid', SESSION_ID);
+               checkUrl.searchParams.set('token', docToken);
+               checkUrl.searchParams.set('status', 'Подписано и принято в обработку');
+               const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(checkUrl.toString());
                
                tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
                                <td style="padding:16px 20px; font-weight:500; color:var(--text);">
-                                  <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
-                                  <div style="margin-top:6px; font-size:11px;"><a href="#" onclick="alert('Скачивание файла...')" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
+                                             <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
+                                             <div style="font-size:11px; color:var(--text3); margin-top:2px;">Версия: ${currentSignDocVersion}</div>
+                                             <div style="margin-top:6px; font-size:11px;"><a href="${checkUrl.toString()}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
                                </td>
                                <td style="padding:16px 20px;">
                                   <div style="display:flex; align-items:center; gap:10px;">
-                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=https://mtizn.tj/registry/doc/${fullHash}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
-                                     <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Хэш:<br>${fakeHash}</div>
+                                                 <img src="${qrSrc}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
+                                                 <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Токен:<br>${docToken}</div>
                                   </div>
                                </td>
-                               <td style="padding:16px 20px; color:var(--text2);">Азимов С.Р.</td>`;
+                                         <td style="padding:16px 20px; color:var(--text2);">${OPERATOR_NAME}</td>`;
                tb.insertBefore(tr, tb.firstChild);
+
+                    const label = document.getElementById(currentSignLabel);
+                    if (label) {
+                          label.innerHTML = 'Подписано: ' + today_str + ' ' + timeStr + ' • ' + VISITOR_NAME + '<br><a href="' + checkUrl.toString() + '" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">QR / Проверка</a>';
+                          label.style.color = 'var(--green)';
+                    }
             }
 
             document.getElementById('perm-box').style.display = 'none';
             
-            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
+            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано (ПЭП PIN)';
             document.getElementById(currentSignStatus).style.color = 'var(--green)';
             
             const auditDiv = document.querySelector('.audit');
             const newLog = document.createElement('div');
             newLog.className = 'audit-row signlog';
             const now = new Date();
-            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + (document.querySelector('.pr-title').textContent.includes('Document Signed') ? 'Document signed: ' : 'Документ подписан: ') + currentSignDocName + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + (document.querySelector('.pr-title').textContent.includes('Document Signed') ? 'Document signed: ' : 'Документ подписан: ') + currentSignDocName + ' • Версия ' + currentSignDocVersion + ' • Подтвердил ' + VISITOR_NAME + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
@@ -2405,21 +2447,31 @@
             document.getElementById('nav-audit').style.cursor = 'not-allowed';
             document.getElementById('nav-audit').style.opacity = '0.4';
             document.getElementById('nav-audit').title = 'Успешно верифицируйте посетителя';
-            innVal = ''; pinVal = ''; bdVal = ''; innOk = false; pinDone_ = false; bdDone_ = false;
+            innVal = ''; pinVal = ''; bdVal = ''; innOk = false; smsDone_ = false;
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; document.getElementById('inn-fb').style.color = 'var(--text3)';
             document.getElementById('op-pin').textContent = 'Ожидание ввода...'; document.getElementById('op-pin').className = 'vp-val';
-            document.getElementById('op-bd').textContent = 'Ожидание ввода...'; document.getElementById('op-bd').className = 'vp-val';
+            document.getElementById('op-bd').textContent = 'Ожидание SMS-подтверждения...'; document.getElementById('op-bd').className = 'vp-val';
             document.getElementById('btn-proceed').disabled = true;
             document.getElementById('pbar').style.width = '0%'; document.getElementById('pbar').className = 'prog-bar';
-            document.getElementById('ppct').textContent = '0 / 3'; document.getElementById('plbl').textContent = 'Статус верификации';
-            document.getElementById('phint').textContent = 'Кнопка станет активной после ввода всех данных'; document.getElementById('phint').style.color = 'var(--text3)';
+            document.getElementById('ppct').textContent = '0 / 2'; document.getElementById('plbl').textContent = 'Статус верификации';
+            document.getElementById('phint').textContent = 'Кнопка станет активной после ввода ИНН и подтверждения по SMS'; document.getElementById('phint').style.color = 'var(--text3)';
             updDots(); document.getElementById('pin-ok').disabled = true;
             bdVal = ''; document.getElementById('bd-ok').disabled = true;
             spinVal = '';
             document.getElementById('btn-req-sign').style.display = 'block';
-            document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано электронной подписью (PIN)';
+            document.getElementById('btn-req-sign-2').style.display = 'block';
+            if (currentSignStatus) {
+                document.getElementById(currentSignStatus).textContent = document.querySelector('.pr-title').textContent.includes('Document Signed') ? '✓ Signed electronically (PIN)' : '✓ Подписано (ПЭП PIN)';
+            }
+            document.getElementById('doc-status').textContent = 'Ожидает отправки на подпись';
             document.getElementById('doc-status').style.color = 'var(--text3)';
+            document.getElementById('doc-status-2').textContent = 'Ожидает отправки на подпись';
+            document.getElementById('doc-status-2').style.color = 'var(--text3)';
+            document.getElementById('doc-signature').textContent = 'Подпись: не подписано';
+            document.getElementById('doc-signature').style.color = 'var(--text3)';
+            document.getElementById('doc-signature-2').textContent = 'Подпись: не подписано';
+            document.getElementById('doc-signature-2').style.color = 'var(--text3)';
             document.querySelectorAll('.signlog').forEach(e => e.remove());
 
             document.getElementById('perm-box').style.display = 'none';
@@ -2433,6 +2485,8 @@
         document.getElementById('sc-login').classList.add('on');
         document.querySelectorAll('.ps').forEach(e => e.classList.remove('on'));
         document.getElementById('ph-wait').classList.add('on');
+        document.getElementById('ci-bd-v').textContent = SESSION_ID;
+        document.getElementById('ci-bd-s').textContent = 'Ожидает подтверждения';
         setInst(1);
     </script>
 </body>

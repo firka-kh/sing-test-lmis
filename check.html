@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка статуса и подлинности</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1e2d40;
+      --muted: #60758f;
+      --line: #d0dae8;
+      --blue: #1a56a0;
+      --green: #1a7a4a;
+      --green-bg: #ebf7f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #eef3fa 0%, var(--bg) 45%, #eaf6ef 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 28px 16px 40px;
+    }
+    .head {
+      background: #0b1f3a;
+      color: #fff;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .head h1 { margin: 0 0 6px; font-size: 22px; }
+    .head p { margin: 0; font-size: 13px; opacity: .85; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: .5px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .value {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .ok {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid #a3d9bc;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 13px;
+    }
+    .timeline {
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .event {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 0;
+      border-bottom: 1px dashed #e5ebf5;
+    }
+    .event strong { color: var(--text); }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>Онлайн-проверка статуса госуслуги</h1>
+      <p>Страница проверки по QR-коду: статус заявления, готовность документов, подлинность выданного документа.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="ok" id="statusBox">Статус: документ проверен и подписан в рамках сессии.</div>
+
+        <div class="label">Документ</div>
+        <div class="value" id="docName">—</div>
+
+        <div class="label">Версия документа</div>
+        <div class="value" id="docVersion">—</div>
+
+        <div class="label">ID сессии</div>
+        <div class="value" id="sessionId">—</div>
+
+        <div class="label">Токен проверки</div>
+        <div class="value" id="token">—</div>
+
+        <div class="timeline">
+          <div class="event"><strong>Заявление подано</strong><span id="t1">Сегодня</span></div>
+          <div class="event"><strong>Подтверждено посетителем (PIN)</strong><span id="t2">Сегодня</span></div>
+          <div class="event"><strong>Принято оператором в обработку</strong><span id="t3">Сегодня</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Эта страница позволяет</div>
+        <ul>
+          <li>Проверить статус поданного заявления и этап рассмотрения запроса.</li>
+          <li>Отследить готовность документов (паспорт, справка, разрешение).</li>
+          <li>Подтвердить подлинность документа или квитанции по токену и QR.</li>
+        </ul>
+
+        <div class="label" style="margin-top:16px;">Источник</div>
+        <div class="value" style="font-size:13px; font-weight:500; color:var(--muted);">Демонстрационный реестр LMIS / check</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const doc = params.get('doc') || 'Не указан';
+    const ver = params.get('ver') || 'Не указана';
+    const sid = params.get('sid') || 'Не указан';
+    const token = params.get('token') || 'Нет токена';
+    const status = params.get('status') || 'Подписано и зарегистрировано';
+
+    function fillView(data) {
+      document.getElementById('docName').textContent = data.documentName || doc;
+      document.getElementById('docVersion').textContent = data.documentVersion || ver;
+      document.getElementById('sessionId').textContent = data.sessionId || sid;
+      document.getElementById('token').textContent = data.token || token;
+      document.getElementById('statusBox').textContent = 'Статус: ' + (data.status || status);
+    }
+
+    async function loadFromApiIfPossible() {
+      if (!token || token === 'Нет токена') {
+        fillView({});
+        return;
+      }
+      try {
+        const resp = await fetch('/api/verification/check?token=' + encodeURIComponent(token));
+        const data = await resp.json();
+        if (data.found) {
+          fillView(data);
+          return;
+        }
+      } catch (e) {
+        // Keep fallback values from query string.
+      }
+      fillView({});
+    }
+
+    loadFromApiIfPossible();
+  </script>
+</body>
+</html>
