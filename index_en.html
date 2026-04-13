@@ -2083,6 +2083,9 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            if (!response.ok) {
+                throw new Error(`API error ${response.status}: ${response.statusText}`);
+            }
             return response.json();
         }
 
@@ -2137,6 +2140,9 @@
             eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">Loading session timeline...</div>';
             try {
                 const resp = await fetch('/api/verification/session/' + encodeURIComponent(currentSessionId));
+                if (!resp.ok) {
+                    throw new Error(`API error ${resp.status}`);
+                }
                 const data = await resp.json();
                 if (!data.found) {
                     eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">Session history is unavailable</div>';
