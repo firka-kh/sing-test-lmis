@@ -2041,6 +2041,29 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="card" style="margin-top:16px;">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Detailed Session Timeline</div>
+            <div style="padding:16px 20px; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; border-bottom:1px solid var(--border);">
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">Session</div>
+                    <div id="session-detail-ref" style="margin-top:4px; font-family:monospace; color:var(--text);">No active session</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">Duration</div>
+                    <div id="session-detail-duration" style="margin-top:4px; color:var(--text);">—</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">IP (created)</div>
+                    <div id="session-detail-ip" style="margin-top:4px; font-family:monospace; color:var(--text);">—</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">User-Agent</div>
+                    <div id="session-detail-ua" style="margin-top:4px; color:var(--text2); font-size:12px; line-height:1.4; word-break:break-word;">—</div>
+                </div>
+            </div>
+            <div id="session-detail-events" style="padding:12px 20px 16px 20px;"></div>
+        </div>
     </div>
 
     <script>
@@ -2068,6 +2091,84 @@
             if (!el) return;
             el.textContent = text || '';
             el.style.color = color || 'var(--text3)';
+        }
+
+        function escHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function fmtSessionTsEn(ts) {
+            if (!ts) return '—';
+            const d = new Date(ts);
+            if (Number.isNaN(d.getTime())) return ts;
+            return d.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function fmtDurationEn(totalSeconds) {
+            const sec = Math.max(0, Number(totalSeconds) || 0);
+            const h = Math.floor(sec / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = sec % 60;
+            return (h > 0 ? (h + ' h ') : '') + String(m).padStart(2, '0') + ' min ' + String(s).padStart(2, '0') + ' sec';
+        }
+
+        async function renderSessionDetails() {
+            const refEl = document.getElementById('session-detail-ref');
+            const durEl = document.getElementById('session-detail-duration');
+            const ipEl = document.getElementById('session-detail-ip');
+            const uaEl = document.getElementById('session-detail-ua');
+            const eventsEl = document.getElementById('session-detail-events');
+            if (!refEl || !durEl || !ipEl || !uaEl || !eventsEl) return;
+
+            if (!currentSessionId) {
+                refEl.textContent = 'No active session';
+                durEl.textContent = '—';
+                ipEl.textContent = '—';
+                uaEl.textContent = '—';
+                eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">Detailed steps will appear after session confirmation.</div>';
+                return;
+            }
+
+            eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">Loading session timeline...</div>';
+            try {
+                const resp = await fetch('/api/verification/session/' + encodeURIComponent(currentSessionId));
+                const data = await resp.json();
+                if (!data.found) {
+                    eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">Session history is unavailable</div>';
+                    return;
+                }
+
+                const startedAt = fmtSessionTsEn(data.createdAt);
+                refEl.textContent = 'Session #' + data.sessionId + ' on ' + startedAt;
+                durEl.textContent = fmtDurationEn(data.durationSeconds);
+                ipEl.textContent = data.createdIp || 'unknown';
+                uaEl.textContent = data.createdUserAgent || 'unknown';
+
+                const events = Array.isArray(data.events) ? data.events : [];
+                if (!events.length) {
+                    eventsEl.innerHTML = '<div style="color:var(--text3); font-size:12px;">No events yet</div>';
+                    return;
+                }
+
+                eventsEl.innerHTML = events.map((evt, idx) => {
+                    const markerColor = evt.type === 'DOCUMENT_SIGNED' ? 'var(--green)' : evt.type === 'SMS_CONFIRMED' ? 'var(--blue)' : 'var(--text3)';
+                    return `<div style="display:grid; grid-template-columns:10px 1fr; gap:10px; padding:10px 0; border-bottom:${idx === events.length - 1 ? 'none' : '1px solid var(--border)'};">
+                                <div style="width:10px; height:10px; border-radius:50%; margin-top:4px; background:${markerColor};"></div>
+                                <div>
+                                    <div style="font-size:13px; color:var(--text); font-weight:600;">${escHtml(evt.description)}</div>
+                                    <div style="margin-top:4px; font-size:11px; color:var(--text3);">${escHtml(evt.type || 'EVENT')} • ${escHtml(fmtSessionTsEn(evt.timestamp))}</div>
+                                    <div style="margin-top:2px; font-size:11px; color:var(--text3);">IP: ${escHtml(evt.ip || 'unknown')} • UA: ${escHtml((evt.userAgent || 'unknown').slice(0, 120))}</div>
+                                </div>
+                            </div>`;
+                }).join('');
+            } catch (e) {
+                eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">Failed to load session timeline</div>';
+            }
         }
 
         async function ensureSessionForTin() {
@@ -2387,6 +2488,7 @@
             sessionLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + sessionRef + ' opened • operator ' + OPERATOR_NAME + ' • visitor ' + VISITOR_NAME + ' confirmed by SMS • TIN ' + innVal + '</div><div class="atm">' + fmt(now) + '</div>';
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', sessionLog);
+            renderSessionDetails();
             setTimeout(() => goSc('open'), 300);
         }
 
@@ -2587,6 +2689,7 @@
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
+            renderSessionDetails();
         }
 
         // ── SOUNDS ──
@@ -2607,6 +2710,8 @@
             currentSessionId = '';
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = 'Take the visitor\'s passport and enter their TIN'; document.getElementById('inn-fb').style.color = 'var(--text3)';
+            setSessionIndicator('');
+            renderSessionDetails();
             document.getElementById('op-pin').textContent = 'Waiting for input...'; document.getElementById('op-pin').className = 'vp-val';
             document.getElementById('op-bd').textContent = 'Waiting for SMS confirmation...'; document.getElementById('op-bd').className = 'vp-val';
             document.getElementById('btn-proceed').disabled = true;

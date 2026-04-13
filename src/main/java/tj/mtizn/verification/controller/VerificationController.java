@@ -1,5 +1,6 @@
 package tj.mtizn.verification.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +30,9 @@ public class VerificationController {
         boolean smsConfirmed;
         String createdAt;
         String confirmedAt;
+        String createdIp;
+        String createdUserAgent;
+        String lastActivityAt;
         List<String> signedTokens = new ArrayList<>();
         List<Map<String, String>> events = new ArrayList<>();
     }
@@ -44,12 +48,40 @@ public class VerificationController {
         String signedAt;
     }
 
-    private void addSessionEvent(SessionRecord session, String type, String description) {
+    private String resolveClientIp(HttpServletRequest request) {
+        if (request == null) {
+            return "unknown";
+        }
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            String first = xff.split(",")[0].trim();
+            if (!first.isEmpty()) {
+                return first;
+            }
+        }
+        String remoteAddr = request.getRemoteAddr();
+        return (remoteAddr == null || remoteAddr.isBlank()) ? "unknown" : remoteAddr;
+    }
+
+    private void addSessionEvent(SessionRecord session, String type, String description, HttpServletRequest request) {
+        String nowTs = LocalDateTime.now().format(TS_FORMATTER);
         Map<String, String> event = new HashMap<>();
         event.put("type", type);
         event.put("description", description);
-        event.put("timestamp", LocalDateTime.now().format(TS_FORMATTER));
+        event.put("timestamp", nowTs);
+        event.put("ip", resolveClientIp(request));
+        event.put("userAgent", request != null ? request.getHeader("User-Agent") : "unknown");
         session.events.add(event);
+        session.lastActivityAt = nowTs;
+    }
+
+    private long durationSeconds(String startedAt, String finishedAt) {
+        if (startedAt == null || finishedAt == null) {
+            return 0L;
+        }
+        LocalDateTime start = LocalDateTime.parse(startedAt, TS_FORMATTER);
+        LocalDateTime finish = LocalDateTime.parse(finishedAt, TS_FORMATTER);
+        return java.time.Duration.between(start, finish).getSeconds();
     }
 
     /**
@@ -77,7 +109,7 @@ public class VerificationController {
      * Создание сессии после ввода ИНН. В демо режиме код SMS всегда 123456.
      */
     @PostMapping("/create-session")
-    public Map<String, Object> createSession(@RequestBody Map<String, String> payload) {
+    public Map<String, Object> createSession(@RequestBody Map<String, String> payload, HttpServletRequest request) {
         String inn = payload.get("inn");
         String operatorName = payload.getOrDefault("operatorName", "Не указан");
         String visitorName = payload.getOrDefault("visitorName", "Не указан");
@@ -96,7 +128,11 @@ public class VerificationController {
         session.visitorName = visitorName;
         session.smsConfirmed = false;
         session.createdAt = LocalDateTime.now().format(TS_FORMATTER);
-        addSessionEvent(session, "SESSION_CREATED", "Сессия создана оператором " + operatorName + " для посетителя " + visitorName);
+        session.createdIp = resolveClientIp(request);
+        session.createdUserAgent = request != null ? request.getHeader("User-Agent") : "unknown";
+        session.lastActivityAt = session.createdAt;
+        addSessionEvent(session, "SESSION_CREATED", "Сессия создана оператором " + operatorName + " для посетителя " + visitorName, request);
+        addSessionEvent(session, "SMS_SENT", "Одноразовый SMS-код отправлен на номер посетителя", request);
 
         sessionsById.put(session.sessionId, session);
 
@@ -106,6 +142,8 @@ public class VerificationController {
         response.put("maskedPhone", "+992 93 *** ** 78");
         response.put("demoSmsCode", DEMO_SMS_CODE);
         response.put("createdAt", session.createdAt);
+        response.put("ip", session.createdIp);
+        response.put("userAgent", session.createdUserAgent);
         return response;
     }
 
@@ -113,7 +151,7 @@ public class VerificationController {
      * Подтверждение сессии кодом из SMS.
      */
     @PostMapping("/confirm-session")
-    public Map<String, Object> confirmSession(@RequestBody Map<String, String> payload) {
+    public Map<String, Object> confirmSession(@RequestBody Map<String, String> payload, HttpServletRequest request) {
         String sessionId = payload.get("sessionId");
         String smsCode = payload.get("smsCode");
         Map<String, Object> response = new HashMap<>();
@@ -133,7 +171,7 @@ public class VerificationController {
 
         session.smsConfirmed = true;
         session.confirmedAt = LocalDateTime.now().format(TS_FORMATTER);
-        addSessionEvent(session, "SMS_CONFIRMED", "Посетитель подтвердил сессию по SMS-коду");
+        addSessionEvent(session, "SMS_CONFIRMED", "Посетитель подтвердил сессию по SMS-коду", request);
 
         response.put("confirmed", true);
         response.put("sessionId", session.sessionId);
@@ -145,7 +183,7 @@ public class VerificationController {
      * Подписание документа в рамках уже подтвержденной сессии.
      */
     @PostMapping("/sign-document")
-    public Map<String, Object> signDocument(@RequestBody Map<String, String> payload) {
+    public Map<String, Object> signDocument(@RequestBody Map<String, String> payload, HttpServletRequest request) {
         String sessionId = payload.get("sessionId");
         String pin = payload.get("pin");
         String documentName = payload.getOrDefault("documentName", "Документ");
@@ -183,7 +221,7 @@ public class VerificationController {
 
         documentsByToken.put(doc.token, doc);
         session.signedTokens.add(doc.token);
-        addSessionEvent(session, "DOCUMENT_SIGNED", "Подписан документ: " + documentName + " (" + documentVersion + ")");
+        addSessionEvent(session, "DOCUMENT_SIGNED", "Подписан документ: " + documentName + " (" + documentVersion + "), токен " + doc.token, request);
 
         response.put("signed", true);
         response.put("token", doc.token);
@@ -229,6 +267,10 @@ public class VerificationController {
         response.put("smsConfirmed", session.smsConfirmed);
         response.put("createdAt", session.createdAt);
         response.put("confirmedAt", session.confirmedAt);
+        response.put("createdIp", session.createdIp);
+        response.put("createdUserAgent", session.createdUserAgent);
+        response.put("lastActivityAt", session.lastActivityAt);
+        response.put("durationSeconds", durationSeconds(session.createdAt, LocalDateTime.now().format(TS_FORMATTER)));
         response.put("events", session.events);
         response.put("signedDocuments", signedDocuments);
         return response;
