@@ -2187,6 +2187,14 @@
             }
         }
 
+        async function waitForSessionCreation(maxWaitMs = 3000) {
+            const started = Date.now();
+            while (sessionCreateInProgress && (Date.now() - started) < maxWaitMs) {
+                await new Promise(resolve => setTimeout(resolve, 60));
+            }
+            return !!currentSessionId;
+        }
+
         
         // ── NAVIGATION TABS ──
         function switchTab(tabId) {
@@ -2304,6 +2312,10 @@
         function updDots() { for (let i = 1; i <= 6; i++) document.getElementById('pd' + i).className = 'pdot' + (i <= pinVal.length ? ' f' : ''); }
         async function pinDone() {
             if (pinVal.length < 6) return;
+
+            if (!currentSessionId && sessionCreateInProgress) {
+                await waitForSessionCreation();
+            }
 
             if (!currentSessionId) {
                 document.getElementById('pr-ring').className = 'pr-ring err-r';

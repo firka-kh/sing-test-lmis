@@ -2171,6 +2171,14 @@
             }
         }
 
+        async function waitForSessionCreation(maxWaitMs = 3000) {
+            const started = Date.now();
+            while (sessionCreateInProgress && (Date.now() - started) < maxWaitMs) {
+                await new Promise(resolve => setTimeout(resolve, 60));
+            }
+            return !!currentSessionId;
+        }
+
         async function ensureSessionForTin() {
             if (!innOk) {
                 return false;
@@ -2179,7 +2187,7 @@
                 return true;
             }
             if (sessionCreateInProgress) {
-                return false;
+                return waitForSessionCreation();
             }
             setSessionIndicator('Creating session...', 'var(--blue)');
             sessionCreateInProgress = true;
@@ -2306,7 +2314,10 @@
             if (pinVal.length < 6) return;
 
             if (!currentSessionId) {
-                await ensureSessionForTin();
+                const ready = await ensureSessionForTin();
+                if (!ready && sessionCreateInProgress) {
+                    await waitForSessionCreation();
+                }
             }
 
             if (!currentSessionId) {
