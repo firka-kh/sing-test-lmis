@@ -1624,6 +1624,7 @@
                                 <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Введите 12 цифр ИНН"
                                     oninput="onInn(this.value)" autocomplete="off" inputmode="numeric">
                                 <div class="inn-fb" id="inn-fb">Возьмите паспорт у посетителя и введите его ИНН</div>
+                                <div class="inn-fb" id="session-indicator" style="min-height:16px;color:var(--text3);"></div>
                             </div>
                         </div>
 
@@ -2078,6 +2079,13 @@
             return response.json();
         }
 
+        function setSessionIndicator(text, color) {
+            const el = document.getElementById('session-indicator');
+            if (!el) return;
+            el.textContent = text || '';
+            el.style.color = color || 'var(--text3)';
+        }
+
         
         // ── NAVIGATION TABS ──
         function switchTab(tabId) {
@@ -2136,14 +2144,20 @@
             if (!innVal.length) { fb.textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; fb.style.color = 'var(--text3)'; }
             else if (innOk) { fb.textContent = '✓ ИНН найден в системе — ' + innVal.length + ' из 12 цифр'; fb.style.color = 'var(--green)'; }
             else { fb.textContent = (innVal.length < 12 ? 'Введено ' + innVal.length + ' из 12 цифр...' : 'ИНН не найден в системе'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            if (!innVal.length) {
+                setSessionIndicator('');
+            }
+
             if (!innOk) {
                 currentSessionId = '';
                 smsDone_ = false;
                 document.getElementById('op-bd').textContent = 'Ожидание SMS-подтверждения...';
                 document.getElementById('op-bd').className = 'vp-val';
+                setSessionIndicator('');
             }
 
             if (innOk && !currentSessionId && !sessionCreateInProgress) {
+                setSessionIndicator('Создание сессии...', 'var(--blue)');
                 sessionCreateInProgress = true;
                 try {
                     const sessionResp = await apiPost('/create-session', {
@@ -2155,10 +2169,12 @@
                         currentSessionId = sessionResp.sessionId;
                         document.getElementById('op-bd').textContent = 'SMS отправлен • ' + currentSessionId;
                         document.getElementById('op-bd').className = 'vp-val';
+                        setSessionIndicator('Сессия создана, SMS отправлен', 'var(--green)');
                     }
                 } catch (e) {
                     document.getElementById('op-bd').textContent = 'Ошибка отправки SMS';
                     document.getElementById('op-bd').className = 'vp-val';
+                    setSessionIndicator('Не удалось создать сессию', 'var(--red)');
                 } finally {
                     sessionCreateInProgress = false;
                 }
@@ -2558,6 +2574,7 @@
             currentSessionId = '';
             document.getElementById('inn-inp').value = ''; document.getElementById('inn-inp').className = 'inn-input';
             document.getElementById('inn-fb').textContent = 'Возьмите паспорт у посетителя и введите его ИНН'; document.getElementById('inn-fb').style.color = 'var(--text3)';
+            setSessionIndicator('');
             document.getElementById('op-pin').textContent = 'Ожидание ввода...'; document.getElementById('op-pin').className = 'vp-val';
             document.getElementById('op-bd').textContent = 'Ожидание SMS-подтверждения...'; document.getElementById('op-bd').className = 'vp-val';
             document.getElementById('btn-proceed').disabled = true;

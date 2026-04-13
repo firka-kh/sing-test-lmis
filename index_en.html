@@ -1612,6 +1612,7 @@
                                 <div class="inn-label">← Demo TIN for system check</div>
                                 <input class="inn-input" id="inn-inp" maxlength="12" placeholder="Enter 12 digits TIN" oninput="onInn(this.value)" autocomplete="off" inputmode="numeric">
                                 <div class="inn-fb" id="inn-fb">Take the visitor's passport and enter their TIN</div>
+                                <div class="inn-fb" id="session-indicator" style="min-height:16px;color:var(--text3);"></div>
                             </div>
                         </div>
 
@@ -2062,6 +2063,13 @@
             return response.json();
         }
 
+        function setSessionIndicator(text, color) {
+            const el = document.getElementById('session-indicator');
+            if (!el) return;
+            el.textContent = text || '';
+            el.style.color = color || 'var(--text3)';
+        }
+
         async function ensureSessionForTin() {
             if (!innOk) {
                 return false;
@@ -2072,6 +2080,7 @@
             if (sessionCreateInProgress) {
                 return false;
             }
+            setSessionIndicator('Creating session...', 'var(--blue)');
             sessionCreateInProgress = true;
             try {
                 const sessionResp = await apiPost('/create-session', {
@@ -2083,12 +2092,15 @@
                     currentSessionId = sessionResp.sessionId;
                     document.getElementById('op-bd').textContent = 'SMS sent • ' + currentSessionId;
                     document.getElementById('op-bd').className = 'vp-val';
+                    setSessionIndicator('Session created, SMS sent', 'var(--green)');
                     return true;
                 }
+                setSessionIndicator('Failed to create session', 'var(--red)');
                 return false;
             } catch (e) {
                 document.getElementById('op-bd').textContent = 'SMS delivery error';
                 document.getElementById('op-bd').className = 'vp-val';
+                setSessionIndicator('Failed to create session', 'var(--red)');
                 return false;
             } finally {
                 sessionCreateInProgress = false;
@@ -2153,11 +2165,15 @@
             if (!innVal.length) { fb.textContent = 'Take the visitor\'s passport and enter their TIN'; fb.style.color = 'var(--text3)'; }
             else if (innOk) { fb.textContent = '✓ TIN found in system — ' + innVal.length + ' of 12 digits'; fb.style.color = 'var(--green)'; }
             else { fb.textContent = (innVal.length < 12 ? 'Entered ' + innVal.length + ' of 12 digits...' : 'TIN not found in system'); fb.style.color = innVal.length < 12 ? 'var(--text3)' : 'var(--red)'; }
+            if (!innVal.length) {
+                setSessionIndicator('');
+            }
             if (!innOk) {
                 currentSessionId = '';
                 smsDone_ = false;
                 document.getElementById('op-bd').textContent = 'Waiting for SMS confirmation...';
                 document.getElementById('op-bd').className = 'vp-val';
+                setSessionIndicator('');
             }
 
             if (innOk && !currentSessionId && !sessionCreateInProgress) {
@@ -2339,6 +2355,7 @@
             const now = new Date();
             document.getElementById('ok-sub').textContent = 'Session ' + (currentSessionId || SESSION_ID) + ' confirmed via SMS at ' + fmt(now) + ' • Operator: ' + OPERATOR_NAME;
             document.getElementById('at1').textContent = fmt(now);
+            setSessionIndicator('');
             document.getElementById('at2').textContent = fmt(new Date(now - 5000));
             document.getElementById('at3').textContent = fmt(now);
             const auditDiv = document.querySelector('.audit');
