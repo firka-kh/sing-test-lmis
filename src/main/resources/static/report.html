@@ -259,8 +259,11 @@
 
 <div class="no-print" id="toolbar">
     <button class="btn-print" onclick="window.print()">🖨️ Печать / PDF</button>
+    <button class="btn-verify" onclick="runVerify()" id="btn-verify" style="display:none; background:#2563eb; color:#fff; border:none; padding:8px 20px; border-radius:6px; font-size:14px; cursor:pointer; font-weight:600;">🔐 Проверить целостность</button>
     <button class="btn-back" onclick="history.back()">← Назад</button>
 </div>
+
+<div class="no-print" id="verify-result" style="display:none; max-width:800px; margin:12px auto; padding:16px; border-radius:8px; font-size:13px;"></div>
 
 <div class="page-wrapper" id="report">
     <div class="loading" id="loading">Загрузка данных сессии...</div>
@@ -518,7 +521,56 @@
 
     // Обновляем заголовок страницы
     document.title = (isEN ? 'Verification Act ' : 'Акт верификации ') + data.sessionId;
+
+    // Show verify button
+    document.getElementById('btn-verify').style.display = '';
+    window._reportSessionId = data.sessionId;
 })();
+
+async function runVerify() {
+    const sid = window._reportSessionId;
+    if (!sid) return;
+    const btn = document.getElementById('btn-verify');
+    btn.textContent = '⏳ Проверяю...';
+    btn.disabled = true;
+    try {
+        const resp = await fetch('/api/verification/session/' + encodeURIComponent(sid) + '/verify-integrity');
+        const data = await resp.json();
+        const box = document.getElementById('verify-result');
+        box.style.display = 'block';
+        if (data.valid) {
+            box.style.background = '#dcfce7';
+            box.style.border = '1px solid #86efac';
+            box.innerHTML = '<strong>✅ Целостность подтверждена</strong> — все ' + data.eventsChecked
+                + ' событий прошли проверку SHA-256 цепочки.<br><span style="font-size:11px; color:#666;">Проверено: '
+                + (data.verifiedAt || '').replace('T',' ').substring(0,19) + '</span>';
+        } else {
+            box.style.background = '#fef2f2';
+            box.style.border = '1px solid #fca5a5';
+            let html = '<strong>🚨 НАРУШЕНИЕ ЦЕЛОСТНОСТИ</strong><br>';
+            if (!data.chainValid) html += 'Обнаружено несовпадение checksum в цепочке событий!<br>';
+            if (!data.finalHashMatch) html += (data.finalHashAlert || 'Финальный хеш не совпадает') + '<br>';
+            if (data.events) {
+                const broken = data.events.filter(e => !e.valid);
+                if (broken.length > 0) {
+                    html += '<br><strong>Нарушенные события:</strong><br>';
+                    broken.forEach(e => {
+                        html += '#' + e.seq + ' ' + e.type + ' — ' + (e.timestamp||'').replace('T',' ').substring(0,19) + '<br>';
+                    });
+                }
+            }
+            box.innerHTML = html;
+        }
+    } catch (e) {
+        const box = document.getElementById('verify-result');
+        box.style.display = 'block';
+        box.style.background = '#fef3c7';
+        box.style.border = '1px solid #fbbf24';
+        box.innerHTML = '<strong>⚠️ Ошибка проверки</strong> — не удалось связаться с сервером';
+    }
+    btn.textContent = '🔐 Проверить целостность';
+    btn.disabled = false;
+}
 </script>
 </body>
 </html>

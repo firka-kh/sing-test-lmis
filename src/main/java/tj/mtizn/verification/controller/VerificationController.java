@@ -384,4 +384,77 @@ public class VerificationController {
     public Map<String, Object> sessionReport(@RequestParam("session") String sessionId) {
         return getSession(sessionId);
     }
+
+    // ─── Фаза 3: Верификация целостности цепочки ───
+
+    /** Пересчитывает SHA-256 цепочку и сравнивает с сохранёнными checksum */
+    @GetMapping("/session/{sessionId}/verify-integrity")
+    @Transactional(readOnly = true)
+    public Map<String, Object> verifyIntegrity(@PathVariable("sessionId") String sessionId) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        Optional<VerificationSession> opt = sessionRepo.findBySessionId(sessionId);
+        if (opt.isEmpty()) {
+            response.put("valid", false);
+            response.put("error", "Сессия не найдена");
+            return response;
+        }
+
+        VerificationSession session = opt.get();
+        List<AuditEvent> events = session.getEvents(); // ordered by timestamp
+
+        if (events.isEmpty()) {
+            response.put("valid", true);
+            response.put("sessionId", session.getSessionId());
+            response.put("eventsChecked", 0);
+            response.put("message", "Нет событий для проверки");
+            return response;
+        }
+
+        boolean chainValid = true;
+        String runningHash = "GENESIS";
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (int i = 0; i < events.size(); i++) {
+            AuditEvent ev = events.get(i);
+            String payload = runningHash + "|" + ev.getEventType() + "|" + ev.getDescription()
+                    + "|" + ev.getTimestamp().format(TS_FORMATTER) + "|" + ev.getIp();
+            String expectedChecksum = sha256(payload);
+
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("seq", ev.getSequenceNumber());
+            item.put("type", ev.getEventType());
+            item.put("timestamp", ev.getTimestamp().format(TS_FORMATTER));
+            item.put("storedChecksum", ev.getChecksum());
+            item.put("computedChecksum", expectedChecksum);
+
+            boolean match = expectedChecksum.equals(ev.getChecksum());
+            item.put("valid", match);
+            if (!match) {
+                chainValid = false;
+                item.put("alert", "НАРУШЕНИЕ ЦЕЛОСТНОСТИ! Сохранённый checksum не совпадает с пересчитанным.");
+            }
+            results.add(item);
+
+            runningHash = ev.getChecksum(); // use stored for chain continuation (to detect exact break point)
+        }
+
+        // Проверка финального хеша сессии
+        String lastEventChecksum = events.get(events.size() - 1).getChecksum();
+        boolean finalHashMatch = lastEventChecksum != null && lastEventChecksum.equals(session.getIntegrityHash());
+
+        response.put("valid", chainValid && finalHashMatch);
+        response.put("sessionId", session.getSessionId());
+        response.put("eventsChecked", events.size());
+        response.put("chainValid", chainValid);
+        response.put("finalHashMatch", finalHashMatch);
+        response.put("storedIntegrityHash", session.getIntegrityHash());
+        response.put("lastEventChecksum", lastEventChecksum);
+        if (!finalHashMatch) {
+            response.put("finalHashAlert", "Хеш целостности сессии не совпадает с последним событием!");
+        }
+        response.put("events", results);
+        response.put("verifiedAt", LocalDateTime.now().format(TS_FORMATTER));
+
+        return response;
+    }
 }

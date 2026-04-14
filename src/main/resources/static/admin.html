@@ -143,6 +143,16 @@
   }
   .detail-actions .act-print { background: var(--green); color: #fff; border-color: var(--green); }
   .detail-actions .act-print:hover { background: #15803d; }
+  .detail-actions .act-verify { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .detail-actions .act-verify:hover { background: #1d4ed8; }
+
+  /* Integrity result */
+  .integrity-result { margin-top: 16px; padding: 16px; border-radius: 8px; font-size: 13px; }
+  .integrity-result.ok { background: #dcfce7; border: 1px solid #86efac; }
+  .integrity-result.fail { background: #fef2f2; border: 1px solid #fca5a5; }
+  .integrity-result h4 { margin-bottom: 8px; }
+  .integrity-result .chain-item { padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,.06); font-size: 12px; }
+  .integrity-result .chain-item.broken { color: var(--red); font-weight: 600; }
 
   /* ─── Responsive ─── */
   @media (max-width: 768px) {
@@ -461,6 +471,7 @@ async function openDetail(sessionId) {
 
   // Actions
   actions.innerHTML = `
+    <button onclick="verifyIntegrity('${esc(sessionId)}')" class="act-verify">🔐 Проверить целостность</button>
     <a href="/report.html?session=${encodeURIComponent(sessionId)}" target="_blank" class="act-print">🖨️ Печать акта</a>
     <button onclick="closeDetail()" style="background:#e5e7eb; color:var(--text2);">Закрыть</button>
   `;
@@ -469,6 +480,76 @@ async function openDetail(sessionId) {
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
   document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ─── Integrity verification ───
+
+async function verifyIntegrity(sessionId) {
+  const body = document.getElementById('detail-body');
+  // Remove previous result
+  const prev = document.getElementById('integrity-result');
+  if (prev) prev.remove();
+
+  const data = await apiGet('/api/verification/session/' + encodeURIComponent(sessionId) + '/verify-integrity');
+  if (!data) {
+    appendIntegrityResult(false, '<h4>❌ Ошибка</h4><p>Не удалось связаться с сервером</p>');
+    return;
+  }
+
+  if (data.error) {
+    appendIntegrityResult(false, '<h4>❌ Ошибка</h4><p>' + esc(data.error) + '</p>');
+    return;
+  }
+
+  let html = '';
+  const ok = data.valid;
+
+  if (ok) {
+    html += '<h4>✅ Целостность подтверждена</h4>';
+    html += '<p>Все ' + data.eventsChecked + ' событий прошли проверку SHA-256 цепочки.</p>';
+    html += '<p style="font-size:11px; color:var(--text3);">Проверено: ' + fmtDt(data.verifiedAt) + '</p>';
+  } else {
+    html += '<h4>🚨 НАРУШЕНИЕ ЦЕЛОСТНОСТИ</h4>';
+    if (!data.chainValid) {
+      html += '<p>Обнаружено несовпадение checksum в цепочке событий!</p>';
+    }
+    if (!data.finalHashMatch) {
+      html += '<p>' + esc(data.finalHashAlert || 'Финальный хеш не совпадает') + '</p>';
+    }
+    html += '<p style="font-size:11px; color:var(--text3);">Проверено: ' + fmtDt(data.verifiedAt) + '</p>';
+  }
+
+  // Event-by-event breakdown
+  if (data.events && data.events.length > 0) {
+    html += '<div style="margin-top:10px; max-height:200px; overflow-y:auto;">';
+    data.events.forEach(ev => {
+      const cls = ev.valid ? '' : ' broken';
+      const icon = ev.valid ? '✓' : '✗';
+      html += '<div class="chain-item' + cls + '">'
+        + icon + ' #' + ev.seq + ' <strong>' + esc(ev.type) + '</strong> — ' + fmtDt(ev.timestamp);
+      if (!ev.valid) {
+        html += '<br><span style="font-size:10px;">Ожидаемый: ' + esc(ev.computedChecksum) + '</span>'
+          + '<br><span style="font-size:10px;">Сохранённый: ' + esc(ev.storedChecksum) + '</span>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Final hash
+  html += '<div style="margin-top:8px; font-size:11px; font-family:monospace; word-break:break-all; color:var(--text3);">'
+    + 'Integrity hash: ' + esc(data.storedIntegrityHash) + '</div>';
+
+  appendIntegrityResult(ok, html);
+}
+
+function appendIntegrityResult(ok, html) {
+  const div = document.createElement('div');
+  div.id = 'integrity-result';
+  div.className = 'integrity-result ' + (ok ? 'ok' : 'fail');
+  div.innerHTML = html;
+  document.getElementById('detail-body').appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ─── Helpers ───

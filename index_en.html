@@ -2064,6 +2064,17 @@
             </div>
             <div id="session-detail-events" style="padding:12px 20px 16px 20px;"></div>
         </div>
+
+        <!-- ─── Past sessions (Phase 5) ─── -->
+        <div class="card" style="margin-top:16px;" id="past-sessions-card">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-weight:600; color:var(--text);">📋 Recent Sessions</span>
+                <a href="/admin.html" target="_blank" style="font-size:11px; color:var(--blue); text-decoration:none;">Open panel →</a>
+            </div>
+            <div id="past-sessions-list" style="padding:12px 20px 16px 20px;">
+                <div style="color:var(--text3); font-size:12px;">Loading...</div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2175,6 +2186,44 @@
             } catch (e) {
                 eventsEl.innerHTML = '<div style="color:var(--red); font-size:12px;">Failed to load session timeline</div>';
             }
+        }
+
+        // ── Past sessions (Phase 5) ──
+        async function loadPastSessions() {
+            const el = document.getElementById('past-sessions-list');
+            if (!el) return;
+            try {
+                const resp = await fetch('/api/verification/sessions');
+                if (!resp.ok) throw new Error(resp.status);
+                const data = await resp.json();
+                const sessions = (data.sessions || []).slice(0, 10);
+                if (!sessions.length) {
+                    el.innerHTML = '<div style="color:var(--text3); font-size:12px;">No completed sessions</div>';
+                    return;
+                }
+                el.innerHTML = sessions.map(s => {
+                    const dt = (s.createdAt || '').replace('T', ' ').substring(0, 16);
+                    const smsIcon = s.smsConfirmed ? '✅' : '⏳';
+                    const isCurrent = s.sessionId === currentSessionId;
+                    const bg = isCurrent ? 'background:#eff6ff;' : '';
+                    const tag = isCurrent ? ' <span style="font-size:10px; background:var(--blue); color:#fff; padding:1px 6px; border-radius:8px;">current</span>' : '';
+                    return `<div onclick="openPastSession('${escHtml(s.sessionId)}')" style="padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; ${bg}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-family:monospace; font-size:12px; font-weight:600; color:var(--blue);">${escHtml(s.sessionId)}</span>
+                            <span style="font-size:11px; color:var(--text3);">${smsIcon} ${escHtml(dt)}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--text2); margin-top:3px;">
+                            ${escHtml(s.visitorName || '—')} &nbsp;|&nbsp; TIN: ${escHtml(s.inn || '—')} &nbsp;|&nbsp; Docs: ${s.documentsCount || 0}${tag}
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                el.innerHTML = '<div style="color:var(--text3); font-size:12px;">Could not load history</div>';
+            }
+        }
+
+        function openPastSession(sessionId) {
+            window.open('/report.html?session=' + encodeURIComponent(sessionId) + '&lang=en', '_blank');
         }
 
         async function waitForSessionCreation(maxWaitMs = 3000) {
@@ -2504,6 +2553,7 @@
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', sessionLog);
             renderSessionDetails();
+            loadPastSessions();
             setTimeout(() => goSc('open'), 300);
         }
 
@@ -2756,6 +2806,7 @@
         document.getElementById('ci-bd-v').textContent = SESSION_ID;
         document.getElementById('ci-bd-s').textContent = 'Waiting for confirmation';
         setInst(1);
+        loadPastSessions();
     </script>
 </body>
 
