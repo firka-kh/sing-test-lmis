@@ -2550,6 +2550,40 @@
         
         async function signDone() {
             if (spinVal.length < 6) return;
+
+            if (!currentSessionId || !smsDone_) {
+                document.getElementById('pr-ring').className = 'pr-ring err-r';
+                document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'Сессия не подтверждена';
+                document.getElementById('pr-sub').textContent = 'Сначала подтвердите сессию по SMS.';
+                switchPh('ph-result');
+                return;
+            }
+
+            let signResp;
+            try {
+                signResp = await apiPost('/sign-document', {
+                    sessionId: currentSessionId,
+                    pin: spinVal,
+                    documentName: currentSignDocName,
+                    documentVersion: currentSignDocVersion,
+                    operatorName: OPERATOR_NAME,
+                    visitorName: VISITOR_NAME
+                });
+            } catch (e) {
+                // Demo fallback: if API unavailable, check PIN locally
+                signResp = { signed: spinVal === '123456', error: spinVal !== '123456' ? 'Неверный PIN-код' : undefined, token: 'DEMO-' + Date.now().toString(36).toUpperCase() };
+            }
+
+            if (!signResp.signed) {
+                document.getElementById('pr-ring').className = 'pr-ring err-r';
+                document.getElementById('pr-ring').textContent = '✕';
+                document.getElementById('pr-title').textContent = 'Подпись отклонена';
+                document.getElementById('pr-sub').textContent = signResp.error || 'Не удалось подписать документ.';
+                switchPh('ph-result');
+                return;
+            }
+
             playSuccess();
             switchPh('ph-result');
             document.getElementById('pr-ring').className = 'pr-ring ok-r'; document.getElementById('pr-ring').textContent = '✓';
@@ -2566,27 +2600,24 @@
                const now = new Date();
                const today_str = now.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
                const timeStr = now.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+                    const sessionRef = 'Сессия №' + (currentSessionId || SESSION_ID) + ' от ' + today_str + ' ' + timeStr;
                const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
                const dlText = window.location.pathname.includes('_en') ? '🔎 Check status / authenticity' : '🔎 Проверить статус и подлинность';
-               const docToken = 'DOC-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
-               const checkUrl = new URL('check.html', window.location.href);
-               checkUrl.searchParams.set('doc', currentSignDocName);
-               checkUrl.searchParams.set('ver', currentSignDocVersion);
-               checkUrl.searchParams.set('sid', currentSessionId);
-               checkUrl.searchParams.set('token', docToken);
-               checkUrl.searchParams.set('status', 'Подписано и принято в обработку');
+               const docToken = signResp.token;
+               const checkUrl = new URL(signResp.checkUrl || ('/check.html?token=' + docToken), window.location.origin);
                const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(checkUrl.toString());
                
                tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
                                <td style="padding:16px 20px; font-weight:500; color:var(--text);">
                                              <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
                                              <div style="font-size:11px; color:var(--text3); margin-top:2px;">Версия: ${currentSignDocVersion}</div>
+                                                            <div style="font-size:11px; color:var(--text3); margin-top:2px;">${sessionRef}</div>
                                              <div style="margin-top:6px; font-size:11px;"><a href="${checkUrl.toString()}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
                                </td>
                                <td style="padding:16px 20px;">
                                   <div style="display:flex; align-items:center; gap:10px;">
                                                  <img src="${qrSrc}" width="34" height="34" style="border:1px solid #ccc; border-radius:4px; padding:2px; background:#fff;">
-                                                 <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Токен:<br>${docToken}</div>
+                                                 <div style="font-size:11px; color:var(--text3); line-height:1.3; font-family:monospace;">Токен:<br>${docToken}<br>Сессия:<br>${currentSessionId || SESSION_ID}</div>
                                   </div>
                                </td>
                                          <td style="padding:16px 20px; color:var(--text2);">${OPERATOR_NAME}</td>`;
@@ -2608,7 +2639,9 @@
             const newLog = document.createElement('div');
             newLog.className = 'audit-row signlog';
             const now = new Date();
-            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">' + (document.querySelector('.pr-title').textContent.includes('Document Signed') ? 'Document signed: ' : 'Документ подписан: ') + currentSignDocName + ' • Версия ' + currentSignDocVersion + ' • Подтвердил ' + VISITOR_NAME + ' (PIN)</div><div class="atm">' + fmt(now) + '</div>';
+            const sessionDate = now.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const sessionTime = now.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            newLog.innerHTML = '<div class="adot g"></div><div class="atxt">Документ подписан: ' + currentSignDocName + ' • Версия ' + currentSignDocVersion + ' • Сессия №' + (currentSessionId || SESSION_ID) + ' от ' + sessionDate + ' ' + sessionTime + ' • Подтвердил ' + VISITOR_NAME + ' (PIN) • Токен ' + signResp.token + '</div><div class="atm">' + fmt(now) + '</div>';
             
             const title = auditDiv.querySelector('.audit-title');
             title.insertAdjacentElement('afterend', newLog);
