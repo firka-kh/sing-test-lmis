@@ -2056,6 +2056,29 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="card" style="margin-top:16px;">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border); font-weight:600; color:var(--text);">Развёрнутая история сессии</div>
+            <div style="padding:16px 20px; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; border-bottom:1px solid var(--border);">
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">Сессия</div>
+                    <div id="session-detail-ref" style="margin-top:4px; font-family:monospace; color:var(--text);">Нет активной сессии</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">Длительность</div>
+                    <div id="session-detail-duration" style="margin-top:4px; color:var(--text);">—</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">IP (создание)</div>
+                    <div id="session-detail-ip" style="margin-top:4px; font-family:monospace; color:var(--text);">—</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text3);">User-Agent</div>
+                    <div id="session-detail-ua" style="margin-top:4px; color:var(--text2); font-size:12px; line-height:1.4; word-break:break-word;">—</div>
+                </div>
+            </div>
+            <div id="session-detail-events" style="padding:12px 20px 16px 20px;"></div>
+        </div>
     </div>
 
     <script>
