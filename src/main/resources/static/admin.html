@@ -172,7 +172,7 @@
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
   <h1>Панель администратора</h1>
   <span class="badge">Сессии верификации ЛМИС</span>
-  <a href="/index.html" class="back-link">← Вернуться к порталу</a>
+  <a href="index.html" class="back-link">← Вернуться к порталу</a>
 </div>
 
 <!-- ─── Stats ─── -->
@@ -472,7 +472,7 @@ async function openDetail(sessionId) {
   // Actions
   actions.innerHTML = `
     <button onclick="verifyIntegrity('${esc(sessionId)}')" class="act-verify">🔐 Проверить целостность</button>
-    <a href="/report.html?session=${encodeURIComponent(sessionId)}" target="_blank" class="act-print">🖨️ Печать акта</a>
+    <a href="report.html?session=${encodeURIComponent(sessionId)}" target="_blank" class="act-print">🖨️ Печать акта</a>
     <button onclick="closeDetail()" style="background:#e5e7eb; color:var(--text2);">Закрыть</button>
   `;
 }

@@ -371,7 +371,7 @@
     }
     function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
-    const checkUrl = window.location.origin + '/report.html?session=' + encodeURIComponent(data.sessionId);
+    const checkUrl = window.location.href.split('?')[0] + '?session=' + encodeURIComponent(data.sessionId);
     const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(checkUrl);
 
     const printDate = new Date().toLocaleDateString(isEN ? 'en-GB' : 'ru', { day:'2-digit', month:'long', year:'numeric' });

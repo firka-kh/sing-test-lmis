@@ -2085,7 +2085,7 @@
         <div class="card" style="margin-top:16px;" id="past-sessions-card">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
                 <span style="font-weight:600; color:var(--text);">📋 Последние сессии</span>
-                <a href="/admin.html" target="_blank" style="font-size:11px; color:var(--blue); text-decoration:none;">Открыть панель →</a>
+                <a href="admin.html" target="_blank" style="font-size:11px; color:var(--blue); text-decoration:none;">Открыть панель →</a>
             </div>
             <div id="past-sessions-list" style="padding:12px 20px 16px 20px;">
                 <div style="color:var(--text3); font-size:12px;">Загрузка...</div>
@@ -2239,7 +2239,7 @@
         }
 
         function openPastSession(sessionId) {
-            window.open('/report.html?session=' + encodeURIComponent(sessionId), '_blank');
+            window.open('report.html?session=' + encodeURIComponent(sessionId), '_blank');
         }
 
         async function waitForSessionCreation(maxWaitMs = 3000) {
@@ -2724,7 +2724,7 @@
                const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
                     const dlText = window.location.pathname.includes('_en') ? '🔎 Check status / authenticity' : '🔎 Проверить статус и подлинность';
                        const docToken = signResp.token;
-                       const reportUrl = '/report.html?session=' + encodeURIComponent(currentSessionId || SESSION_ID);
+                       const reportUrl = 'report.html?session=' + encodeURIComponent(currentSessionId || SESSION_ID);
                     const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(window.location.origin + reportUrl);
                
                tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
