@@ -2250,6 +2250,45 @@
             return !!currentSessionId;
         }
 
+        async function ensureSessionForTin() {
+            if (!innOk) {
+                return false;
+            }
+            if (currentSessionId) {
+                return true;
+            }
+            if (sessionCreateInProgress) {
+                return waitForSessionCreation();
+            }
+            setSessionIndicator('Создание сессии...', 'var(--blue)');
+            sessionCreateInProgress = true;
+            try {
+                const sessionResp = await apiPost('/create-session', {
+                    inn: innVal,
+                    operatorName: OPERATOR_NAME,
+                    visitorName: VISITOR_NAME
+                });
+                if (sessionResp.created) {
+                    currentSessionId = sessionResp.sessionId;
+                    document.getElementById('op-bd').textContent = 'SMS отправлен • ' + currentSessionId;
+                    document.getElementById('op-bd').className = 'vp-val';
+                    setSessionIndicator('Сессия создана, SMS отправлен', 'var(--green)');
+                    return true;
+                }
+                setSessionIndicator('Не удалось создать сессию', 'var(--red)');
+                return false;
+            } catch (e) {
+                // Демо-fallback: если API недоступен, создаём локальную сессию
+                currentSessionId = 'SES-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+                document.getElementById('op-bd').textContent = 'SMS отправлен (демо) • ' + currentSessionId;
+                document.getElementById('op-bd').className = 'vp-val';
+                setSessionIndicator('Демо-сессия создана', 'var(--green)');
+                return true;
+            } finally {
+                sessionCreateInProgress = false;
+            }
+        }
+
         
         // ── NAVIGATION TABS ──
         function switchTab(tabId) {
@@ -2321,29 +2360,7 @@
             }
 
             if (innOk && !currentSessionId && !sessionCreateInProgress) {
-                setSessionIndicator('Создание сессии...', 'var(--blue)');
-                sessionCreateInProgress = true;
-                try {
-                    const sessionResp = await apiPost('/create-session', {
-                        inn: innVal,
-                        operatorName: OPERATOR_NAME,
-                        visitorName: VISITOR_NAME
-                    });
-                    if (sessionResp.created) {
-                        currentSessionId = sessionResp.sessionId;
-                        document.getElementById('op-bd').textContent = 'SMS отправлен • ' + currentSessionId;
-                        document.getElementById('op-bd').className = 'vp-val';
-                        setSessionIndicator('Сессия создана, SMS отправлен', 'var(--green)');
-                    }
-                } catch (e) {
-                    // Демо-fallback: если API недоступен, создаём локальную сессию
-                    currentSessionId = 'SES-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-                    document.getElementById('op-bd').textContent = 'SMS отправлен (демо) • ' + currentSessionId;
-                    document.getElementById('op-bd').className = 'vp-val';
-                    setSessionIndicator('Демо-сессия создана', 'var(--green)');
-                } finally {
-                    sessionCreateInProgress = false;
-                }
+                await ensureSessionForTin();
             }
 
             checkProceed();
@@ -2370,8 +2387,11 @@
         async function pinDone() {
             if (pinVal.length < 6) return;
 
-            if (!currentSessionId && sessionCreateInProgress) {
-                await waitForSessionCreation();
+            if (!currentSessionId) {
+                const ready = await ensureSessionForTin();
+                if (!ready && sessionCreateInProgress) {
+                    await waitForSessionCreation();
+                }
             }
 
             if (!currentSessionId) {
