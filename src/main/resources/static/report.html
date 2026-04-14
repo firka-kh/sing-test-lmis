@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Акт верификации личности</title>
+<style>
+    @page {
+        size: A4;
+        margin: 15mm 20mm;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+        padding: 20px;
+    }
+
+    /* Экранная обёртка */
+    .page-wrapper {
+        max-width: 210mm;
+        margin: 0 auto;
+        background: #fff;
+    }
+
+    /* Шапка */
+    .header {
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }
+    .header-org {
+        font-size: 10pt;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+    .header-title {
+        font-size: 16pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 8px 0 4px;
+    }
+    .header-subtitle {
+        font-size: 12pt;
+        font-weight: bold;
+    }
+    .header-date {
+        font-size: 10pt;
+        color: #555;
+        margin-top: 4px;
+    }
+
+    /* Секции */
+    .section {
+        margin-bottom: 18px;
+    }
+    .section-title {
+        font-size: 11pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #999;
+        padding-bottom: 4px;
+        margin-bottom: 10px;
+    }
+
+    /* Ключ-значение */
+    .kv-grid {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 4px 12px;
+    }
+    .kv-key {
+        font-weight: bold;
+        font-size: 10pt;
+        color: #333;
+    }
+    .kv-val {
+        font-size: 11pt;
+    }
+    .kv-val.mono {
+        font-family: 'Courier New', monospace;
+        font-size: 10pt;
+    }
+
+    /* Таблица событий */
+    table.events {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9.5pt;
+        margin-top: 8px;
+    }
+    table.events th, table.events td {
+        border: 1px solid #999;
+        padding: 5px 8px;
+        text-align: left;
+        vertical-align: top;
+    }
+    table.events th {
+        background: #e8e8e8;
+        font-weight: bold;
+        font-size: 9pt;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    table.events tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    .evt-type {
+        font-family: 'Courier New', monospace;
+        font-size: 8.5pt;
+        font-weight: bold;
+    }
+
+    /* Таблица документов */
+    table.docs {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+        margin-top: 8px;
+    }
+    table.docs th, table.docs td {
+        border: 1px solid #999;
+        padding: 6px 10px;
+        text-align: left;
+    }
+    table.docs th {
+        background: #e8e8e8;
+        font-weight: bold;
+        font-size: 9pt;
+        text-transform: uppercase;
+    }
+
+    /* Хэш целостности */
+    .integrity {
+        margin-top: 20px;
+        padding: 12px;
+        border: 2px solid #000;
+        background: #f5f5f5;
+        font-family: 'Courier New', monospace;
+        font-size: 9pt;
+        word-break: break-all;
+    }
+    .integrity-label {
+        font-weight: bold;
+        font-size: 10pt;
+        margin-bottom: 4px;
+        font-family: 'Times New Roman', serif;
+    }
+
+    /* QR и проверка */
+    .qr-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px dashed #999;
+    }
+    .qr-section img {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #ccc;
+    }
+    .qr-text {
+        font-size: 9pt;
+        color: #555;
+    }
+
+    /* Подписи */
+    .signatures {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+    .sig-block {
+        border-top: 1px solid #000;
+        padding-top: 8px;
+    }
+    .sig-role {
+        font-size: 9pt;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .sig-name {
+        font-weight: bold;
+        margin-top: 2px;
+    }
+    .sig-line {
+        height: 40px;
+        border-bottom: 1px solid #000;
+        margin: 20px 0 4px;
+    }
+    .sig-note {
+        font-size: 8pt;
+        color: #777;
+        text-align: center;
+    }
+
+    /* Футер */
+    .footer {
+        margin-top: 30px;
+        padding-top: 10px;
+        border-top: 1px solid #999;
+        font-size: 8pt;
+        color: #777;
+        text-align: center;
+    }
+
+    /* Кнопки (скрываются при печати) */
+    .no-print {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    .no-print button {
+        padding: 10px 24px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .btn-print {
+        background: #1a56a0;
+        color: #fff;
+    }
+    .btn-back {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+    /* Ошибка / загрузка */
+    .loading, .error {
+        text-align: center;
+        padding: 60px 20px;
+        font-size: 14pt;
+    }
+    .error { color: #c00; }
+
+    @media print {
+        body { padding: 0; }
+        .no-print { display: none !important; }
+        .page-wrapper { max-width: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="no-print" id="toolbar">
+    <button class="btn-print" onclick="window.print()">🖨️ Печать / PDF</button>
+    <button class="btn-back" onclick="history.back()">← Назад</button>
+</div>
+
+<div class="page-wrapper" id="report">
+    <div class="loading" id="loading">Загрузка данных сессии...</div>
+</div>
+
+<script>
+(async function() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session');
+    const lang = params.get('lang') || 'ru';
+    const reportEl = document.getElementById('report');
+    const loadingEl = document.getElementById('loading');
+
+    if (!sessionId) {
+        loadingEl.className = 'error';
+        loadingEl.textContent = lang === 'en'
+            ? 'Error: session parameter not specified. Use ?session=SES-XXXXXX'
+            : 'Ошибка: не указан параметр session. Используйте ?session=SES-XXXXXX';
+        return;
+    }
+
+    let data;
+    try {
+        const resp = await fetch('/api/verification/session/' + encodeURIComponent(sessionId));
+        data = await resp.json();
+    } catch (e) {
+        loadingEl.className = 'error';
+        loadingEl.textContent = lang === 'en'
+            ? 'Connection error. Make sure the server is running.'
+            : 'Ошибка соединения. Убедитесь, что сервер запущен.';
+        return;
+    }
+
+    if (!data.found) {
+        loadingEl.className = 'error';
+        loadingEl.textContent = lang === 'en'
+            ? 'Session ' + sessionId + ' not found in database.'
+            : 'Сессия ' + sessionId + ' не найдена в базе данных.';
+        return;
+    }
+
+    const isEN = lang === 'en';
+    const t = {
+        orgName: 'Министерство труда, миграции и занятости населения Республики Таджикистан',
+        orgNameEN: 'Ministry of Labour, Migration and Employment of the Republic of Tajikistan',
+        title: isEN ? 'IDENTITY VERIFICATION ACT' : 'АКТ ВЕРИФИКАЦИИ ЛИЧНОСТИ',
+        sessionInfo: isEN ? 'Session Information' : 'Информация о сессии',
+        sessionNum: isEN ? 'Session №' : 'Сессия №',
+        inn: isEN ? 'TIN (INN)' : 'ИНН',
+        operator: isEN ? 'Operator' : 'Оператор',
+        visitor: isEN ? 'Visitor' : 'Посетитель',
+        created: isEN ? 'Created' : 'Дата создания',
+        confirmed: isEN ? 'SMS Confirmed' : 'SMS подтверждена',
+        ip: isEN ? 'IP Address' : 'IP-адрес',
+        ua: isEN ? 'User-Agent' : 'User-Agent',
+        duration: isEN ? 'Duration' : 'Длительность',
+        status: isEN ? 'Status' : 'Статус',
+        statusConfirmed: isEN ? '✓ Confirmed via SMS' : '✓ Подтверждена по SMS',
+        statusPending: isEN ? '✕ Not confirmed' : '✕ Не подтверждена',
+        eventsTitle: isEN ? 'Event Timeline' : 'Хронология событий',
+        evtSeq: isEN ? '№' : '№',
+        evtTime: isEN ? 'Date / Time' : 'Дата / Время',
+        evtType: isEN ? 'Type' : 'Тип',
+        evtDesc: isEN ? 'Description' : 'Описание',
+        evtIp: isEN ? 'IP' : 'IP',
+        evtHash: isEN ? 'Checksum' : 'Контр. сумма',
+        docsTitle: isEN ? 'Signed Documents' : 'Подписанные документы',
+        docToken: isEN ? 'Token' : 'Токен',
+        docName: isEN ? 'Document' : 'Документ',
+        docVer: isEN ? 'Version' : 'Версия',
+        docStatus: isEN ? 'Status' : 'Статус',
+        docSignedAt: isEN ? 'Signed At' : 'Подписано',
+        integrityTitle: isEN ? 'INTEGRITY HASH (SHA-256 chain)' : 'ХЭШ ЦЕЛОСТНОСТИ (цепочка SHA-256)',
+        integrityNote: isEN
+            ? 'Each event is hashed using SHA-256 with the previous hash, forming an immutable chain. Any modification to any event will break the chain.'
+            : 'Каждое событие хэшируется алгоритмом SHA-256 с включением предыдущего хэша, формируя неизменяемую цепочку. Любое изменение любого события нарушит цепочку.',
+        qrNote: isEN
+            ? 'Scan QR code to verify the authenticity of this report online.'
+            : 'Отсканируйте QR-код для проверки подлинности данного отчёта в онлайн-режиме.',
+        sigOperator: isEN ? 'OPERATOR' : 'ОПЕРАТОР',
+        sigVisitor: isEN ? 'VISITOR' : 'ПОСЕТИТЕЛЬ',
+        sigSign: isEN ? '(signature)' : '(подпись)',
+        footerNote: isEN
+            ? 'This document was generated automatically by the MTIZN Identity Verification System. The integrity hash confirms the data has not been modified.'
+            : 'Данный документ сформирован автоматически системой верификации личности МТМЗН РТ. Хэш целостности подтверждает, что данные не были изменены.',
+        noEvents: isEN ? 'No events recorded' : 'Нет зарегистрированных событий',
+        noDocs: isEN ? 'No documents signed in this session' : 'В данной сессии документы не подписаны',
+        yes: isEN ? 'Yes' : 'Да',
+        no: isEN ? 'No' : 'Нет'
+    };
+
+    function fmtDt(iso) {
+        if (!iso) return '—';
+        const d = new Date(iso);
+        return d.toLocaleDateString(isEN ? 'en-GB' : 'ru', { day:'2-digit', month:'2-digit', year:'numeric' })
+            + ' ' + d.toLocaleTimeString(isEN ? 'en-GB' : 'ru', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    }
+    function fmtDur(sec) {
+        if (!sec || sec < 0) return '—';
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        if (m < 60) return m + (isEN ? ' min ' : ' мин ') + s + (isEN ? ' sec' : ' сек');
+        const h = Math.floor(m / 60);
+        return h + (isEN ? ' h ' : ' ч ') + (m % 60) + (isEN ? ' min' : ' мин');
+    }
+    function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+    const checkUrl = window.location.origin + '/report.html?session=' + encodeURIComponent(data.sessionId);
+    const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(checkUrl);
+
+    const printDate = new Date().toLocaleDateString(isEN ? 'en-GB' : 'ru', { day:'2-digit', month:'long', year:'numeric' });
+
+    // --- Сборка HTML отчёта ---
+    let html = `
+    <div class="header">
+        <div class="header-org">${isEN ? t.orgNameEN : t.orgName}</div>
+        <div class="header-title">${t.title}</div>
+        <div class="header-subtitle">${t.sessionNum} ${esc(data.sessionId)}</div>
+        <div class="header-date">${fmtDt(data.createdAt)}</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">${t.sessionInfo}</div>
+        <div class="kv-grid">
+            <div class="kv-key">${t.sessionNum}:</div>
+            <div class="kv-val mono">${esc(data.sessionId)}</div>
+
+            <div class="kv-key">${t.inn}:</div>
+            <div class="kv-val mono">${esc(data.inn)}</div>
+
+            <div class="kv-key">${t.operator}:</div>
+            <div class="kv-val">${esc(data.operatorName)}</div>
+
+            <div class="kv-key">${t.visitor}:</div>
+            <div class="kv-val">${esc(data.visitorName)}</div>
+
+            <div class="kv-key">${t.created}:</div>
+            <div class="kv-val">${fmtDt(data.createdAt)}</div>
+
+            <div class="kv-key">${t.confirmed}:</div>
+            <div class="kv-val">${data.confirmedAt ? fmtDt(data.confirmedAt) : '—'}</div>
+
+            <div class="kv-key">${t.status}:</div>
+            <div class="kv-val">${data.smsConfirmed ? t.statusConfirmed : t.statusPending}</div>
+
+            <div class="kv-key">${t.duration}:</div>
+            <div class="kv-val">${fmtDur(data.durationSeconds)}</div>
+
+            <div class="kv-key">${t.ip}:</div>
+            <div class="kv-val mono">${esc(data.createdIp)}</div>
+
+            <div class="kv-key">${t.ua}:</div>
+            <div class="kv-val" style="font-size:9pt; word-break:break-word;">${esc(data.createdUserAgent)}</div>
+        </div>
+    </div>`;
+
+    // --- Хронология событий ---
+    html += `<div class="section">
+        <div class="section-title">${t.eventsTitle}</div>`;
+
+    if (data.events && data.events.length > 0) {
+        html += `<table class="events">
+            <thead><tr>
+                <th>${t.evtSeq}</th>
+                <th>${t.evtTime}</th>
+                <th>${t.evtType}</th>
+                <th>${t.evtDesc}</th>
+                <th>${t.evtIp}</th>
+                <th>${t.evtHash}</th>
+            </tr></thead><tbody>`;
+        for (const e of data.events) {
+            html += `<tr>
+                <td style="text-align:center;">${esc(e.seq)}</td>
+                <td style="white-space:nowrap;">${fmtDt(e.timestamp)}</td>
+                <td><span class="evt-type">${esc(e.type)}</span></td>
+                <td>${esc(e.description)}</td>
+                <td class="mono" style="font-size:8pt;">${esc(e.ip)}</td>
+                <td class="mono" style="font-size:7pt; word-break:break-all;">${esc(e.checksum ? e.checksum.substring(0, 16) + '...' : '')}</td>
+            </tr>`;
+        }
+        html += `</tbody></table>`;
+    } else {
+        html += `<p style="color:#777; font-style:italic;">${t.noEvents}</p>`;
+    }
+    html += `</div>`;
+
+    // --- Подписанные документы ---
+    html += `<div class="section">
+        <div class="section-title">${t.docsTitle}</div>`;
+
+    if (data.signedDocuments && data.signedDocuments.length > 0) {
+        html += `<table class="docs">
+            <thead><tr>
+                <th>${t.docToken}</th>
+                <th>${t.docName}</th>
+                <th>${t.docVer}</th>
+                <th>${t.docStatus}</th>
+                <th>${t.docSignedAt}</th>
+            </tr></thead><tbody>`;
+        for (const doc of data.signedDocuments) {
+            html += `<tr>
+                <td class="mono" style="font-size:9pt;">${esc(doc.token)}</td>
+                <td>${esc(doc.documentName)}</td>
+                <td>${esc(doc.documentVersion)}</td>
+                <td>${esc(doc.status)}</td>
+                <td style="white-space:nowrap;">${fmtDt(doc.signedAt)}</td>
+            </tr>`;
+        }
+        html += `</tbody></table>`;
+    } else {
+        html += `<p style="color:#777; font-style:italic;">${t.noDocs}</p>`;
+    }
+    html += `</div>`;
+
+    // --- Хэш целостности ---
+    html += `<div class="integrity">
+        <div class="integrity-label">${t.integrityTitle}</div>
+        <div>SHA-256: ${esc(data.integrityHash || '—')}</div>
+        <div style="margin-top:6px; font-size:8pt; color:#555; font-family:'Times New Roman',serif;">${t.integrityNote}</div>
+    </div>`;
+
+    // --- QR ---
+    html += `<div class="qr-section">
+        <img src="${qrSrc}" alt="QR" crossorigin="anonymous">
+        <div class="qr-text">
+            <strong>URL:</strong> ${esc(checkUrl)}<br><br>
+            ${t.qrNote}
+        </div>
+    </div>`;
+
+    // --- Подписи ---
+    html += `<div class="signatures">
+        <div>
+            <div class="sig-role">${t.sigOperator}</div>
+            <div class="sig-name">${esc(data.operatorName)}</div>
+            <div class="sig-line"></div>
+            <div class="sig-note">${t.sigSign}</div>
+        </div>
+        <div>
+            <div class="sig-role">${t.sigVisitor}</div>
+            <div class="sig-name">${esc(data.visitorName)}</div>
+            <div class="sig-line"></div>
+            <div class="sig-note">${t.sigSign}</div>
+        </div>
+    </div>`;
+
+    // --- Футер ---
+    html += `<div class="footer">
+        ${t.footerNote}<br>
+        ${isEN ? 'Report generated' : 'Отчёт сформирован'}: ${printDate}
+    </div>`;
+
+    loadingEl.remove();
+    reportEl.innerHTML = html;
+
+    // Обновляем заголовок страницы
+    document.title = (isEN ? 'Verification Act ' : 'Акт верификации ') + data.sessionId;
+})();
+</script>
+</body>
+</html>

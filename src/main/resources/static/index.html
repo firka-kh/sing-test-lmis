@@ -2654,15 +2654,15 @@
                const docPref = window.location.pathname.includes('_en') ? 'Signed: ' : 'Подписан: ';
                     const dlText = window.location.pathname.includes('_en') ? '🔎 Check status / authenticity' : '🔎 Проверить статус и подлинность';
                        const docToken = signResp.token;
-                       const checkUrl = new URL(signResp.checkUrl || ('/check.html?token=' + docToken), window.location.origin);
-                    const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(checkUrl.toString());
+                       const reportUrl = '/report.html?session=' + encodeURIComponent(currentSessionId || SESSION_ID);
+                    const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(window.location.origin + reportUrl);
                
                tr.innerHTML = `<td style="padding:16px 20px; color:var(--text2); font-variant-numeric: tabular-nums;">${today_str} ${timeStr}</td>
                                <td style="padding:16px 20px; font-weight:500; color:var(--text);">
                                              <div style="font-weight:600;">${docPref}${currentSignDocName}</div>
                                              <div style="font-size:11px; color:var(--text3); margin-top:2px;">Версия: ${currentSignDocVersion}</div>
                                                             <div style="font-size:11px; color:var(--text3); margin-top:2px;">${sessionRef}</div>
-                                             <div style="margin-top:6px; font-size:11px;"><a href="${checkUrl.toString()}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">${dlText}</a></div>
+                                             <div style="margin-top:6px; font-size:11px;"><a href="${reportUrl}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">${dlText}</a> &nbsp; <a href="${reportUrl}" target="_blank" rel="noopener" style="color:var(--green); text-decoration:none;">🖨️ Печать акта</a></div>
                                </td>
                                <td style="padding:16px 20px;">
                                   <div style="display:flex; align-items:center; gap:10px;">
@@ -2675,7 +2675,7 @@
 
                     const label = document.getElementById(currentSignLabel);
                     if (label) {
-                          label.innerHTML = 'Подписано: ' + today_str + ' ' + timeStr + ' • ' + VISITOR_NAME + '<br><a href="' + checkUrl.toString() + '" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">QR / Проверка</a>';
+                          label.innerHTML = 'Подписано: ' + today_str + ' ' + timeStr + ' • ' + VISITOR_NAME + '<br><a href="' + reportUrl + '" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none;">QR / Проверка</a>';
                           label.style.color = 'var(--green)';
                     }
             }
