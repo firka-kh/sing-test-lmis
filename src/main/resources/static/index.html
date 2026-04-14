@@ -2098,6 +2098,20 @@
         const DB = { inn: '500123456789' };
         const OPERATOR_NAME = 'Азимов Санджар Рустамович';
         const VISITOR_NAME = 'Рахимов Алишер Бахтиёрович';
+
+        // ── Demo data for 10 people ──
+        const DEMO_SESSIONS = [
+            { sessionId: 'SES-A1B2C3', createdAt: '2025-01-15T09:12:34', inn: '500123456789', visitorName: 'Рахимов Алишер Бахтиёрович', operatorName: 'Азимов Санджар Рустамович', smsConfirmed: true, documentsCount: 3, eventsCount: 8 },
+            { sessionId: 'SES-D4E5F6', createdAt: '2025-01-15T10:45:11', inn: '500987654321', visitorName: 'Каримова Нигина Файзуллоевна', operatorName: 'Азимов Санджар Рустамович', smsConfirmed: true, documentsCount: 2, eventsCount: 6 },
+            { sessionId: 'SES-G7H8I9', createdAt: '2025-01-14T14:22:05', inn: '500111222333', visitorName: 'Шарипов Фирдавс Абдуллоевич', operatorName: 'Назарова Дилрабо Шарифовна', smsConfirmed: true, documentsCount: 1, eventsCount: 5 },
+            { sessionId: 'SES-J0K1L2', createdAt: '2025-01-14T11:08:47', inn: '500444555666', visitorName: 'Давлатов Бахром Сафарович', operatorName: 'Назарова Дилрабо Шарифовна', smsConfirmed: false, documentsCount: 0, eventsCount: 3 },
+            { sessionId: 'SES-M3N4O5', createdAt: '2025-01-13T16:33:19', inn: '500777888999', visitorName: 'Муродова Зарина Икромовна', operatorName: 'Азимов Санджар Рустамович', smsConfirmed: true, documentsCount: 2, eventsCount: 7 },
+            { sessionId: 'SES-P6Q7R8', createdAt: '2025-01-13T08:55:02', inn: '500222333444', visitorName: 'Ходжаев Рустам Мирзоевич', operatorName: 'Исмоилов Далер Камолович', smsConfirmed: true, documentsCount: 1, eventsCount: 5 },
+            { sessionId: 'SES-S9T0U1', createdAt: '2025-01-12T15:17:38', inn: '500666777888', visitorName: 'Назарова Малика Абдурахимовна', operatorName: 'Исмоилов Далер Камолович', smsConfirmed: false, documentsCount: 0, eventsCount: 2 },
+            { sessionId: 'SES-V2W3X4', createdAt: '2025-01-12T10:41:55', inn: '500333444555', visitorName: 'Саидов Абдулло Раджабович', operatorName: 'Азимов Санджар Рустамович', smsConfirmed: true, documentsCount: 2, eventsCount: 6 },
+            { sessionId: 'SES-Y5Z6A7', createdAt: '2025-01-11T13:29:14', inn: '500888999000', visitorName: 'Исмоилова Фарангис Бахтиёровна', operatorName: 'Назарова Дилрабо Шарифовна', smsConfirmed: true, documentsCount: 3, eventsCount: 9 },
+            { sessionId: 'SES-B8C9D0', createdAt: '2025-01-11T09:03:42', inn: '500555666777', visitorName: 'Аминов Шухрат Тоджиддинович', operatorName: 'Исмоилов Далер Камолович', smsConfirmed: false, documentsCount: 1, eventsCount: 4 },
+        ];
         const SESSION_ID = 'SES-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         let innVal = '', pinVal = '', bdVal = '', spinVal = '';
         let innOk = false, smsDone_ = false;
@@ -2234,7 +2248,24 @@
                     </div>`;
                 }).join('');
             } catch (e) {
-                el.innerHTML = '<div style="color:var(--text3); font-size:12px;">Не удалось загрузить историю</div>';
+                // Demo fallback when API is unavailable
+                const sessions = DEMO_SESSIONS;
+                el.innerHTML = sessions.map(s => {
+                    const dt = (s.createdAt || '').replace('T', ' ').substring(0, 16);
+                    const smsIcon = s.smsConfirmed ? '✅' : '⏳';
+                    const isCurrent = s.sessionId === currentSessionId;
+                    const bg = isCurrent ? 'background:#eff6ff;' : '';
+                    const tag = isCurrent ? ' <span style="font-size:10px; background:var(--blue); color:#fff; padding:1px 6px; border-radius:8px;">текущая</span>' : '';
+                    return `<div onclick="openPastSession('${escHtml(s.sessionId)}')" style="padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; ${bg}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-family:monospace; font-size:12px; font-weight:600; color:var(--blue);">${escHtml(s.sessionId)}</span>
+                            <span style="font-size:11px; color:var(--text3);">${smsIcon} ${escHtml(dt)}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--text2); margin-top:3px;">
+                            ${escHtml(s.visitorName || '—')} &nbsp;|&nbsp; ИНН: ${escHtml(s.inn || '—')} &nbsp;|&nbsp; Документов: ${s.documentsCount || 0}${tag}
+                        </div>
+                    </div>`;
+                }).join('');
             }
         }
 
