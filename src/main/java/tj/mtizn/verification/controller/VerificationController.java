@@ -326,7 +326,9 @@ public class VerificationController {
     @Transactional(readOnly = true)
     public Map<String, Object> listSessions(
             @RequestParam(value = "inn", required = false) String inn,
-            @RequestParam(value = "operator", required = false) String operator) {
+            @RequestParam(value = "operator", required = false) String operator,
+            @RequestParam(value = "dateFrom", required = false) String dateFrom,
+            @RequestParam(value = "dateTo", required = false) String dateTo) {
         Map<String, Object> response = new HashMap<>();
         List<VerificationSession> sessions;
 
@@ -334,6 +336,10 @@ public class VerificationController {
             sessions = sessionRepo.findByInnOrderByCreatedAtDesc(inn.trim());
         } else if (operator != null && !operator.isBlank()) {
             sessions = sessionRepo.findByOperatorNameContainingIgnoreCaseOrderByCreatedAtDesc(operator.trim());
+        } else if (dateFrom != null && dateTo != null) {
+            LocalDateTime from = LocalDateTime.parse(dateFrom + "T00:00:00");
+            LocalDateTime to = LocalDateTime.parse(dateTo + "T23:59:59");
+            sessions = sessionRepo.findByCreatedAtBetweenOrderByCreatedAtDesc(from, to);
         } else {
             sessions = sessionRepo.findAllByOrderByCreatedAtDesc();
         }

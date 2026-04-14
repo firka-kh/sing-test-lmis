@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Панель администратора — Сессии верификации</title>
+<style>
+  :root {
+    --bg: #f5f6fa; --card: #fff; --border: #e2e5ec;
+    --text: #1a1d26; --text2: #5a5f72; --text3: #8b90a0;
+    --blue: #2563eb; --green: #16a34a; --red: #dc2626; --orange: #ea580c;
+    --radius: 10px; --shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    color: #fff; padding: 20px 32px; display: flex; align-items: center; gap: 16px;
+  }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header .badge {
+    background: rgba(255,255,255,.15); padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+  .header .back-link {
+    margin-left: auto; color: rgba(255,255,255,.8); text-decoration: none; font-size: 13px;
+  }
+  .header .back-link:hover { color: #fff; }
+
+  /* ─── Container ─── */
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+  /* ─── Stats ─── */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card); border-radius: var(--radius); padding: 16px 20px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .stat-card .label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+  .stat-card .value.blue { color: var(--blue); }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card .value.orange { color: var(--orange); }
+
+  /* ─── Filters ─── */
+  .filters {
+    background: var(--card); border-radius: var(--radius); padding: 20px;
+    border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 24px;
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+  .filter-group input, .filter-group select {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; background: #fff; color: var(--text); min-width: 160px;
+  }
+  .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37,99,235,.15); }
+  .btn {
+    padding: 8px 20px; border: none; border-radius: 6px; font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: background .15s;
+  }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: #1d4ed8; }
+  .btn-gray { background: #e5e7eb; color: var(--text2); }
+  .btn-gray:hover { background: #d1d5db; }
+
+  /* ─── Table ─── */
+  .table-card {
+    background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .table-title {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  }
+  .table-title .count { color: var(--text3); font-weight: 400; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 10px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--text3); font-weight: 600; text-align: left; border-bottom: 2px solid var(--border);
+    background: #fafbfc; white-space: nowrap; cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text); }
+  thead th .sort-icon { margin-left: 4px; font-size: 10px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:hover { background: #f8f9fb; }
+  tbody tr.selected { background: #eff6ff; }
+  tbody td { padding: 12px 16px; font-size: 13px; }
+  .session-link { color: var(--blue); text-decoration: none; font-weight: 600; font-family: monospace; }
+  .session-link:hover { text-decoration: underline; }
+  .badge-sms { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge-sms.yes { background: #dcfce7; color: #166534; }
+  .badge-sms.no { background: #fef3c7; color: #92400e; }
+  .empty-row { text-align: center; padding: 40px; color: var(--text3); }
+
+  /* ─── Detail sidebar ─── */
+  .detail-panel {
+    position: fixed; top: 0; right: -480px; width: 480px; height: 100vh;
+    background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,.1);
+    transition: right .25s ease; z-index: 1000; overflow-y: auto;
+  }
+  .detail-panel.open { right: 0; }
+  .detail-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.3);
+    z-index: 999; display: none;
+  }
+  .detail-overlay.open { display: block; }
+  .detail-header {
+    padding: 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--card); z-index: 1;
+  }
+  .detail-header h2 { font-size: 16px; }
+  .detail-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text2); padding: 4px; }
+  .detail-close:hover { color: var(--text); }
+  .detail-body { padding: 20px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h3 { font-size: 13px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .kv-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f1f3; font-size: 13px; }
+  .kv-row .k { color: var(--text3); }
+  .kv-row .v { font-weight: 500; text-align: right; max-width: 260px; word-break: break-all; }
+  .event-list { display: flex; flex-direction: column; gap: 8px; }
+  .event-item {
+    padding: 10px 12px; background: #f8f9fb; border-radius: 8px; border-left: 3px solid var(--blue);
+    font-size: 12px;
+  }
+  .event-item .ev-type { font-weight: 700; color: var(--blue); text-transform: uppercase; }
+  .event-item .ev-desc { color: var(--text); margin-top: 2px; }
+  .event-item .ev-meta { color: var(--text3); margin-top: 4px; font-size: 11px; }
+  .doc-item {
+    padding: 10px 12px; background: #f0fdf4; border-radius: 8px; border-left: 3px solid var(--green);
+    font-size: 12px; margin-bottom: 8px;
+  }
+  .detail-actions { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+  .detail-actions a, .detail-actions button {
+    padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    text-decoration: none; cursor: pointer; border: 1px solid var(--border);
+  }
+  .detail-actions .act-print { background: var(--green); color: #fff; border-color: var(--green); }
+  .detail-actions .act-print:hover { background: #15803d; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .container { padding: 12px; }
+    .filters { flex-direction: column; }
+    .filter-group input, .filter-group select { min-width: 100%; }
+    .detail-panel { width: 100%; right: -100%; }
+    table { font-size: 12px; }
+    thead th, tbody td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Header ─── -->
+<div class="header">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+  <h1>Панель администратора</h1>
+  <span class="badge">Сессии верификации ЛМИС</span>
+  <a href="/index.html" class="back-link">← Вернуться к порталу</a>
+</div>
+
+<!-- ─── Stats ─── -->
+<div class="container">
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">Всего сессий</div>
+      <div class="value blue" id="stat-total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">SMS подтверждено</div>
+      <div class="value green" id="stat-confirmed">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Без подтверждения</div>
+      <div class="value orange" id="stat-pending">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Документов подписано</div>
+      <div class="value green" id="stat-docs">—</div>
+    </div>
+  </div>
+
+  <!-- ─── Filters ─── -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>Поиск по ИНН</label>
+      <input type="text" id="f-inn" placeholder="500123456789" maxlength="14">
+    </div>
+    <div class="filter-group">
+      <label>Оператор</label>
+      <input type="text" id="f-operator" placeholder="Имя оператора">
+    </div>
+    <div class="filter-group">
+      <label>Токен документа</label>
+      <input type="text" id="f-token" placeholder="DOC-XXXXXXXXXX">
+    </div>
+    <div class="filter-group">
+      <label>Дата от</label>
+      <input type="date" id="f-date-from">
+    </div>
+    <div class="filter-group">
+      <label>Дата до</label>
+      <input type="date" id="f-date-to">
+    </div>
+    <button class="btn btn-blue" onclick="applyFilters()">🔍 Поиск</button>
+    <button class="btn btn-gray" onclick="resetFilters()">✕ Сброс</button>
+  </div>
+
+  <!-- ─── Table ─── -->
+  <div class="table-card">
+    <div class="table-title">
+      📋 Сессии <span class="count" id="table-count"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('sessionId')">Сессия <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('createdAt')">Дата/время <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('inn')">ИНН <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('visitorName')">Посетитель <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('operatorName')">Оператор <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('smsConfirmed')">SMS <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('documentsCount')">Документы <span class="sort-icon">⇅</span></th>
+          <th>События</th>
+        </tr>
+      </thead>
+      <tbody id="sessions-tbody">
+        <tr><td colspan="8" class="empty-row">Загрузка...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── Detail Sidebar ─── -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <h2 id="detail-title">Детали сессии</h2>
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body" id="detail-body">
+    <!-- Dynamic content -->
+  </div>
+  <div class="detail-actions" id="detail-actions"></div>
+</div>
+
+<script>
+let sessionsData = [];
+let currentSort = { field: 'createdAt', asc: false };
+
+// ─── API ───
+
+async function apiGet(url) {
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    return await resp.json();
+  } catch (e) {
+    console.warn('API error:', url, e);
+    return null;
+  }
+}
+
+// ─── Load sessions ───
+
+async function loadSessions(params) {
+  const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+  const data = await apiGet('/api/verification/sessions' + qs);
+  if (!data || !data.sessions) {
+    sessionsData = [];
+    renderTable();
+    return;
+  }
+  sessionsData = data.sessions;
+  updateStats();
+  renderTable();
+}
+
+// ─── Stats ───
+
+function updateStats() {
+  const total = sessionsData.length;
+  const confirmed = sessionsData.filter(s => s.smsConfirmed).length;
+  const docs = sessionsData.reduce((sum, s) => sum + (s.documentsCount || 0), 0);
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-confirmed').textContent = confirmed;
+  document.getElementById('stat-pending').textContent = total - confirmed;
+  document.getElementById('stat-docs').textContent = docs;
+}
+
+// ─── Render table ───
+
+function renderTable() {
+  const tbody = document.getElementById('sessions-tbody');
+  document.getElementById('table-count').textContent = '(' + sessionsData.length + ')';
+
+  if (sessionsData.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-row">Нет сессий по заданным фильтрам</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = sessionsData.map(s => {
+    const dt = s.createdAt ? s.createdAt.replace('T', ' ').substring(0, 16) : '—';
+    const smsBadge = s.smsConfirmed
+      ? '<span class="badge-sms yes">✓ Да</span>'
+      : '<span class="badge-sms no">Нет</span>';
+    return `<tr onclick="openDetail('${esc(s.sessionId)}')" style="cursor:pointer;">
+      <td><span class="session-link">${esc(s.sessionId)}</span></td>
+      <td style="font-variant-numeric:tabular-nums; white-space:nowrap;">${esc(dt)}</td>
+      <td style="font-family:monospace;">${esc(s.inn || '—')}</td>
+      <td>${esc(s.visitorName || '—')}</td>
+      <td>${esc(s.operatorName || '—')}</td>
+      <td>${smsBadge}</td>
+      <td style="text-align:center; font-weight:600;">${s.documentsCount || 0}</td>
+      <td style="text-align:center; color:var(--text3);">${s.eventsCount || 0}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── Sorting ───
+
+function sortBy(field) {
+  if (currentSort.field === field) {
+    currentSort.asc = !currentSort.asc;
+  } else {
+    currentSort.field = field;
+    currentSort.asc = true;
+  }
+  sessionsData.sort((a, b) => {
+    let va = a[field], vb = b[field];
+    if (va == null) va = '';
+    if (vb == null) vb = '';
+    if (typeof va === 'boolean') { va = va ? 1 : 0; vb = vb ? 1 : 0; }
+    if (typeof va === 'number') return currentSort.asc ? va - vb : vb - va;
+    return currentSort.asc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+  });
+  renderTable();
+}
+
+// ─── Filters ───
+
+function applyFilters() {
+  const inn = document.getElementById('f-inn').value.trim();
+  const operator = document.getElementById('f-operator').value.trim();
+  const token = document.getElementById('f-token').value.trim();
+  const dateFrom = document.getElementById('f-date-from').value;
+  const dateTo = document.getElementById('f-date-to').value;
+
+  // Token search goes through a different endpoint
+  if (token) {
+    searchByToken(token);
+    return;
+  }
+
+  const params = {};
+  if (inn) params.inn = inn;
+  else if (operator) params.operator = operator;
+  if (dateFrom) params.dateFrom = dateFrom;
+  if (dateTo) params.dateTo = dateTo;
+
+  loadSessions(Object.keys(params).length ? params : null);
+}
+
+function resetFilters() {
+  document.getElementById('f-inn').value = '';
+  document.getElementById('f-operator').value = '';
+  document.getElementById('f-token').value = '';
+  document.getElementById('f-date-from').value = '';
+  document.getElementById('f-date-to').value = '';
+  loadSessions();
+}
+
+async function searchByToken(token) {
+  const data = await apiGet('/api/verification/sessions/by-document?token=' + encodeURIComponent(token));
+  if (data && data.found && data.sessionId) {
+    openDetail(data.sessionId);
+  } else {
+    alert('Документ с токеном «' + token + '» не найден');
+  }
+}
+
+// ─── Detail panel ───
+
+async function openDetail(sessionId) {
+  const panel = document.getElementById('detail-panel');
+  const overlay = document.getElementById('detail-overlay');
+  const body = document.getElementById('detail-body');
+  const actions = document.getElementById('detail-actions');
+
+  document.getElementById('detail-title').textContent = sessionId;
+  body.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text3);">Загрузка...</div>';
+  actions.innerHTML = '';
+  panel.classList.add('open');
+  overlay.classList.add('open');
+
+  const data = await apiGet('/api/verification/session/' + encodeURIComponent(sessionId));
+  if (!data || !data.found) {
+    body.innerHTML = '<div style="text-align:center; padding:40px; color:var(--red);">Сессия не найдена</div>';
+    return;
+  }
+
+  // Session info
+  let html = '<div class="detail-section"><h3>📌 Информация о сессии</h3>';
+  const kvs = [
+    ['ID сессии', data.sessionId],
+    ['ИНН', data.inn || '—'],
+    ['Оператор', data.operatorName || '—'],
+    ['Посетитель', data.visitorName || '—'],
+    ['SMS подтверждение', data.smsConfirmed ? '✅ Да' : '❌ Нет'],
+    ['Создана', fmtDt(data.createdAt)],
+    ['SMS подтверждена', fmtDt(data.confirmedAt)],
+    ['Последняя активность', fmtDt(data.lastActivityAt)],
+    ['IP создания', data.createdIp || '—'],
+    ['Длительность', fmtDuration(data.durationSeconds)],
+  ];
+  html += kvs.map(([k, v]) => `<div class="kv-row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('');
+  html += '</div>';
+
+  // Signed documents
+  if (data.signedDocuments && data.signedDocuments.length > 0) {
+    html += '<div class="detail-section"><h3>📄 Подписанные документы (' + data.signedDocuments.length + ')</h3>';
+    data.signedDocuments.forEach(doc => {
+      html += `<div class="doc-item">
+        <div style="font-weight:600;">${esc(doc.documentName)}</div>
+        <div style="color:var(--text3); margin-top:2px;">Версия: ${esc(doc.documentVersion)} &nbsp;|&nbsp; Статус: ${esc(doc.status)}</div>
+        <div style="color:var(--text3); margin-top:2px;">Токен: <code>${esc(doc.token)}</code></div>
+        <div style="color:var(--text3); margin-top:2px;">Подписан: ${fmtDt(doc.signedAt)}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // Events
+  if (data.events && data.events.length > 0) {
+    html += '<div class="detail-section"><h3>📜 Журнал событий (' + data.events.length + ')</h3><div class="event-list">';
+    data.events.forEach(ev => {
+      html += `<div class="event-item">
+        <span class="ev-type">#${esc(ev.seq)} ${esc(ev.type)}</span>
+        <div class="ev-desc">${esc(ev.description)}</div>
+        <div class="ev-meta">${fmtDt(ev.timestamp)} &nbsp;|&nbsp; IP: ${esc(ev.ip || '—')}</div>
+        <div class="ev-meta" style="font-family:monospace; font-size:10px; word-break:break-all;">SHA-256: ${esc(ev.checksum || '—')}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+
+  // Integrity hash
+  if (data.integrityHash) {
+    html += '<div class="detail-section"><h3>🔐 Хеш целостности</h3>';
+    html += '<div style="padding:10px; background:#fef9c3; border-radius:6px; font-family:monospace; font-size:11px; word-break:break-all; border:1px solid #fbbf24;">' + esc(data.integrityHash) + '</div>';
+    html += '</div>';
+  }
+
+  body.innerHTML = html;
+
+  // Actions
+  actions.innerHTML = `
+    <a href="/report.html?session=${encodeURIComponent(sessionId)}" target="_blank" class="act-print">🖨️ Печать акта</a>
+    <button onclick="closeDetail()" style="background:#e5e7eb; color:var(--text2);">Закрыть</button>
+  `;
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ─── Helpers ───
+
+function esc(s) {
+  if (s == null) return '—';
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+function fmtDt(s) {
+  if (!s) return '—';
+  return s.replace('T', ' ').substring(0, 19);
+}
+
+function fmtDuration(sec) {
+  if (sec == null) return '—';
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  if (m > 60) return Math.floor(m / 60) + 'ч ' + (m % 60) + 'м';
+  return m + 'м ' + s + 'с';
+}
+
+// ─── Keyboard ───
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+  if (e.key === 'Enter' && e.target.closest('.filters')) applyFilters();
+});
+
+// ─── Init ───
+
+loadSessions();
+</script>
+</body>
+</html>
